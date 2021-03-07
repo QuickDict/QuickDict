@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.5)
 
 project(QuickDict LANGUAGES CXX)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -26,6 +28,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
+
+add_subdirectory(third_party)
 
 set(TS_FILES QuickDict_zh_CN.ts)
 
@@ -57,4 +61,4 @@ else()
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-target_link_libraries(QuickDict PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(QuickDict PRIVATE Qt${QT_VERSION_MAJOR}::Widgets qhotkey)

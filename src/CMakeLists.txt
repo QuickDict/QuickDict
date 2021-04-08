@@ -29,6 +29,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets WebEngineWidgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets WebEngineWidgets LinguistTools REQUIRED)
 find_package(OpenCV REQUIRED)
+
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 add_subdirectory(third_party)
@@ -40,6 +41,8 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        qimagecvmat.cpp
+        qimagecvmat.h
         ${TS_FILES}
 )
 

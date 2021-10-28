@@ -26,11 +26,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
+find_package(PkgConfig REQUIRED)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets WebEngineWidgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets WebEngineWidgets LinguistTools REQUIRED)
 find_package(OpenCV REQUIRED)
+pkg_search_module(TESSERACT REQUIRED tesseract)
+pkg_search_module(LEPTONICA REQUIRED lept)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${TESSERACT_INCLUDE_DIRS})
+include_directories(${LEPTONICA_INCLUDE_DIRS})
 
 add_subdirectory(third_party)
 
@@ -66,5 +71,5 @@ else()
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-target_link_libraries(QuickDict PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::WebEngineWidgets qhotkey ${OpenCV_LIBS} tesseract)
+target_link_libraries(QuickDict PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::WebEngineWidgets qhotkey ${OpenCV_LIBS} ${TESSERACT_LIBRARIES} ${LEPTONICA_LIBRARIES})
 install(TARGETS QuickDict DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")

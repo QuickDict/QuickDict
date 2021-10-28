@@ -1,6 +1,6 @@
 #include "qimagecvmat.h"
 
-QImage cvmat2qimage(const cv::Mat& src, bool enableDeepCopy)
+QImage cvmat2qimage(const cv::Mat &src, bool enableDeepCopy)
 {
     QImage dst;
     switch (src.type()) {
@@ -29,17 +29,25 @@ QImage cvmat2qimage(const cv::Mat& src, bool enableDeepCopy)
     return dst;
 }
 
-cv::Mat qimage2cvmat(const QImage& src, bool enableDeepCopy)
+cv::Mat qimage2cvmat(const QImage &src, bool enableDeepCopy)
 {
     cv::Mat dst;
     switch (src.format()) {
     // Gray image
     case QImage::Format_Indexed8:
-        dst = cv::Mat(src.height(), src.width(), CV_8UC1, const_cast<unsigned char*>(src.constBits()), static_cast<size_t>(src.bytesPerLine()));
+        dst = cv::Mat(src.height(),
+                      src.width(),
+                      CV_8UC1,
+                      const_cast<unsigned char *>(src.constBits()),
+                      static_cast<size_t>(src.bytesPerLine()));
         break;
     // BGR or RGB image
     case QImage::Format_RGB888:
-        dst = cv::Mat(src.height(), src.width(), CV_8UC3, const_cast<unsigned char*>(src.constBits()), static_cast<size_t>(src.bytesPerLine()));
+        dst = cv::Mat(src.height(),
+                      src.width(),
+                      CV_8UC3,
+                      const_cast<unsigned char *>(src.constBits()),
+                      static_cast<size_t>(src.bytesPerLine()));
         if (enableDeepCopy) {
             dst = dst.clone();
         }
@@ -48,13 +56,21 @@ cv::Mat qimage2cvmat(const QImage& src, bool enableDeepCopy)
         // it will change BRG to RBG in src QImage when isDeepCopy == false
         break;
     case QImage::Format_BGR888:
-        dst = cv::Mat(src.height(), src.width(), CV_8UC3, const_cast<unsigned char*>(src.constBits()), static_cast<size_t>(src.bytesPerLine()));
+        dst = cv::Mat(src.height(),
+                      src.width(),
+                      CV_8UC3,
+                      const_cast<unsigned char *>(src.constBits()),
+                      static_cast<size_t>(src.bytesPerLine()));
         break;
         // BGRA
     case QImage::Format_RGB32:
     case QImage::Format_ARGB32:
     case QImage::Format_ARGB32_Premultiplied:
-        dst = cv::Mat(src.height(), src.width(), CV_8UC4, const_cast<unsigned char*>(src.constBits()), static_cast<size_t>(src.bytesPerLine()));
+        dst = cv::Mat(src.height(),
+                      src.width(),
+                      CV_8UC4,
+                      const_cast<unsigned char *>(src.constBits()),
+                      static_cast<size_t>(src.bytesPerLine()));
         break;
     default:
         bool Nonsupport_QImage_Format = false;

@@ -16,16 +16,6 @@ OcrEngine *OcrEngine::_instance = nullptr;
 OcrEngine::OcrEngine()
     : m_tessApi(new tesseract::TessBaseAPI)
 {
-    QSettings &settings = ConfigCenter::settings();
-    settings.beginGroup("Tesseract");
-    QString dataPath = settings.value("DataPath").toString();
-    QString lang = settings.value("Language", "eng").toString();
-    settings.endGroup();
-    if (m_tessApi->Init(dataPath.isNull() ? nullptr : dataPath.toStdString().c_str(), lang.toStdString().c_str())) {
-        qCCritical(ocrEngine) << "Could not initialize tesseract.";
-        exit(1);
-    }
-
     connect(this, &OcrEngine::start, this, &OcrEngine::doStart);
     connect(this, &OcrEngine::stop, this, &OcrEngine::doStop);
     connect(this, &OcrEngine::extractText, this, &OcrEngine::doExtractText);
@@ -50,6 +40,17 @@ void OcrEngine::doStart()
 {
     if (!isRunning()) {
         QMutexLocker locker(&m_mutex);
+
+        QSettings &settings = ConfigCenter::settings();
+        settings.beginGroup("Tesseract");
+        QString dataPath = settings.value("DataPath").toString();
+        QString lang = settings.value("Language", "eng").toString();
+        settings.endGroup();
+        if (m_tessApi->Init(dataPath.isNull() ? nullptr : dataPath.toStdString().c_str(), lang.toStdString().c_str())) {
+            qCCritical(ocrEngine) << "Could not initialize tesseract.";
+            return;
+        }
+
         m_workerThread.start();
         moveToThread(&m_workerThread); // OcrEngine cannot have a parent
     }
@@ -60,6 +61,9 @@ void OcrEngine::doStop()
 {
     if (isRunning()) {
         QMutexLocker locker(&m_mutex);
+
+        m_tessApi->End();
+
         moveToThread(m_workerThread.thread());
         m_workerThread.quit();
         m_workerThread.wait(200);

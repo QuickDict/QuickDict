@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QHotkey>
 #include <QLoggingCategory>
+#include <QQmlApplicationEngine>
 #include <QStandardPaths>
 
 static QFile logFile;
@@ -24,9 +25,13 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    a.setOrganizationDomain("https://github.com/QuickDict/QuickDict");
-    a.setApplicationName("QuickDict");
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
+
+    QApplication app(argc, argv);
+    app.setOrganizationDomain("https://github.com/QuickDict/QuickDict");
+    app.setApplicationName("QuickDict");
 
     QLoggingCategory qd("qd.main");
 
@@ -49,24 +54,37 @@ int main(int argc, char *argv[])
 #endif
     qSetMessagePattern(messagePattern);
     QLoggingCategory::setFilterRules("qd.*=true");
-    qInstallMessageHandler(messageHandler);
+    // qInstallMessageHandler(messageHandler);
 
     dir = QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
-    dir.mkdir(a.applicationName());
-    dir.cd(a.applicationName());
+    dir.mkdir(app.applicationName());
+    dir.cd(app.applicationName());
     ConfigCenter::setConfigFile(dir.absoluteFilePath("settings.ini"));
 
     OcrEngine::createInstance();
     OcrEngine::instance()->start();
     MouseOverMonitor monitor;
-    auto hotkey = new QHotkey(QKeySequence("Alt+Q"), true, &a);
+    auto hotkey = new QHotkey(QKeySequence("Alt+Q"), true, &app);
     qCDebug(qd) << "Is Registered: " << hotkey->isRegistered();
     QObject::connect(hotkey, &QHotkey::activated, qApp, [&]() {
         monitor.toggle();
         qCDebug(qd) << "MouseOverMonitor: " << monitor.isEnabled();
     });
 
-    int ret = a.exec();
+    QQmlApplicationEngine engine;
+    const QUrl url(QStringLiteral("qrc:/home.qml"));
+    QObject::connect(
+        &engine,
+        &QQmlApplicationEngine::objectCreated,
+        &app,
+        [url](QObject *obj, const QUrl &objUrl) {
+            if (!obj && url == objUrl)
+                QCoreApplication::exit(-1);
+        },
+        Qt::QueuedConnection);
+    engine.load(url);
+
+    int ret = app.exec();
     logFile.close();
     return ret;
 }

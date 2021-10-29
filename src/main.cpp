@@ -85,6 +85,9 @@ int main(int argc, char *argv[])
     engine.load(url);
 
     int ret = app.exec();
+
+    OcrEngine::instance()->stop();
     logFile.close();
+
     return ret;
 }

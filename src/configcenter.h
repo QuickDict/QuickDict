@@ -4,7 +4,7 @@
 #include <QMutex>
 #include <QSettings>
 
-class ConfigCenter : QObject
+class ConfigCenter : public QObject
 {
     Q_OBJECT
 public:

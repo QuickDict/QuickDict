@@ -45,6 +45,8 @@ set(PROJECT_SOURCES
         shortcutmanager.h
         ocrengine.cpp
         ocrengine.h
+        ocrworker.cpp
+        ocrworker.h
         configcenter.cpp
         configcenter.h
         quickdict.cpp

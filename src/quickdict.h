@@ -9,6 +9,9 @@ class ConfigCenter;
 class QuickDict : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QObject *ocrEngine READ ocrEngine);
+    Q_PROPERTY(QObject *configCenter READ configCenter);
+
 public:
     explicit QuickDict(QObject *parent = nullptr);
     ~QuickDict();

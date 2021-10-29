@@ -32,7 +32,7 @@ ApplicationWindow {
 
     Drawer {
         id: drawer
-        width: window.width * 0.66
+        width: window.width * 0.33
         height: window.height
 
         Column {
@@ -53,5 +53,19 @@ ApplicationWindow {
         id: stackView
         initialItem: "Main.ui.qml"
         anchors.fill: parent
+    }
+
+    Connections {
+        target: qd.ocrEngine
+        function onStarted() {
+            console.log("OcrEngine started!")
+        }
+        function onStopped() {
+            console.log("OcrEngine stopped!")
+        }
+    }
+
+    Component.onCompleted: {
+        console.log(qd, qd.ocrEngine, qd.ocrEngine.isRunning())
     }
 }

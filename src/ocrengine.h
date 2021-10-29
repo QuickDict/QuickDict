@@ -1,22 +1,17 @@
 #ifndef OCRENGINE_H
 #define OCRENGINE_H
 
+#include "ocrworker.h"
+
 #include <QLoggingCategory>
 #include <QMutex>
-#include <QObject>
-#include <QRect>
 #include <QThread>
 
 namespace tesseract {
 class TessBaseAPI;
 };
 
-struct OcrResult
-{
-    QString text;
-    QRect rect;
-    QList<QRect> rects;
-};
+class OcrWorker;
 
 class OcrEngine : public QObject
 {
@@ -25,23 +20,21 @@ public:
     OcrEngine();
     ~OcrEngine();
 
-    void doStart();
-    void doStop();
-    bool isRunning() const;
-
-    void doExtractText(const QImage &image, const QPoint &p, int id = 0);
+    Q_INVOKABLE void start();
+    Q_INVOKABLE void stop();
+    Q_INVOKABLE void toggle();
+    Q_INVOKABLE bool isRunning() const;
 
 Q_SIGNALS:
-    void start();
-    void stop();
+    void started();
+    void stopped();
 
     void extractText(const QImage &image, const QPoint &p, int id = 0);
     OcrResult extractTextResult(const OcrResult &result);
 
 private:
-    void setImage(const QImage &image);
-
     tesseract::TessBaseAPI *m_tessApi = nullptr;
+    OcrWorker *m_ocrWorker = nullptr;
     QThread m_workerThread;
     QMutex m_mutex;
 };

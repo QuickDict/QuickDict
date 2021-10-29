@@ -9,6 +9,7 @@
 #include <QHotkey>
 #include <QLoggingCategory>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include <QStandardPaths>
 
 static QFile logFile;
@@ -66,12 +67,12 @@ int main(int argc, char *argv[])
 
     OcrEngine *ocrEngine = new OcrEngine;
     QuickDict::instance()->setOcrEngine(ocrEngine);
-    ocrEngine->start();
     MouseOverMonitor monitor;
     auto hotkey = new QHotkey(QKeySequence("Alt+Q"), true, &app);
     qCDebug(qd) << "Is Registered: " << hotkey->isRegistered();
     QObject::connect(hotkey, &QHotkey::activated, qApp, [&]() {
         monitor.toggle();
+        ocrEngine->toggle();
         qCDebug(qd) << "MouseOverMonitor: " << monitor.isEnabled();
     });
 
@@ -86,6 +87,7 @@ int main(int argc, char *argv[])
                 QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
+    engine.rootContext()->setContextProperty("qd", QuickDict::instance());
     engine.load(url);
 
     int ret = app.exec();

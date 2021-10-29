@@ -1,5 +1,6 @@
 #include "ocrengine.h"
 #include "configcenter.h"
+#include "quickdict.h"
 #include <cmath>
 #include <leptonica/allheaders.h>
 #include <tesseract/baseapi.h>
@@ -10,8 +11,6 @@
 #include <QTime>
 
 Q_LOGGING_CATEGORY(ocrEngine, "qd.ocr.engine")
-
-OcrEngine *OcrEngine::_instance = nullptr;
 
 OcrEngine::OcrEngine()
     : m_tessApi(new tesseract::TessBaseAPI)
@@ -41,11 +40,11 @@ void OcrEngine::doStart()
     if (!isRunning()) {
         QMutexLocker locker(&m_mutex);
 
-        QSettings &settings = ConfigCenter::settings();
-        settings.beginGroup("Tesseract");
-        QString dataPath = settings.value("DataPath").toString();
-        QString lang = settings.value("Language", "eng").toString();
-        settings.endGroup();
+        QSettings *settings = QuickDict::instance()->configCenter()->settings();
+        settings->beginGroup("Tesseract");
+        QString dataPath = settings->value("DataPath").toString();
+        QString lang = settings->value("Language", "eng").toString();
+        settings->endGroup();
         if (m_tessApi->Init(dataPath.isNull() ? nullptr : dataPath.toStdString().c_str(), lang.toStdString().c_str())) {
             qCCritical(ocrEngine) << "Could not initialize tesseract.";
             return;
@@ -74,11 +73,6 @@ void OcrEngine::doStop()
 bool OcrEngine::isRunning() const
 {
     return m_workerThread.isRunning();
-}
-
-void OcrEngine::createInstance()
-{
-    _instance = new OcrEngine;
 }
 
 void OcrEngine::doExtractText(const QImage &image, const QPoint &p, int id)

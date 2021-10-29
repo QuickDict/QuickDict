@@ -8,24 +8,28 @@ class ConfigCenter : QObject
 {
     Q_OBJECT
 public:
+    explicit ConfigCenter(const QString &fileName,
+                          QSettings::Format format = QSettings::IniFormat,
+                          QObject *parent = nullptr);
     ~ConfigCenter();
 
-    static ConfigCenter &instance() { return _instance; }
-    static void setConfigFile(const QString &fileName, QSettings::Format format = QSettings::IniFormat);
-    inline static QSettings &settings() { return *instance().config; }
-    static QVariant value(const QString &key, const QVariant &defaultValue = QVariant());
-    static void setValue(const QString &key, const QVariant &value);
+    inline QSettings *settings() { return &m_config; }
+    /**
+     * @param key a key starts with '/' means it is absolute in group.
+     * @param store stores defaultValue in key if such key doesn't exist and if store is true.
+     */
+    QVariant value(const QString &key, const QVariant &defaultValue = QVariant(), bool store = false);
+    /**
+     * @param key a key starts with '/' means it is absolute in group.
+     */
+    void setValue(const QString &key, const QVariant &value);
 
 Q_SIGNALS:
     void valueChanged(const QString &key, const QVariant &value);
 
 private:
-    explicit ConfigCenter(QObject *parent = nullptr);
-
-private:
-    QSettings *config = nullptr;
-    static ConfigCenter _instance;
-    QMutex mutex;
+    QSettings m_config;
+    QMutex m_mutex;
 };
 
 #endif // CONFIGCENTER_H

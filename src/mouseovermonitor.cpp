@@ -1,5 +1,6 @@
 #include "mouseovermonitor.h"
 #include "ocrengine.h"
+#include "quickdict.h"
 #include <QCursor>
 #include <QGuiApplication>
 #include <QPixmap>
@@ -37,7 +38,7 @@ void MouseOverMonitor::timeout()
         m_previousCursorMoving = false;
         interval = m_idleInterval;
         QImage screen = QGuiApplication::primaryScreen()->grabWindow(0).toImage();
-        emit OcrEngine::instance()->extractText(screen, cursor);
+        emit QuickDict::instance()->ocrEngine()->extractText(screen, cursor);
     } else if (m_previousCursorMoving && cursor != m_previousCursor) {
         // mouse keeps moving
         m_previousCursorMoving = true;

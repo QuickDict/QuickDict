@@ -2,6 +2,7 @@
 #include "mainwindow.h"
 #include "mouseovermonitor.h"
 #include "ocrengine.h"
+#include "quickdict.h"
 
 #include <QApplication>
 #include <QDir>
@@ -30,6 +31,7 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication app(argc, argv);
+    app.setOrganizationName("QuickDict");
     app.setOrganizationDomain("https://github.com/QuickDict/QuickDict");
     app.setApplicationName("QuickDict");
 
@@ -59,10 +61,12 @@ int main(int argc, char *argv[])
     dir = QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
     dir.mkdir(app.applicationName());
     dir.cd(app.applicationName());
-    ConfigCenter::setConfigFile(dir.absoluteFilePath("settings.ini"));
+    ConfigCenter *configCenter = new ConfigCenter(dir.absoluteFilePath("settings.ini"));
+    QuickDict::instance()->setConfigCenter(configCenter);
 
-    OcrEngine::createInstance();
-    OcrEngine::instance()->start();
+    OcrEngine *ocrEngine = new OcrEngine;
+    QuickDict::instance()->setOcrEngine(ocrEngine);
+    ocrEngine->start();
     MouseOverMonitor monitor;
     auto hotkey = new QHotkey(QKeySequence("Alt+Q"), true, &app);
     qCDebug(qd) << "Is Registered: " << hotkey->isRegistered();
@@ -86,7 +90,7 @@ int main(int argc, char *argv[])
 
     int ret = app.exec();
 
-    OcrEngine::instance()->stop();
+    ocrEngine->stop();
     logFile.close();
 
     return ret;

@@ -29,8 +29,6 @@ public:
     void doStop();
     bool isRunning() const;
 
-    static void createInstance();
-    static OcrEngine *instance() { return _instance; }
     void doExtractText(const QImage &image, const QPoint &p, int id = 0);
 
 Q_SIGNALS:
@@ -43,7 +41,6 @@ Q_SIGNALS:
 private:
     void setImage(const QImage &image);
 
-    static OcrEngine *_instance;
     tesseract::TessBaseAPI *m_tessApi = nullptr;
     QThread m_workerThread;
     QMutex m_mutex;

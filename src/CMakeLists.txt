@@ -47,6 +47,8 @@ set(PROJECT_SOURCES
         ocrengine.h
         configcenter.cpp
         configcenter.h
+        quickdict.cpp
+        quickdict.h
         qml.qrc
         ${TS_FILES}
 )

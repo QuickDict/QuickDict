@@ -2,54 +2,49 @@
 #include <QCoreApplication>
 #include <QMutexLocker>
 
-ConfigCenter ConfigCenter::_instance;
-
-ConfigCenter::ConfigCenter(QObject *parent)
+ConfigCenter::ConfigCenter(const QString &fileName, QSettings::Format format, QObject *parent)
     : QObject(parent)
-    , config(new QSettings("settings.ini", QSettings::IniFormat, this))
+    , m_config(fileName, format)
 {}
 
 ConfigCenter::~ConfigCenter() {}
 
-void ConfigCenter::setConfigFile(const QString &fileName, QSettings::Format format)
+QVariant ConfigCenter::value(const QString &key, const QVariant &defaultValue, bool store)
 {
-    delete _instance.config;
-    _instance.config = new QSettings(fileName, format);
-}
-
-QVariant ConfigCenter::value(const QString &key, const QVariant &defaultValue)
-{
-    QMutexLocker locker(&instance().mutex);
-    // a `key` starts with '/' means it's an absolute path
-    QSettings &s = settings();
-    QStringList groupSplit = s.group().split(Qt::SkipEmptyParts);
+    QMutexLocker locker(&m_mutex);
+    QStringList groupSplit = m_config.group().split(Qt::SkipEmptyParts);
     if (key.startsWith('/')) {
         for (const auto &_ : groupSplit)
-            s.endGroup();
+            m_config.endGroup();
     }
-    QVariant v = settings().value(key, defaultValue);
+    QVariant v = m_config.value(key, defaultValue);
+    if (!m_config.contains(key) && store) {
+        m_config.setValue(key, defaultValue);
+        m_config.sync();
+        QString absoluteKey = "/" + (groupSplit + key.split(Qt::SkipEmptyParts)).join('/');
+        emit valueChanged(absoluteKey, defaultValue);
+    }
     if (key.startsWith('/')) {
         for (const auto &group : groupSplit)
-            s.beginGroup(group);
+            m_config.beginGroup(group);
     }
     return v;
 }
 
 void ConfigCenter::setValue(const QString &key, const QVariant &value)
 {
-    QMutexLocker locker(&instance().mutex);
-    // a `key` starts with '/' means it's an absolute path
-    QSettings &s = settings();
-    QStringList groupSplit = s.group().split(Qt::SkipEmptyParts);
+    QMutexLocker locker(&m_mutex);
+    QStringList groupSplit = m_config.group().split(Qt::SkipEmptyParts);
     if (key.startsWith('/')) {
         for (const auto &_ : groupSplit)
-            s.endGroup();
+            m_config.endGroup();
     }
-    settings().setValue(key, value);
-    settings().sync();
+    m_config.setValue(key, value);
+    m_config.sync();
+    QString absoluteKey = "/" + (groupSplit + key.split(Qt::SkipEmptyParts)).join('/');
+    emit valueChanged(absoluteKey, value);
     if (key.startsWith('/')) {
         for (const auto &group : groupSplit)
-            s.beginGroup(group);
+            m_config.beginGroup(group);
     }
-    emit instance().valueChanged(QString("/%0/%1").arg(settings().group()).arg(key), value);
 }

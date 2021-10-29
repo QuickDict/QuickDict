@@ -1,6 +1,7 @@
 #ifndef CONFIGCENTER_H
 #define CONFIGCENTER_H
 
+#include <QMutex>
 #include <QSettings>
 
 class ConfigCenter : QObject
@@ -24,6 +25,7 @@ private:
 private:
     QSettings *config = nullptr;
     static ConfigCenter _instance;
+    QMutex mutex;
 };
 
 #endif // CONFIGCENTER_H

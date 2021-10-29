@@ -1,5 +1,6 @@
 #include "configcenter.h"
 #include <QCoreApplication>
+#include <QMutexLocker>
 
 ConfigCenter ConfigCenter::_instance;
 
@@ -18,13 +19,37 @@ void ConfigCenter::setConfigFile(const QString &fileName, QSettings::Format form
 
 QVariant ConfigCenter::value(const QString &key, const QVariant &defaultValue)
 {
-    return settings().value(key, defaultValue);
+    QMutexLocker locker(&instance().mutex);
+    // a `key` starts with '/' means it's an absolute path
+    QSettings &s = settings();
+    QStringList groupSplit = s.group().split(Qt::SkipEmptyParts);
+    if (key.startsWith('/')) {
+        for (const auto &_ : groupSplit)
+            s.endGroup();
+    }
+    QVariant v = settings().value(key, defaultValue);
+    if (key.startsWith('/')) {
+        for (const auto &group : groupSplit)
+            s.beginGroup(group);
+    }
+    return v;
 }
 
 void ConfigCenter::setValue(const QString &key, const QVariant &value)
 {
+    QMutexLocker locker(&instance().mutex);
+    // a `key` starts with '/' means it's an absolute path
+    QSettings &s = settings();
+    QStringList groupSplit = s.group().split(Qt::SkipEmptyParts);
+    if (key.startsWith('/')) {
+        for (const auto &_ : groupSplit)
+            s.endGroup();
+    }
     settings().setValue(key, value);
     settings().sync();
-    // FIXME: absolute key
-    emit _instance.valueChanged(key, value);
+    if (key.startsWith('/')) {
+        for (const auto &group : groupSplit)
+            s.beginGroup(group);
+    }
+    emit instance().valueChanged(QString("/%0/%1").arg(settings().group()).arg(key), value);
 }

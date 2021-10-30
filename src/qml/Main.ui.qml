@@ -11,4 +11,16 @@ Page {
         text: qsTr("You are on the Main page.")
         anchors.centerIn: parent
     }
+
+     Rectangle {
+     width: 48
+     height: 48
+     anchors.bottom: parent.bottom
+
+     Image {
+        anchors.fill: parent
+        source: "https://www.baidu.com/favicon.ico"
+     }
+ }
+
 }

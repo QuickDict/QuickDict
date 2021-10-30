@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import "axios.min.js" as Axios
 
 ApplicationWindow {
     id: window
@@ -67,5 +68,18 @@ ApplicationWindow {
 
     Component.onCompleted: {
         console.log(qd, qd.ocrEngine, qd.ocrEngine.isRunning())
+        console.log("Start request")
+        axios.get("http://localhost:3000/hack")
+            .then(function (response) {
+                console.log("Response", response.status)
+                /* console.log(JSON.stringify(response.data)) */
+                console.log(response.data["list"][0]["definition"])
+            })
+            .catch(function (error) {
+                console.log("Error")
+            })
+            .then(function() {
+                console.log("Finally")
+            })
     }
 }

@@ -3,6 +3,7 @@
         <file alias="home.qml">qml/home.qml</file>
         <file alias="Main.ui.qml">qml/Main.ui.qml</file>
         <file alias="Settings.ui.qml">qml/Settings.ui.qml</file>
+        <file>axios.min.js</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

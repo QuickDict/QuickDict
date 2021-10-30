@@ -41,6 +41,10 @@ set(PROJECT_SOURCES
         mouseovermonitor.h
         monitorservice.cpp
         monitorservice.h
+        dictinterface.cpp
+        dictinterface.h
+        dictservice.cpp
+        dictservice.h
         shortcutmanager.cpp
         shortcutmanager.h
         ocrengine.cpp

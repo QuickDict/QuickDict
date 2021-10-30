@@ -19,10 +19,10 @@ MouseOverMonitor::~MouseOverMonitor() {}
 void MouseOverMonitor::doSetState(State state)
 {
     if (state == State::Enabled) {
-        m_previousCursorMoving = false;
+        m_previousCursorMoving = true;
+        m_previousCursor = QCursor::pos();
         m_timer->start(m_idleInterval);
     } else {
-        m_previousCursorMoving = false;
         m_timer->stop();
     }
 }

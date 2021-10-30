@@ -49,11 +49,11 @@ int main(int argc, char *argv[])
 #ifdef QT_DEBUG
         "[%{time yyyy-MM-dd h:mm:ss.zzz t} "
         "%{if-debug}D%{endif}%{if-info}I%{endif}%{if-warning}W%{endif}%{if-critical}C%{endif}%{if-fatal}"
-        "F%{endif}] %{category} %{threadid} %{file}:%{line} - %{message}";
+        "F%{endif}] %{category} %{threadid} %{file}:%{line} %{message}";
 #else
         "[%{time yyyy-MM-dd h:mm:ss.zzz t} "
         "%{if-debug}D%{endif}%{if-info}I%{endif}%{if-warning}W%{endif}%{if-critical}C%{endif}%{if-fatal}F%{endif}] "
-        "%{category} %{threadid} - %{message}";
+        "%{category} %{threadid} %{message}";
 #endif
     qSetMessagePattern(messagePattern);
     QLoggingCategory::setFilterRules("qd.*=true");

@@ -6,12 +6,12 @@
 
 class MonitorInterface;
 
-class MonitorManager : public QObject
+class MonitorService : public QObject
 {
     Q_OBJECT
 public:
-    explicit MonitorManager(QObject *parent = nullptr);
-    virtual ~MonitorManager();
+    explicit MonitorService(QObject *parent = nullptr);
+    virtual ~MonitorService();
 
     void registerMonitor(MonitorInterface *monitor);
 

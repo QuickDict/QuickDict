@@ -39,8 +39,8 @@ set(PROJECT_SOURCES
         monitorinterface.h
         mouseovermonitor.cpp
         mouseovermonitor.h
-        monitormanager.cpp
-        monitormanager.h
+        monitorservice.cpp
+        monitorservice.h
         shortcutmanager.cpp
         shortcutmanager.h
         ocrengine.cpp

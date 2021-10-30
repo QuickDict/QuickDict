@@ -47,6 +47,7 @@ void OcrEngine::start()
 
         m_workerThread.start();
         qCInfo(ocrEngine) << "OcrEngine started...";
+        emit started();
     }
 }
 
@@ -60,6 +61,7 @@ void OcrEngine::stop()
         m_workerThread.quit();
         m_workerThread.wait(200);
         qCInfo(ocrEngine) << "OcrEngine stopped...";
+        emit stopped();
     }
 }
 

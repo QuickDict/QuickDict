@@ -36,8 +36,6 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("https://github.com/QuickDict/QuickDict");
     app.setApplicationName("QuickDict");
 
-    QLoggingCategory qd("qd.main");
-
     QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation));
     if (!dir.mkpath(dir.absolutePath()))
         qCWarning(qd) << "Cannot make path:" << dir.absolutePath();
@@ -87,7 +85,10 @@ int main(int argc, char *argv[])
                 QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
+    // register `qd` in js engine
     engine.rootContext()->setContextProperty("qd", QuickDict::instance());
+    // register `setTimeout` in js engine
+    engine.rootContext()->setContextObject(QuickDict::instance());
     engine.load(url);
 
     int ret = app.exec();

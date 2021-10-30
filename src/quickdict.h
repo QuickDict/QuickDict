@@ -1,6 +1,7 @@
 #ifndef QUICKDICT_H
 #define QUICKDICT_H
 
+#include <QLoggingCategory>
 #include <QObject>
 
 class OcrEngine;
@@ -23,10 +24,14 @@ public:
     inline ConfigCenter *configCenter() const { return m_configCenter; }
     inline void setConfigCenter(ConfigCenter *configCenter) { m_configCenter = configCenter; }
 
+    Q_INVOKABLE void setTimeout(const QVariant &function, int delay = 0);
+
 private:
     static QuickDict *_instance;
     OcrEngine *m_ocrEngine = nullptr;
     ConfigCenter *m_configCenter = nullptr;
 };
+
+Q_DECLARE_LOGGING_CATEGORY(qd)
 
 #endif // QUICKDICT_H

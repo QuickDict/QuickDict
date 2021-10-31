@@ -12,10 +12,10 @@ class DictService;
 class QuickDict : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QObject *ocrEngine READ ocrEngine);
-    Q_PROPERTY(QObject *configCenter READ configCenter);
-    Q_PROPERTY(QObject *monitorService READ monitorService);
-    Q_PROPERTY(QObject *dictService READ dictService);
+    Q_PROPERTY(QObject *ocrEngine READ ocrEngine CONSTANT);
+    Q_PROPERTY(QObject *configCenter READ configCenter CONSTANT);
+    Q_PROPERTY(QObject *monitorService READ monitorService CONSTANT);
+    Q_PROPERTY(QObject *dictService READ dictService CONSTANT);
 
 public:
     explicit QuickDict(QObject *parent = nullptr);

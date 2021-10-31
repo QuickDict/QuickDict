@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import com.quickdict.components 1.0
 import "axios.min.js" as Axios
 
 ApplicationWindow {
@@ -54,6 +55,10 @@ ApplicationWindow {
         id: stackView
         initialItem: "Main.ui.qml"
         anchors.fill: parent
+    }
+
+    Dict {
+        id: urbanDict
     }
 
     Connections {

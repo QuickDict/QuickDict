@@ -1,4 +1,5 @@
 #include "configcenter.h"
+#include "dictinterface.h"
 #include "mainwindow.h"
 #include "mouseovermonitor.h"
 #include "ocrengine.h"
@@ -27,6 +28,8 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
 int main(int argc, char *argv[])
 {
+    qmlRegisterType<DictInterface>("com.quickdict.components", 1, 0, "Dict");
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif

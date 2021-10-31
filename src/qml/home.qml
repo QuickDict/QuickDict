@@ -83,7 +83,9 @@ ApplicationWindow {
         id: dictdDict
         onQuery: {
             url = "https://dict.org/bin/Dict?Form=Dict2&Database=*&Query=" + text
+            window.requestActivate()
         }
+
         Component.onCompleted: {
             console.log("DictdDict: loaded")
             qd.dictService.registerDict(dictdDict)

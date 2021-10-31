@@ -79,6 +79,18 @@ ApplicationWindow {
         }
     }
 
+    Dict {
+        id: dictdDict
+        onQuery: {
+            url = "https://dict.org/bin/Dict?Form=Dict2&Database=*&Query=" + text
+        }
+        Component.onCompleted: {
+            console.log("DictdDict: loaded")
+            qd.dictService.registerDict(dictdDict)
+        }
+        property string url
+    }
+
     Connections {
         target: qd.ocrEngine
         function onStarted() {

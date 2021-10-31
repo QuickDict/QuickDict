@@ -2,25 +2,31 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Page {
-    width: 600
-    height: 400
-
     title: qsTr("QuickDcit")
 
-    Label {
-        text: qsTr("You are on the Main page.")
-        anchors.centerIn: parent
-    }
-
-     Rectangle {
-     width: 48
-     height: 48
-     anchors.bottom: parent.bottom
-
-     Image {
+    ScrollView {
+        id: scrollView
+        clip: true
         anchors.fill: parent
-        source: "https://www.baidu.com/favicon.ico"
-     }
- }
 
+        Column {
+            Repeater {
+                id: repeater
+
+                Text {
+                    text: modelData.definition
+                    width: scrollView.width
+                    wrapMode: Text.WrapAnywhere
+                    font.pixelSize: Qt.application.font.pixelSize * 1.6
+                }
+            }
+        }
+
+        Connections {
+            target: qd.dictService
+            function onQueryResult(result) {
+                repeater.model = result.list
+            }
+        }
+    }
 }

@@ -70,7 +70,7 @@ ApplicationWindow {
                 })
         }
         onQueryResult: {
-            console.log(JSON.stringify(result))
+            /* console.log(JSON.stringify(result)) */
         }
 
         Component.onCompleted: {

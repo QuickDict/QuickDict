@@ -87,8 +87,9 @@ ApplicationWindow {
         Component.onCompleted: {
             console.log("DictdDict: loaded")
             qd.dictService.registerDict(dictdDict)
+            url = "https://dict.org/bin/Dict?Form=Dict2&Database=*"
         }
-        property string url
+        property url url
     }
 
     Connections {

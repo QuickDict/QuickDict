@@ -12,7 +12,11 @@ public:
     explicit DictService(QObject *parent = nullptr);
     virtual ~DictService();
 
-    void registerDict(DictInterface *dict);
+    Q_INVOKABLE void registerDict(DictInterface *dict);
+
+Q_SIGNALS:
+    void query(const QString &text);
+    void queryResult(const QJsonObject &result);
 
 private:
     QList<DictInterface *> m_dicts;

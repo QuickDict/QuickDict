@@ -13,7 +13,10 @@ public:
     explicit MonitorService(QObject *parent = nullptr);
     virtual ~MonitorService();
 
-    void registerMonitor(MonitorInterface *monitor);
+    Q_INVOKABLE void registerMonitor(MonitorInterface *monitor);
+
+Q_SIGNALS:
+    void query(const QString &text);
 
 private:
     QList<MonitorInterface *> m_monitors;

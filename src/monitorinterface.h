@@ -31,7 +31,7 @@ public:
 
 Q_SIGNALS:
     void stateChanged(State state);
-    void query(QString text);
+    void query(const QString &text);
 
 protected:
     virtual void doSetState(State state) = 0;

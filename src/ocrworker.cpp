@@ -65,6 +65,7 @@ void OcrWorker::doExtractText(const QImage &image, const QPoint &p, int id)
     result.text = text;
     result.rect = rect;
     result.rects = rects;
+    emit extractTextResult(result);
 }
 
 void OcrWorker::setImage(const QImage &image)

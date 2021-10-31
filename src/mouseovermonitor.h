@@ -5,6 +5,7 @@
 #include <QPoint>
 #include <QString>
 
+class OcrResult;
 class QTimer;
 
 class MouseOverMonitor : public MonitorInterface
@@ -23,6 +24,7 @@ public:
 
 private Q_SLOTS:
     void timeout();
+    void onExtractTextResult(const OcrResult &result);
 
 private:
     int m_idleInterval = 500;

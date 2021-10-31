@@ -27,7 +27,7 @@ public Q_SLOTS:
     void doExtractText(const QImage &image, const QPoint &p, int id = 0);
 
 Q_SIGNALS:
-    OcrResult extractTextResult(const OcrResult &result);
+    void extractTextResult(const OcrResult &result);
 
 private:
     void setImage(const QImage &image);

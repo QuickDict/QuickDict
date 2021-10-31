@@ -30,7 +30,7 @@ Q_SIGNALS:
     void stopped();
 
     void extractText(const QImage &image, const QPoint &p, int id = 0);
-    OcrResult extractTextResult(const OcrResult &result);
+    void extractTextResult(const OcrResult &result);
 
 private:
     tesseract::TessBaseAPI *m_tessApi = nullptr;

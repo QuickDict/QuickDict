@@ -59,6 +59,24 @@ ApplicationWindow {
 
     Dict {
         id: urbanDict
+        onQuery: {
+            /* json-server with https://www.urbandictionary.com/define.php?term=hack" */
+            axios.get("http://localhost:3000/" + text)
+                .then(function (response) {
+                    urbanDict.queryResult(JSON.parse(JSON.stringify(response.data)))
+                })
+                .catch(function (error) {
+                    console.log("UrbanDict:", error)
+                })
+        }
+        onQueryResult: {
+            console.log(JSON.stringify(result))
+        }
+
+        Component.onCompleted: {
+            console.log("UrbanDict: loaded")
+            qd.dictService.registerDict(urbanDict)
+        }
     }
 
     Connections {
@@ -73,18 +91,6 @@ ApplicationWindow {
 
     Component.onCompleted: {
         console.log(qd, qd.ocrEngine, qd.ocrEngine.isRunning())
-        console.log("Start request")
-        axios.get("http://localhost:3000/hack")
-            .then(function (response) {
-                console.log("Response", response.status)
-                /* console.log(JSON.stringify(response.data)) */
-                console.log(response.data["list"][0]["definition"])
-            })
-            .catch(function (error) {
-                console.log("Error")
-            })
-            .then(function() {
-                console.log("Finally")
-            })
+        /* urbanDict.query("hack") */
     }
 }

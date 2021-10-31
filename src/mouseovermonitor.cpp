@@ -12,6 +12,10 @@ MouseOverMonitor::MouseOverMonitor(QObject *parent)
     , m_timer(new QTimer(this))
 {
     connect(m_timer, &QTimer::timeout, this, &MouseOverMonitor::timeout);
+    connect(QuickDict::instance()->ocrEngine(),
+            &OcrEngine::extractTextResult,
+            this,
+            &MouseOverMonitor::onExtractTextResult);
 }
 
 MouseOverMonitor::~MouseOverMonitor() {}
@@ -55,4 +59,9 @@ void MouseOverMonitor::timeout()
         interval = m_busyInterval;
     }
     m_timer->start(interval);
+}
+
+void MouseOverMonitor::onExtractTextResult(const OcrResult &result)
+{
+    emit query(result.text);
 }

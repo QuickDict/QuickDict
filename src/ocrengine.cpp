@@ -13,6 +13,7 @@ OcrEngine::OcrEngine()
 {
     m_ocrWorker->moveToThread(&m_workerThread); // OcrWorker cannot have a parent
     connect(this, &OcrEngine::extractText, m_ocrWorker, &OcrWorker::doExtractText);
+    connect(m_ocrWorker, &OcrWorker::extractTextResult, this, &OcrEngine::extractTextResult);
 }
 
 OcrEngine::~OcrEngine()

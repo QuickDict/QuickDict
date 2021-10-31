@@ -1,6 +1,8 @@
 #include "configcenter.h"
 #include "dictinterface.h"
+#include "dictservice.h"
 #include "mainwindow.h"
+#include "monitorservice.h"
 #include "mouseovermonitor.h"
 #include "ocrengine.h"
 #include "quickdict.h"
@@ -28,6 +30,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
 int main(int argc, char *argv[])
 {
+    qRegisterMetaType<OcrResult>("OcrResult");
     qmlRegisterType<DictInterface>("com.quickdict.components", 1, 0, "Dict");
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -63,19 +66,29 @@ int main(int argc, char *argv[])
     dir = QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
     dir.mkdir(app.applicationName());
     dir.cd(app.applicationName());
-    ConfigCenter *configCenter = new ConfigCenter(dir.absoluteFilePath("settings.ini"));
-    QuickDict::instance()->setConfigCenter(configCenter);
+    ConfigCenter configCenter(dir.absoluteFilePath("settings.ini"));
+    QuickDict::instance()->setConfigCenter(&configCenter);
 
-    OcrEngine *ocrEngine = new OcrEngine;
-    QuickDict::instance()->setOcrEngine(ocrEngine);
+    OcrEngine ocrEngine;
+    QuickDict::instance()->setOcrEngine(&ocrEngine);
+
+    MonitorService monitorService;
+    QuickDict::instance()->setMonitorService(&monitorService);
+
     MouseOverMonitor monitor;
+    monitorService.registerMonitor(&monitor);
     auto hotkey = new QHotkey(QKeySequence("Alt+Q"), true, &app);
     qCDebug(qd) << "Is Registered: " << hotkey->isRegistered();
     QObject::connect(hotkey, &QHotkey::activated, qApp, [&]() {
         monitor.toggle();
-        ocrEngine->toggle();
+        ocrEngine.toggle();
         qCDebug(qd) << "MouseOverMonitor: " << monitor.isEnabled();
     });
+
+    DictService dictService;
+    QuickDict::instance()->setDictService(&dictService);
+
+    QObject::connect(&monitorService, &MonitorService::query, &dictService, &DictService::query);
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/home.qml"));
@@ -96,7 +109,7 @@ int main(int argc, char *argv[])
 
     int ret = app.exec();
 
-    ocrEngine->stop();
+    ocrEngine.stop();
     logFile.close();
 
     return ret;

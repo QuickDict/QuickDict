@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="QuickDict-32x32.png">resources/images/QuickDict-32x32.png</file>
+    </qresource>
+</RCC>

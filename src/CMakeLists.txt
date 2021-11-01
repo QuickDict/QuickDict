@@ -58,6 +58,7 @@ set(PROJECT_SOURCES
         quickdict.cpp
         quickdict.h
         qml.qrc
+        res.qrc
         ${TS_FILES}
 )
 

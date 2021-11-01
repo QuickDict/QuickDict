@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import Qt.labs.platform 1.1
 import com.quickdict.components 1.0
 import "axios.min.js" as Axios
 
@@ -83,6 +84,8 @@ ApplicationWindow {
         id: dictdDict
         onQuery: {
             url = "https://dict.org/bin/Dict?Form=Dict2&Database=*&Query=" + text
+            window.show()
+            window.raise()
             window.requestActivate()
         }
 
@@ -92,6 +95,27 @@ ApplicationWindow {
             url = "https://dict.org/bin/Dict?Form=Dict2&Database=*"
         }
         property url url
+    }
+
+    SystemTrayIcon {
+        id: systemTrayIcon
+        visible: true
+        icon.source: "qrc:/images/QuickDict-32x32.png"
+
+        menu: Menu {
+            MenuItem {
+                text: qsTr("Show")
+                onTriggered: {
+                    window.show()
+                    window.raise()
+                    window.requestActivate()
+                }
+            }
+            MenuItem {
+                text: qsTr("Quit")
+                onTriggered: Qt.quit()
+            }
+        }
     }
 
     Connections {

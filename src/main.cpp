@@ -1,3 +1,4 @@
+#include "clipboardmonitor.h"
 #include "configcenter.h"
 #include "dictinterface.h"
 #include "dictservice.h"
@@ -75,14 +76,24 @@ int main(int argc, char *argv[])
     MonitorService monitorService;
     QuickDict::instance()->setMonitorService(&monitorService);
 
-    MouseOverMonitor monitor;
-    monitorService.registerMonitor(&monitor);
-    auto hotkey = new QHotkey(QKeySequence("Alt+Q"), true, &app);
-    qCDebug(qd) << "Is Registered: " << hotkey->isRegistered();
-    QObject::connect(hotkey, &QHotkey::activated, qApp, [&]() {
-        monitor.toggle();
+    ClipboardMonitor clipboardMonitor;
+    monitorService.registerMonitor(&clipboardMonitor);
+    QHotkey clipboardMonitorHotkey(QKeySequence("Alt+Q"), true, &app);
+    qCDebug(qd) << "Is Registered: " << clipboardMonitorHotkey.isRegistered();
+    QObject::connect(&clipboardMonitorHotkey, &QHotkey::activated, qApp, [&clipboardMonitor]() {
+        clipboardMonitor.toggle();
+        qCInfo(qd) << "ClipboardMonitor: " << clipboardMonitor.isEnabled();
+    });
+    clipboardMonitor.setEnabled();
+
+    MouseOverMonitor mouseOverMonitor;
+    monitorService.registerMonitor(&mouseOverMonitor);
+    QHotkey mouseOverMonitorHotkey(QKeySequence("Alt+O"), true, &app);
+    qCDebug(qd) << "Is Registered: " << mouseOverMonitorHotkey.isRegistered();
+    QObject::connect(&mouseOverMonitorHotkey, &QHotkey::activated, qApp, [&mouseOverMonitor, &ocrEngine]() {
+        mouseOverMonitor.toggle();
         ocrEngine.toggle();
-        qCDebug(qd) << "MouseOverMonitor: " << monitor.isEnabled();
+        qCInfo(qd) << "MouseOverMonitor: " << mouseOverMonitor.isEnabled();
     });
 
     DictService dictService;

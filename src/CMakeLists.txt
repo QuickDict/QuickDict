@@ -39,6 +39,8 @@ set(PROJECT_SOURCES
         monitorinterface.h
         mouseovermonitor.cpp
         mouseovermonitor.h
+        clipboardmonitor.cpp
+        clipboardmonitor.h
         monitorservice.cpp
         monitorservice.h
         dictinterface.cpp

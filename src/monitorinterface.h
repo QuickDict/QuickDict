@@ -30,7 +30,7 @@ public:
     inline State state() const { return m_state; }
 
 Q_SIGNALS:
-    void stateChanged(State state);
+    void stateChanged(MonitorInterface::State state);
     void query(const QString &text);
 
 protected:

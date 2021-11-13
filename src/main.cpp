@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
     app.setOrganizationName("QuickDict");
     app.setOrganizationDomain("https://github.com/QuickDict/QuickDict");
     app.setApplicationName("QuickDict");
+    app.setWindowIcon(QIcon(":/images/QuickDict-32x32.png"));
 
     QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation));
     if (!dir.mkpath(dir.absolutePath()))

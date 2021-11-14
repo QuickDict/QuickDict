@@ -19,7 +19,7 @@ find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Quick WebEngineWidgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Quick WebEngineWidgets LinguistTools REQUIRED)
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED WindowSystem)
+find_package(KF5 ${KF5_MIN_VERSION} OPTIONAL_COMPONENTS WindowSystem QUIET)
 find_package(PkgConfig REQUIRED)
 find_package(OpenCV REQUIRED)
 pkg_search_module(TESSERACT REQUIRED tesseract)
@@ -67,6 +67,13 @@ set(PROJECT_SOURCES
         ${TS_FILES}
 )
 
+set(LIBS Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::WebEngineWidgets qhotkey ${OpenCV_LIBS} ${TESSERACT_LIBRARIES} ${LEPTONICA_LIBRARIES})
+
+if(${KF5_FOUND})
+add_compile_definitions(KF5_FOUND)
+list(APPEND LIBS KF5::WindowSystem)
+endif()
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QuickDict
         MANUAL_FINALIZATION
@@ -96,8 +103,7 @@ endif()
 
 target_compile_definitions(QuickDict
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
-target_link_libraries(QuickDict
-  PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::WebEngineWidgets KF5::WindowSystem qhotkey ${OpenCV_LIBS} ${TESSERACT_LIBRARIES} ${LEPTONICA_LIBRARIES})
+target_link_libraries(QuickDict PRIVATE ${LIBS})
 install(TARGETS QuickDict DESTINATION "${CMAKE_INSTALL_PREFIX}/bin")
 
 set_target_properties(QuickDict PROPERTIES

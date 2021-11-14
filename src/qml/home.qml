@@ -8,7 +8,7 @@ ApplicationWindow {
     id: window
     width: 1280
     height: 720
-    color: "transparent"
+    color: Qt.rgba(0, 0, 0, 0.75)
     title: stackView.depth > 1 ? stackView.currentItem.title + qsTr(" - QuickDcit") : qsTr("QuickDcit")
 
     header: ToolBar {

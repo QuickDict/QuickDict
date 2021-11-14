@@ -8,7 +8,9 @@
 #include "ocrengine.h"
 #include "quickdict.h"
 
+#if KF5_FOUND
 #include <KWindowEffects>
+#endif
 #include <QApplication>
 #include <QDir>
 #include <QHotkey>
@@ -121,7 +123,10 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextObject(QuickDict::instance());
     engine.load(url);
     QWindow *window = qobject_cast<QWindow *>(engine.rootObjects().at(0));
+#if KF5_FOUND
+    window->setProperty("color", "transparent");
     KWindowEffects::enableBlurBehind(window);
+#endif
     window->show();
 
     int ret = app.exec();

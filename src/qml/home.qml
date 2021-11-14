@@ -42,6 +42,14 @@ ApplicationWindow {
             anchors.fill: parent
 
             ItemDelegate {
+                text: qsTr("WebView")
+                width: parent.width
+                onClicked: {
+                    stackView.push("WebView.ui.qml")
+                    drawer.close()
+                }
+            }
+            ItemDelegate {
                 text: qsTr("Settings")
                 width: parent.width
                 onClicked: {

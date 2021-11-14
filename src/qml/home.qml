@@ -6,9 +6,9 @@ import "axios.min.js" as Axios
 
 ApplicationWindow {
     id: window
-    width: 640
-    height: 480
-    visible: true
+    width: 1280
+    height: 720
+    color: "transparent"
     title: stackView.depth > 1 ? stackView.currentItem.title + qsTr(" - QuickDcit") : qsTr("QuickDcit")
 
     header: ToolBar {

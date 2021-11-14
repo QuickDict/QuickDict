@@ -8,6 +8,7 @@
 #include "ocrengine.h"
 #include "quickdict.h"
 
+#include <KWindowEffects>
 #include <QApplication>
 #include <QDir>
 #include <QHotkey>
@@ -15,6 +16,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QStandardPaths>
+#include <QWindow>
 
 static QFile logFile;
 
@@ -118,6 +120,9 @@ int main(int argc, char *argv[])
     // register `setTimeout` in js engine
     engine.rootContext()->setContextObject(QuickDict::instance());
     engine.load(url);
+    QWindow *window = qobject_cast<QWindow *>(engine.rootObjects().at(0));
+    KWindowEffects::enableBlurBehind(window);
+    window->show();
 
     int ret = app.exec();
 

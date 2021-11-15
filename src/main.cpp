@@ -69,6 +69,8 @@ int main(int argc, char *argv[])
     QLoggingCategory::setFilterRules("qd.*=true");
     // qInstallMessageHandler(messageHandler);
 
+    QuickDict::createInstance();
+
     dir = QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
     dir.mkdir(app.applicationName());
     dir.cd(app.applicationName());

@@ -8,8 +8,8 @@ import "axios.min.js" as Axios
 ApplicationWindow {
     id: window
     title: stackView.depth > 1 ? stackView.currentItem.title + qsTr(" - QuickDcit") : qsTr("QuickDcit")
-    width: 1280
-    height: 720
+    width: dp(280)
+    height: dp(400)
     color: "#f6f3ed"
 
     header: ToolBar {

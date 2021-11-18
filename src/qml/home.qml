@@ -175,7 +175,9 @@ ApplicationWindow {
         id: mockDict
 
         onQuery: {
-            Data.sources.forEach(source => mockDict.queryResult(source))
+            for (const source of Data.sources) {
+                // mockDict.queryResult(source)
+            }
         }
 
         Component.onCompleted: {

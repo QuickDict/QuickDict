@@ -28,10 +28,8 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
     static QMutex mutex;
     QMutexLocker lock(&mutex);
 
-    if (logFile.isOpen()) {
-        logFile.write(qFormatLogMessage(type, context, message).toUtf8().append('\n'));
-        logFile.flush();
-    }
+    logFile.write(qFormatLogMessage(type, context, message).toUtf8().append('\n'));
+    logFile.flush();
 }
 
 int main(int argc, char *argv[])
@@ -50,13 +48,6 @@ int main(int argc, char *argv[])
     app.setApplicationName("QuickDict");
     app.setWindowIcon(QIcon(":/images/QuickDict-32x32.png"));
 
-    QDir dir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation));
-    dir.mkdir(app.applicationName());
-    dir.cd(app.applicationName());
-    logFile.setFileName(dir.absoluteFilePath("log"));
-    if (!logFile.open(QIODevice::Append | QIODevice::Text))
-        qCWarning(qd) << "Cannot open file:" << logFile.fileName();
-
     QString messagePattern =
 #ifdef QT_DEBUG
         "[%{time yyyy-MM-dd h:mm:ss.zzz t} "
@@ -69,13 +60,25 @@ int main(int argc, char *argv[])
 #endif
     qSetMessagePattern(messagePattern);
     QLoggingCategory::setFilterRules("qd.*=true");
-    // qInstallMessageHandler(messageHandler);
+
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation));
+    if (!dir.exists(app.applicationName()) && !dir.mkdir(app.applicationName()))
+        qCWarning(qd) << "Cannot make dir:" << dir.absoluteFilePath(app.applicationName());
+    else {
+        dir.cd(app.applicationName());
+        logFile.setFileName(dir.absoluteFilePath("log"));
+        if (!logFile.open(QIODevice::Append | QIODevice::Text))
+            qCWarning(qd) << "Cannot open file:" << logFile.fileName();
+        // else
+        //     qInstallMessageHandler(messageHandler);
+    }
 
     QuickDict::createInstance();
     QuickDict::instance()->setUiScale(1.5);
 
     dir = QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
-    dir.mkdir(app.applicationName());
+    if (!dir.exists(app.applicationName()) && !dir.mkdir(app.applicationName()))
+        qCWarning(qd) << "Cannot make dir:" << dir.absoluteFilePath(app.applicationName());
     dir.cd(app.applicationName());
     ConfigCenter configCenter(dir.absoluteFilePath("settings.ini"));
     QuickDict::instance()->setConfigCenter(&configCenter);

@@ -29,7 +29,7 @@ ApplicationWindow {
         }
         TextField {
             id: textField
-            placeholderText: qsTr("type word to look up...")
+            placeholderText: qsTr("look up...")
             visible: stackView.depth <= 1
             anchors {
                 left: toolButton.right
@@ -112,9 +112,6 @@ ApplicationWindow {
                 .catch(function (error) {
                     console.log("UrbanDict:", error)
                 })
-        }
-        onQueryResult: {
-            /* console.log(JSON.stringify(result)) */
         }
 
         Component.onCompleted: {
@@ -260,9 +257,6 @@ ApplicationWindow {
         }
 
         textField.forceActiveFocus()
-
-        console.log(qd, qd.ocrEngine, qd.ocrEngine.isRunning())
-        /* urbanDict.query("hack") */
     }
 
     function showOnTop() {

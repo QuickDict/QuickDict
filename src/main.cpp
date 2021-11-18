@@ -92,7 +92,9 @@ int main(int argc, char *argv[])
     ClipboardMonitor clipboardMonitor;
     monitorService.registerMonitor(&clipboardMonitor);
     QHotkey clipboardMonitorHotkey(QKeySequence("Alt+Q"), true, &app);
-    qCDebug(qd) << "Is Registered: " << clipboardMonitorHotkey.isRegistered();
+    if (!clipboardMonitorHotkey.isRegistered())
+        qCWarning(qd) << QString("Register ClipboardMonitor shortcut %1 failed")
+                             .arg(clipboardMonitorHotkey.shortcut().toString());
     QObject::connect(&clipboardMonitorHotkey, &QHotkey::activated, qApp, [&clipboardMonitor]() {
         clipboardMonitor.toggle();
         qCInfo(qd) << "ClipboardMonitor: " << clipboardMonitor.isEnabled();
@@ -102,7 +104,9 @@ int main(int argc, char *argv[])
     MouseOverMonitor mouseOverMonitor;
     monitorService.registerMonitor(&mouseOverMonitor);
     QHotkey mouseOverMonitorHotkey(QKeySequence("Alt+O"), true, &app);
-    qCDebug(qd) << "Is Registered: " << mouseOverMonitorHotkey.isRegistered();
+    if (!mouseOverMonitorHotkey.isRegistered())
+        qCWarning(qd) << QString("Register MouseOverMonitor shortcut %1 failed")
+                             .arg(mouseOverMonitorHotkey.shortcut().toString());
     QObject::connect(&mouseOverMonitorHotkey, &QHotkey::activated, qApp, [&mouseOverMonitor, &ocrEngine]() {
         mouseOverMonitor.toggle();
         ocrEngine.toggle();

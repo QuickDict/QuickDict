@@ -2,22 +2,23 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import Qt.labs.platform 1.1
 import com.quickdict.components 1.0
+import "data.js" as Data
 import "axios.min.js" as Axios
 
 ApplicationWindow {
     id: window
+    title: stackView.depth > 1 ? stackView.currentItem.title + qsTr(" - QuickDcit") : qsTr("QuickDcit")
     width: 1280
     height: 720
-    color: Qt.rgba(0, 0, 0, 0.75)
-    title: stackView.depth > 1 ? stackView.currentItem.title + qsTr(" - QuickDcit") : qsTr("QuickDcit")
+    color: "#f6f3ed"
 
     header: ToolBar {
+        font.pixelSize: sp(20)
         contentHeight: toolButton.implicitHeight
 
         ToolButton {
             id: toolButton
             text: stackView.depth > 1 ? "\u25C0" : "\u2630"
-            font.pixelSize: Qt.application.font.pixelSize * 1.6
             onClicked: {
                 if (stackView.depth > 1) {
                     stackView.pop()
@@ -26,17 +27,35 @@ ApplicationWindow {
                 }
             }
         }
+        TextField {
+            id: textField
+            placeholderText: qsTr("type word to look up...")
+            anchors {
+                left: toolButton.right
+                right: parent.right
+                margins: dp(20)
+            }
 
-        Label {
-            text: stackView.currentItem.title
-            anchors.centerIn: parent
+            Monitor {
+                id: textFieldMonitor
+
+                Component.onCompleted: {
+                    qd.monitorService.registerMonitor(textFieldMonitor)
+                    console.log("TextFieldMonitor: loaded")
+                }
+            }
+
+            onAccepted: {
+                textFieldMonitor.query(text)
+            }
         }
     }
 
     Drawer {
         id: drawer
-        width: window.width * 0.33
+        width: dp(256)
         height: window.height
+        font.pixelSize: sp(14)
 
         Column {
             anchors.fill: parent
@@ -83,8 +102,8 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            console.log("UrbanDict: loaded")
             qd.dictService.registerDict(urbanDict)
+            console.log("UrbanDict: loaded")
         }
     }
 
@@ -98,11 +117,27 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            console.log("DictdDict: loaded")
             qd.dictService.registerDict(dictdDict)
+            console.log("DictdDict: loaded")
             url = "https://dict.org/bin/Dict?Form=Dict2&Database=*"
         }
         property url url
+    }
+
+    Dict {
+        id: mockDict
+
+        onQuery: {
+            Data.sources.forEach(source => mockDict.queryResult(source))
+            window.show()
+            window.raise()
+            window.requestActivate()
+        }
+
+        Component.onCompleted: {
+            qd.dictService.registerDict(mockDict)
+            console.log("MockDict: loaded")
+        }
     }
 
     SystemTrayIcon {
@@ -137,6 +172,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        textField.forceActiveFocus()
         console.log(qd, qd.ocrEngine, qd.ocrEngine.isRunning())
         /* urbanDict.query("hack") */
     }

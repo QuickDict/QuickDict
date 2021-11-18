@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Page {
+    background: null
     title: qsTr("Settings")
 
     Label {
@@ -13,6 +14,7 @@ Page {
         id: text
         textFormat: Text.RichText
         text: "See the <a href=\"http://qt-project.org\">Qt Project website</a>."
+        font.pixelSize: sp(20)
         readOnly: true
         selectByMouse: true
 

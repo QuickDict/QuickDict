@@ -34,7 +34,7 @@ Q_SIGNALS:
     void query(const QString &text);
 
 protected:
-    virtual void doSetState(State state) = 0;
+    virtual void doSetState(State state) {};
 
 private:
     State m_state = State::Disabled;

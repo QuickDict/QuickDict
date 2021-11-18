@@ -3,6 +3,7 @@
 #include "dictinterface.h"
 #include "dictservice.h"
 #include "mainwindow.h"
+#include "monitorinterface.h"
 #include "monitorservice.h"
 #include "mouseovermonitor.h"
 #include "ocrengine.h"
@@ -36,6 +37,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 int main(int argc, char *argv[])
 {
     qRegisterMetaType<OcrResult>("OcrResult");
+    qmlRegisterType<MonitorInterface>("com.quickdict.components", 1, 0, "Monitor");
     qmlRegisterType<DictInterface>("com.quickdict.components", 1, 0, "Dict");
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -70,6 +72,7 @@ int main(int argc, char *argv[])
     // qInstallMessageHandler(messageHandler);
 
     QuickDict::createInstance();
+    QuickDict::instance()->setUiScale(1.5);
 
     dir = QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
     dir.mkdir(app.applicationName());
@@ -126,7 +129,7 @@ int main(int argc, char *argv[])
     engine.load(url);
     QWindow *window = qobject_cast<QWindow *>(engine.rootObjects().at(0));
 #if KF5_FOUND
-    window->setProperty("color", "transparent");
+    // window->setProperty("color", "transparent");
     KWindowEffects::enableBlurBehind(window);
 #endif
     window->show();

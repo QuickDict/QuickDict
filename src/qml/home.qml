@@ -111,9 +111,6 @@ ApplicationWindow {
         id: dictdDict
         onQuery: {
             url = "https://dict.org/bin/Dict?Form=Dict2&Database=*&Query=" + text
-            window.show()
-            window.raise()
-            window.requestActivate()
         }
 
         Component.onCompleted: {
@@ -129,9 +126,6 @@ ApplicationWindow {
 
         onQuery: {
             Data.sources.forEach(source => mockDict.queryResult(source))
-            window.show()
-            window.raise()
-            window.requestActivate()
         }
 
         Component.onCompleted: {
@@ -149,15 +143,21 @@ ApplicationWindow {
             MenuItem {
                 text: qsTr("Show")
                 onTriggered: {
-                    window.show()
-                    window.raise()
-                    window.requestActivate()
+                    showOnTop()
+                    textField.forceActiveFocus()
+                    textField.selectAll()
                 }
             }
             MenuItem {
                 text: qsTr("Quit")
                 onTriggered: Qt.quit()
             }
+        }
+
+        onActivated: {
+            showOnTop()
+            textField.forceActiveFocus()
+            textField.selectAll()
         }
     }
 
@@ -171,9 +171,23 @@ ApplicationWindow {
         }
     }
 
+    Connections {
+        target: qd.dictService
+        function onQuery(text) {
+            textField.text = text
+            showOnTop()
+        }
+    }
+
     Component.onCompleted: {
         textField.forceActiveFocus()
         console.log(qd, qd.ocrEngine, qd.ocrEngine.isRunning())
         /* urbanDict.query("hack") */
+    }
+
+    function showOnTop() {
+        window.show()
+        window.raise()
+        window.requestActivate()
     }
 }

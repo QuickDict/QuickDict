@@ -30,6 +30,7 @@ ApplicationWindow {
         TextField {
             id: textField
             placeholderText: qsTr("type word to look up...")
+            visible: stackView.depth <= 1
             anchors {
                 left: toolButton.right
                 right: parent.right
@@ -48,6 +49,11 @@ ApplicationWindow {
             onAccepted: {
                 textFieldMonitor.query(text)
             }
+        }
+        Label {
+            text: stackView.currentItem.title
+            visible: stackView.depth > 1
+            anchors.centerIn: parent
         }
     }
 

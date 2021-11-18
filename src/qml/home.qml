@@ -168,6 +168,14 @@ ApplicationWindow {
         }
     }
 
+    Timer {
+        // use timer to reduce the number of save operations
+        id: saveGeometryTimer
+        interval: 500
+
+        onTriggered: saveGeometry()
+    }
+
     Connections {
         target: qd.ocrEngine
         function onStarted() {
@@ -186,8 +194,22 @@ ApplicationWindow {
         }
     }
 
+    onXChanged: startSaveGeometryTimer()
+    onYChanged: startSaveGeometryTimer()
+    onWidthChanged: startSaveGeometryTimer()
+    onHeightChanged: startSaveGeometryTimer()
+
     Component.onCompleted: {
+        let geometry = qd.configCenter.value("geometry")
+        if (typeof geometry !== "undefined") {
+            window.x = geometry.x
+            window.y = geometry.y
+            window.width = geometry.width
+            window.height = geometry.height
+        }
+
         textField.forceActiveFocus()
+
         console.log(qd, qd.ocrEngine, qd.ocrEngine.isRunning())
         /* urbanDict.query("hack") */
     }
@@ -196,5 +218,13 @@ ApplicationWindow {
         window.show()
         window.raise()
         window.requestActivate()
+    }
+
+    function saveGeometry() {
+        qd.configCenter.setValue("geometry", Qt.rect(window.x, window.y, window.width, window.height))
+    }
+
+    function startSaveGeometryTimer() {
+        saveGeometryTimer.restart()
     }
 }

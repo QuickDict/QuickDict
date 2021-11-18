@@ -18,11 +18,11 @@ public:
      * @param key a key starts with '/' means it is absolute in group.
      * @param store stores defaultValue in key if such key doesn't exist and if store is true.
      */
-    QVariant value(const QString &key, const QVariant &defaultValue = QVariant(), bool store = false);
+    Q_INVOKABLE QVariant value(const QString &key, const QVariant &defaultValue = QVariant(), bool store = false);
     /**
      * @param key a key starts with '/' means it is absolute in group.
      */
-    void setValue(const QString &key, const QVariant &value);
+    Q_INVOKABLE void setValue(const QString &key, const QVariant &value);
 
 Q_SIGNALS:
     void valueChanged(const QString &key, const QVariant &value);

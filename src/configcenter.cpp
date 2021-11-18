@@ -13,7 +13,7 @@ QVariant ConfigCenter::value(const QString &key, const QVariant &defaultValue, b
 {
     QMutexLocker locker(&m_mutex);
     QStringList groupSplit = m_config.group().split(Qt::SkipEmptyParts);
-    if (key.startsWith('/')) {
+    if (key.startsWith('/') && !m_config.group().isEmpty()) {
         for (const auto &_ : qAsConst(groupSplit))
             m_config.endGroup();
     }
@@ -24,7 +24,7 @@ QVariant ConfigCenter::value(const QString &key, const QVariant &defaultValue, b
         QString absoluteKey = "/" + (groupSplit + key.split(Qt::SkipEmptyParts)).join('/');
         emit valueChanged(absoluteKey, defaultValue);
     }
-    if (key.startsWith('/')) {
+    if (key.startsWith('/') && !m_config.group().isEmpty()) {
         for (const auto &group : qAsConst(groupSplit))
             m_config.beginGroup(group);
     }
@@ -35,7 +35,7 @@ void ConfigCenter::setValue(const QString &key, const QVariant &value)
 {
     QMutexLocker locker(&m_mutex);
     QStringList groupSplit = m_config.group().split(Qt::SkipEmptyParts);
-    if (key.startsWith('/')) {
+    if (key.startsWith('/') && !m_config.group().isEmpty()) {
         for (const auto &_ : qAsConst(groupSplit))
             m_config.endGroup();
     }
@@ -43,7 +43,7 @@ void ConfigCenter::setValue(const QString &key, const QVariant &value)
     m_config.sync();
     QString absoluteKey = "/" + (groupSplit + key.split(Qt::SkipEmptyParts)).join('/');
     emit valueChanged(absoluteKey, value);
-    if (key.startsWith('/')) {
+    if (key.startsWith('/') && !m_config.group().isEmpty()) {
         for (const auto &group : qAsConst(groupSplit))
             m_config.beginGroup(group);
     }

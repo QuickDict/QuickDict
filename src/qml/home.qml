@@ -146,6 +146,7 @@ ApplicationWindow {
         icon.source: "qrc:/images/QuickDict-32x32.png"
 
         menu: Menu {
+            visible: false
             MenuItem {
                 text: qsTr("Show")
                 onTriggered: {

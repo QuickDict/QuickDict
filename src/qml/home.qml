@@ -212,6 +212,11 @@ ApplicationWindow {
         }
     }
 
+    FontLoader {
+        id: aliceInWonderlandFont
+        source: "qrc:/fonts/Alice_in_Wonderland_3.ttf"
+    }
+
     Timer {
         // use timer to reduce the number of save operations
         id: saveGeometryTimer

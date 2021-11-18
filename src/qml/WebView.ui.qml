@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtWebEngine 1.10
 
 Page {
+    id: webViewPage
     title: qsTr("WebView")
 
     WebEngineView {

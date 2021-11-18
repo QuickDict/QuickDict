@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 Page {
+    id: mainPage
     background: null
     title: qsTr("QuickDcit")
 
@@ -37,6 +38,7 @@ Page {
                             font.bold: true
                             font.italic: true
                             font.pixelSize: sp(20)
+                            font.family: aliceInWonderlandFont.name
                             color: Qt.rgba(0, 0, 0, 0.6)
                         }
                         Rectangle {

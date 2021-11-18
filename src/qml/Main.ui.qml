@@ -67,6 +67,7 @@ Page {
                         ColumnLayout {
                             Text {
                                 text: modelData.partOfSpeech
+                                visible: modelData.partOfSpeech
                                 font.bold: true
                                 font.pixelSize: sp(12)
                             }

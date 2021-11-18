@@ -93,11 +93,21 @@ ApplicationWindow {
 
     Dict {
         id: urbanDict
+        property url url: "https://api.urbandictionary.com/v0/define?term="
+
         onQuery: {
-            /* json-server with https://www.urbandictionary.com/define.php?term=hack" */
-            axios.get("http://localhost:3000/" + text)
+            axios.get(url + text)
                 .then(function (response) {
-                    urbanDict.queryResult(JSON.parse(JSON.stringify(response.data)))
+                    if (!response.data.list.length)
+                        return
+
+                    let result = {"text": response.data.list[0].word, "engine": "Urban Dictionary"}
+                    let definitions = {"partOfSpeech": "", "list": []}
+                    for (const entry of response.data.list) {
+                        definitions.list.push({"definition": entry.definition, "examples": entry.example})
+                    }
+                    result.definitions = [definitions]
+                    moeDict.queryResult(result)
                 })
                 .catch(function (error) {
                     console.log("UrbanDict:", error)

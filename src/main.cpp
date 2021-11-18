@@ -50,9 +50,9 @@ int main(int argc, char *argv[])
     app.setApplicationName("QuickDict");
     app.setWindowIcon(QIcon(":/images/QuickDict-32x32.png"));
 
-    QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation));
-    if (!dir.mkpath(dir.absolutePath()))
-        qCWarning(qd) << "Cannot make path:" << dir.absolutePath();
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation));
+    dir.mkdir(app.applicationName());
+    dir.cd(app.applicationName());
     logFile.setFileName(dir.absoluteFilePath("log"));
     if (!logFile.open(QIODevice::Append | QIODevice::Text))
         qCWarning(qd) << "Cannot open file:" << logFile.fileName();

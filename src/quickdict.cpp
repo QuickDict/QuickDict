@@ -4,7 +4,7 @@
 #include <QScreen>
 #include <QTimer>
 
-Q_LOGGING_CATEGORY(qd, "qd.main")
+Q_LOGGING_CATEGORY(qd, "qd.default")
 
 QuickDict *QuickDict::_instance = nullptr;
 

@@ -5,7 +5,7 @@
         <file alias="WebView.ui.qml">qml/WebView.ui.qml</file>
         <file alias="Settings.ui.qml">qml/Settings.ui.qml</file>
         <file alias="data.js">qml/data.js</file>
-        <file alias="axios.min.js">../third_party/axios.min.js</file>
+        <file alias="axios.min.js">../third_party/axios/dist/axios.min.js</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>

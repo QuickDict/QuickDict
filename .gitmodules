@@ -1,3 +1,6 @@
 [submodule "src/third_party/QHotkey"]
 	path = third_party/QHotkey
 	url = https://github.com/Skycoder42/QHotkey
+[submodule "third_party/axios"]
+	path = third_party/axios
+	url = https://github.com/axios/axios

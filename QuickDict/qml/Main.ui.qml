@@ -133,6 +133,7 @@ Page {
 
         function onQuery(text) {
             sources = []
+            repeater.model = sources
         }
         function onQueryResult(result) {
             sources.push(result)

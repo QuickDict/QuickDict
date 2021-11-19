@@ -1,7 +1,3 @@
-cmake_minimum_required(VERSION 3.16)
-
-project(QuickDict VERSION 0.2 LANGUAGES CXX)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -29,7 +25,6 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${TESSERACT_INCLUDE_DIRS})
 include_directories(${LEPTONICA_INCLUDE_DIRS})
 
-add_subdirectory(third_party)
 
 set(TS_FILES QuickDict_zh_CN.ts)
 

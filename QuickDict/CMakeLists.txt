@@ -9,21 +9,22 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set (KF5_MIN_VERSION "5.82.0")
-
-find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Quick WebEngineWidgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Quick WebEngineWidgets LinguistTools REQUIRED)
-find_package(KF5 ${KF5_MIN_VERSION} OPTIONAL_COMPONENTS WindowSystem QUIET)
-find_package(PkgConfig REQUIRED)
 find_package(OpenCV REQUIRED)
-pkg_search_module(TESSERACT REQUIRED tesseract)
-pkg_search_module(LEPTONICA REQUIRED lept)
+
+if(WIN32)
+    find_package(Tesseract REQUIRED)
+    find_package(Leptonica REQUIRED)
+else()
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(Tesseract REQUIRED tesseract)
+    pkg_search_module(Leptonica REQUIRED lept)
+endif()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
-include_directories(${TESSERACT_INCLUDE_DIRS})
-include_directories(${LEPTONICA_INCLUDE_DIRS})
+include_directories(${Tesseract_INCLUDE_DIRS})
+include_directories(${Leptonica_INCLUDE_DIRS})
 
 
 set(TS_FILES QuickDict_zh_CN.ts)
@@ -62,11 +63,17 @@ set(PROJECT_SOURCES
         ${TS_FILES}
 )
 
-set(LIBS Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::WebEngineWidgets qhotkey ${OpenCV_LIBS} ${TESSERACT_LIBRARIES} ${LEPTONICA_LIBRARIES})
+set(LIBS Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::WebEngineWidgets qhotkey ${OpenCV_LIBS} ${Tesseract_LIBRARIES} ${Leptonica_LIBRARIES})
 
-if(${KF5_FOUND})
-add_compile_definitions(KF5_FOUND)
-list(APPEND LIBS KF5::WindowSystem)
+set (KF5_MIN_VERSION "5.82.0")
+option(ENABLE_KWIN_BLUR "Enable KWin to blur the background" OFF)
+if(ENABLE_KWIN_BLUR)
+    find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
+    find_package(KF5 ${KF5_MIN_VERSION} OPTIONAL_COMPONENTS WindowSystem QUIET)
+
+    add_compile_definitions(KF5_FOUND)
+    list(APPEND LIBS KF5::WindowSystem)
 endif()
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

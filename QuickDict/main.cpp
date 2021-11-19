@@ -2,14 +2,13 @@
 #include "configcenter.h"
 #include "dictinterface.h"
 #include "dictservice.h"
-#include "mainwindow.h"
 #include "monitorinterface.h"
 #include "monitorservice.h"
 #include "mouseovermonitor.h"
 #include "ocrengine.h"
 #include "quickdict.h"
 
-#if KF5_FOUND
+#if ENABLE_KWIN_BLUR
 #include <KWindowEffects>
 #endif
 #include <QApplication>
@@ -42,6 +41,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
+    // QQmlApplicationEngine requires QAppliction
     QApplication app(argc, argv);
     app.setOrganizationName("QuickDict");
     app.setOrganizationDomain("https://github.com/QuickDict/QuickDict");
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextObject(QuickDict::instance());
     engine.load(url);
     QWindow *window = qobject_cast<QWindow *>(engine.rootObjects().at(0));
-#if KF5_FOUND
+#if ENABLE_KWIN_BLUR
     // window->setProperty("color", "transparent");
     KWindowEffects::enableBlurBehind(window);
 #endif

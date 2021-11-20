@@ -61,7 +61,7 @@ ApplicationWindow {
 
     Drawer {
         id: drawer
-        width: dp(256)
+        width: Math.min(dp(256), 0.6 * window.width)
         height: window.height
         font.pixelSize: sp(14)
 

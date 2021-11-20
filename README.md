@@ -26,3 +26,6 @@ cd QuickDict
 cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=/C/Users/user/vcpkg/scripts/buildsystems/vcpkg.cmake -DOpenCV_DIR=/C/Program\ Files/opencv/build/
 cmake --build build
 ```
+
+## License
+QuickDict is licensed under the GNU General Public License 3 license. See [LICENSE](LICENSE) for details.

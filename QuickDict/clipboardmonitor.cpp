@@ -2,8 +2,11 @@
 #include <QGuiApplication>
 
 ClipboardMonitor::ClipboardMonitor(QObject *parent)
-    : MonitorInterface(tr("ClipboardMonitor"), tr("ClipboardMonitor monitors clipboard text."), parent)
-{}
+    : MonitorInterface(parent)
+{
+    setName(tr("ClipboardMonitor"));
+    setDescription(tr("ClipboardMonitor monitors clipboard text."));
+}
 
 ClipboardMonitor::~ClipboardMonitor() {}
 
@@ -16,6 +19,7 @@ void ClipboardMonitor::doSetState(State state)
         disconnect(clipboard, &QClipboard::changed, this, &ClipboardMonitor::onChanged);
     }
 }
+
 void ClipboardMonitor::onChanged(QClipboard::Mode mode)
 {
     emit query(QGuiApplication::clipboard()->text(mode));

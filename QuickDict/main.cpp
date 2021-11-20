@@ -107,9 +107,8 @@ int main(int argc, char *argv[])
     if (!mouseOverMonitorHotkey.isRegistered())
         qCWarning(qd) << QString("Register MouseOverMonitor shortcut %1 failed")
                              .arg(mouseOverMonitorHotkey.shortcut().toString());
-    QObject::connect(&mouseOverMonitorHotkey, &QHotkey::activated, qApp, [&mouseOverMonitor, &ocrEngine]() {
+    QObject::connect(&mouseOverMonitorHotkey, &QHotkey::activated, qApp, [&mouseOverMonitor]() {
         mouseOverMonitor.toggle();
-        ocrEngine.toggle();
         qCInfo(qd) << "MouseOverMonitor: " << mouseOverMonitor.isEnabled();
     });
 

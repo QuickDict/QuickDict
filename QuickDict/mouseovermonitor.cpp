@@ -8,9 +8,12 @@
 #include <QTimer>
 
 MouseOverMonitor::MouseOverMonitor(QObject *parent)
-    : MonitorInterface(tr("MouseOverMonitor"), tr("MouseOverMonitor monitors text under cursor."), parent)
+    : MonitorInterface(parent)
     , m_timer(new QTimer(this))
 {
+    setName(tr("MouseOverMonitor"));
+    setDescription(tr("MouseOverMonitor monitors text under cursor."));
+
     connect(m_timer, &QTimer::timeout, this, &MouseOverMonitor::timeout);
     connect(QuickDict::instance()->ocrEngine(),
             &OcrEngine::extractTextResult,
@@ -26,8 +29,10 @@ void MouseOverMonitor::doSetState(State state)
         m_previousCursorMoving = true;
         m_previousCursor = QCursor::pos();
         m_timer->start(m_idleInterval);
+        QuickDict::instance()->ocrEngine()->start();
     } else {
         m_timer->stop();
+        QuickDict::instance()->ocrEngine()->stop();
     }
 }
 

@@ -33,6 +33,8 @@ set(SOURCES
     main.cpp
     qimagecvmat.cpp
     qimagecvmat.h
+    interface.cpp
+    interface.h
     monitorinterface.cpp
     monitorinterface.h
     mouseovermonitor.cpp

@@ -11,6 +11,7 @@ public:
     explicit ClipboardMonitor(QObject *parent = nullptr);
     ~ClipboardMonitor();
 
+protected:
     void doSetState(State state) override;
 
 private Q_SLOTS:

@@ -3,7 +3,6 @@
 
 #include "monitorinterface.h"
 #include <QPoint>
-#include <QString>
 
 class OcrResult;
 class QTimer;
@@ -15,12 +14,13 @@ public:
     explicit MouseOverMonitor(QObject *parent = nullptr);
     ~MouseOverMonitor();
 
-    void doSetState(State state) override;
-
-    void setIdleInterval(int interval) { m_idleInterval = interval; };
+    void setIdleInterval(int interval) { m_idleInterval = interval; }
     inline int idleInterval() const { return m_idleInterval; }
-    void setBusyInterval(int interval) { m_busyInterval = interval; };
+    void setBusyInterval(int interval) { m_busyInterval = interval; }
     inline int busyInterval() const { return m_busyInterval; }
+
+protected:
+    void doSetState(State state) override;
 
 private Q_SLOTS:
     void timeout();

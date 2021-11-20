@@ -4,7 +4,7 @@
 #include "monitorinterface.h"
 #include <QPoint>
 
-class OcrResult;
+struct OcrResult;
 class QTimer;
 
 class MouseOverMonitor : public MonitorInterface

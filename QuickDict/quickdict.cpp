@@ -27,7 +27,7 @@ void QuickDict::setTimeout(const QVariant &function, int delay)
     QJSValue callable = function.value<QJSValue>();
     if (callable.isCallable()) {
         // NOTE: `fuction` must be passed to lambda by value!
-        QTimer::singleShot(delay, this, [this, function]() {
+        QTimer::singleShot(delay, this, [function]() {
             QJSValue callable = function.value<QJSValue>();
             callable.call();
         });

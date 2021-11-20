@@ -21,7 +21,7 @@ void OcrWorker::doExtractText(const QImage &image, const QPoint &p, int id)
     Pixa *pixa;
     Boxa *boxa = m_tessApi->GetWords(&pixa);
     int count = boxaGetCount(boxa);
-    int x = p.x(), y = p.y();
+    int px = p.x(), py = p.y();
     QString text;
     QRect rect;
     QList<QRect> rects;
@@ -30,7 +30,7 @@ void OcrWorker::doExtractText(const QImage &image, const QPoint &p, int id)
     for (int i = 0; i < count; ++i) {
         box = boxaGetBox(boxa, i, L_CLONE);
         rects.append(QRect(box->x, box->y, box->w, box->h));
-        if (!rect.isValid() && box->x <= x && box->y <= y && box->x + box->w > x && box->y + box->h > y) {
+        if (!rect.isValid() && box->x <= px && box->y <= py && box->x + box->w > px && box->y + box->h > py) {
             r = QRect(box->x, box->y, box->w, box->h);
             if (r != image.rect()) {
                 rect = r;

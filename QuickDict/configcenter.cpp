@@ -14,8 +14,10 @@ QVariant ConfigCenter::value(const QString &key, const QVariant &defaultValue, b
     QMutexLocker locker(&m_mutex);
     QStringList groupSplit = m_config.group().split(Qt::SkipEmptyParts);
     if (key.startsWith('/') && !m_config.group().isEmpty()) {
-        for (const auto &_ : qAsConst(groupSplit))
+        for (const auto &_ : qAsConst(groupSplit)) {
+            Q_UNUSED(_)
             m_config.endGroup();
+        }
     }
     QVariant v = m_config.value(key, defaultValue);
     if (!m_config.contains(key) && store) {
@@ -36,8 +38,10 @@ void ConfigCenter::setValue(const QString &key, const QVariant &value)
     QMutexLocker locker(&m_mutex);
     QStringList groupSplit = m_config.group().split(Qt::SkipEmptyParts);
     if (key.startsWith('/') && !m_config.group().isEmpty()) {
-        for (const auto &_ : qAsConst(groupSplit))
+        for (const auto &_ : qAsConst(groupSplit)) {
+            Q_UNUSED(_)
             m_config.endGroup();
+        }
     }
     m_config.setValue(key, value);
     m_config.sync();

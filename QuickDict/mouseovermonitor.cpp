@@ -8,7 +8,7 @@
 #include <QTimer>
 
 MouseOverMonitor::MouseOverMonitor(QObject *parent)
-    : MonitorInterface(parent)
+    : MonitorInterface(tr("MouseOverMonitor"), tr("MouseOverMonitor monitors text under cursor."), parent)
     , m_timer(new QTimer(this))
 {
     connect(m_timer, &QTimer::timeout, this, &MouseOverMonitor::timeout);

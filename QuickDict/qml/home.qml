@@ -41,6 +41,8 @@ ApplicationWindow {
 
             Monitor {
                 id: textFieldMonitor
+                name: "TextFieldMonitor"
+                description: "TextFieldMonitor monitors text in TextField."
 
                 Component.onCompleted: {
                     qd.monitorService.registerMonitor(textFieldMonitor)

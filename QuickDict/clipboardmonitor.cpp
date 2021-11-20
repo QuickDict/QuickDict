@@ -2,7 +2,7 @@
 #include <QGuiApplication>
 
 ClipboardMonitor::ClipboardMonitor(QObject *parent)
-    : MonitorInterface(parent)
+    : MonitorInterface(tr("ClipboardMonitor"), tr("ClipboardMonitor monitors clipboard text."), parent)
 {}
 
 ClipboardMonitor::~ClipboardMonitor() {}

@@ -7,18 +7,29 @@
 class MonitorInterface : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged);
+    Q_PROPERTY(QString description READ description WRITE setDescription NOTIFY descriptionChanged);
+
 public:
     enum class State {
         Disabled,
         Enabled,
     };
 
-    explicit MonitorInterface(QObject *parent = nullptr);
+    /**
+     * @see MonitorInterface::setName.
+     */
+    explicit MonitorInterface(const QString &name = QString(),
+                              const QString &description = QString(),
+                              QObject *parent = nullptr);
     virtual ~MonitorInterface();
 
-    QString name() const;
+    QString name() const { return m_name; }
+    /**
+     * @param name name is used as key in config.
+     */
     void setName(const QString &name);
-    QString description() const;
+    QString description() const { return m_description; }
     void setDescription(const QString &description);
 
     void setEnabled(bool enabled = true);
@@ -33,10 +44,16 @@ Q_SIGNALS:
     void stateChanged(MonitorInterface::State state);
     void query(const QString &text);
 
+    void nameChanged(const QString &name);
+    void descriptionChanged(const QString &description);
+
 protected:
-    virtual void doSetState(State state) {};
+    virtual void doSetState(State state){};
 
 private:
+    void saveConfig();
+    void loadConfig();
+
     State m_state = State::Disabled;
     QString m_name;
     QString m_description;

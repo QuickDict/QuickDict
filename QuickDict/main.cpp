@@ -94,7 +94,6 @@ int main(int argc, char *argv[])
         clipboardMonitor.toggle();
         qCInfo(qd) << "ClipboardMonitor: " << clipboardMonitor.enabled();
     });
-    clipboardMonitor.setEnabled();
 
     MouseOverMonitor mouseOverMonitor;
     quickDict->registerMonitor(&mouseOverMonitor);

@@ -48,7 +48,7 @@ Page {
         }
 
         TextEdit {
-            text: qsTr('<a href="https://github.com/QuickDict/QuickDict">QuickDict</a> is licensed under <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>.')
+            text: qsTr('<a href="https://github.com/QuickDict/QuickDict">QuickDict</a> is licensed under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a> license.')
             textFormat: Text.RichText
             font.pixelSize: sp(12)
             wrapMode: Text.WordWrap

@@ -47,7 +47,13 @@ Page {
                         checked: modelData.enabled
                         text: modelData.name
 
-                        onToggled: modelData.toggle()
+                        onToggled: {
+                            modelData.toggle()
+                        }
+                        Component.onCompleted: {
+                            if (text === "TextFieldMonitor")
+                                enabled = false
+                        }
                     }
                 }
             }

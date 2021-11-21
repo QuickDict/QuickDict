@@ -34,6 +34,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 int main(int argc, char *argv[])
 {
     qRegisterMetaType<OcrResult>("OcrResult");
+    // qmlRegisterType<Interface>("com.quickdict.components", 1, 0, "Interface");
     qmlRegisterType<MonitorInterface>("com.quickdict.components", 1, 0, "Monitor");
     qmlRegisterType<DictInterface>("com.quickdict.components", 1, 0, "Dict");
 

@@ -1,7 +1,7 @@
 #include "dictinterface.h"
 
 DictInterface::DictInterface(QObject *parent)
-    : QObject(parent)
+    : Interface("/Dictionary/", parent)
 {}
 
 DictInterface::~DictInterface() {}

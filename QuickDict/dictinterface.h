@@ -1,11 +1,10 @@
 #ifndef DICTINTERFACE_H
 #define DICTINTERFACE_H
 
+#include "interface.h"
 #include <QJsonObject>
-#include <QObject>
-#include <QString>
 
-class DictInterface : public QObject
+class DictInterface : public Interface
 {
     Q_OBJECT
 public:

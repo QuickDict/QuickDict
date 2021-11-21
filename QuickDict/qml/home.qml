@@ -41,8 +41,8 @@ ApplicationWindow {
 
             Monitor {
                 id: textFieldMonitor
-                name: "TextFieldMonitor"
-                description: "TextFieldMonitor monitors text in TextField."
+                name: qsTr("TextFieldMonitor")
+                description: qsTr("TextFieldMonitor monitors text in TextField.")
 
                 Component.onCompleted: {
                     qd.monitorService.registerMonitor(textFieldMonitor)
@@ -97,6 +97,8 @@ ApplicationWindow {
 
     Dict {
         id: urbanDict
+        name: qsTr("UrbanDict")
+        description: qsTr("UrbanDict uses data from https://www.urbandictionary.com.")
         property url url: "https://api.urbandictionary.com/v0/define?term="
 
         onQuery: {
@@ -111,7 +113,7 @@ ApplicationWindow {
                         definitions.list.push({"definition": entry.definition, "examples": entry.example})
                     }
                     result.definitions = [definitions]
-                    moeDict.queryResult(result)
+                    urbanDict.queryResult(result)
                 })
                 .catch(function (error) {
                     console.log("UrbanDict:", error)
@@ -120,18 +122,23 @@ ApplicationWindow {
 
         Component.onCompleted: {
             qd.dictService.registerDict(urbanDict)
+            urbanDict.setEnabled()
             console.log("UrbanDict: loaded")
         }
     }
 
     Dict {
         id: dictdDict
+        name: qsTr("DictdDict")
+        description: qsTr("DictdDict uses data from https://dict.org.")
+
         onQuery: {
             url = "https://dict.org/bin/Dict?Form=Dict2&Database=*&Query=" + text
         }
 
         Component.onCompleted: {
             qd.dictService.registerDict(dictdDict)
+            dictdDict.setEnabled()
             console.log("DictdDict: loaded")
             url = "https://dict.org/bin/Dict?Form=Dict2&Database=*"
         }
@@ -140,7 +147,10 @@ ApplicationWindow {
 
     Dict {
         id: moeDict
+        name: qsTr("MoeDict")
+        description: qsTr("MoeDict uses data from https://www.moedict.tw.")
         property url url: "https://www.moedict.tw/uni/"
+
         onQuery: {
             axios.get(url + text)
                 .then(function (response) {
@@ -168,21 +178,25 @@ ApplicationWindow {
 
         Component.onCompleted: {
             qd.dictService.registerDict(moeDict)
+            moeDict.setEnabled()
             console.log("MoeDict: loaded")
         }
     }
 
     Dict {
         id: mockDict
+        name: qsTr("MockDict")
+        description: qsTr("MockDict uses mockup data.")
 
         onQuery: {
             for (const source of Data.sources) {
-                // mockDict.queryResult(source)
+                mockDict.queryResult(source)
             }
         }
 
         Component.onCompleted: {
             qd.dictService.registerDict(mockDict)
+            // mockDict.setEnabled()
             console.log("MockDict: loaded")
         }
     }

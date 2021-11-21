@@ -71,14 +71,6 @@ ApplicationWindow {
             anchors.fill: parent
 
             ItemDelegate {
-                text: qsTr("WebView")
-                width: parent.width
-                onClicked: {
-                    stackView.push("WebView.ui.qml")
-                    drawer.close()
-                }
-            }
-            ItemDelegate {
                 text: qsTr("Settings")
                 width: parent.width
                 onClicked: {
@@ -108,7 +100,7 @@ ApplicationWindow {
                     if (!response.data.list.length)
                         return
 
-                    let result = {"text": response.data.list[0].word, "engine": "Urban Dictionary"}
+                    let result = {"engine": "Urban Dictionary", "text": response.data.list[0].word, "type": "lookup"}
                     let definitions = {"partOfSpeech": "", "list": []}
                     for (const entry of response.data.list) {
                         definitions.list.push({"definition": entry.definition, "examples": entry.example})
@@ -131,16 +123,33 @@ ApplicationWindow {
         name: qsTr("DictdDict")
         enabled: true
         description: qsTr("DictdDict uses data from https://dict.org.")
+        property url url: "https://dict.org/bin/Dict?Form=Dict2&Database=*&Query="
 
         onQuery: {
-            url = "https://dict.org/bin/Dict?Form=Dict2&Database=*&Query=" + text
+            let result = {"engine": name, "text": text, "type": "translation", "url": url + text}
+            dictdDict.queryResult(result)
         }
 
         Component.onCompleted: {
             qd.registerDict(dictdDict)
-            url = "https://dict.org/bin/Dict?Form=Dict2&Database=*"
         }
-        property url url
+    }
+
+    Dict {
+        id: googleTranslate
+        name: qsTr("Google Translate")
+        enabled: true
+        description: qsTr("DictdDict uses data from https://translate.google.com.")
+        property url url: "https://translate.google.com/#view=home&op=translate&sl=auto&tl=en&text="
+
+        onQuery: {
+            let result = {"engine": name, "text": text, "type": "translation", "url": url + text}
+            googleTranslate.queryResult(result)
+        }
+
+        Component.onCompleted: {
+            qd.registerDict(googleTranslate)
+        }
     }
 
     Dict {
@@ -154,7 +163,7 @@ ApplicationWindow {
             axios.get(url + text)
                 .then(function (response) {
                     let data = response.data.heteronyms[0]
-                    let result = {"text": response.data.title, "engine": "萌典"}
+                    let result = {"engine": "萌典", "text": response.data.title, "type": "lookup"}
                     result.phonetic = [{"text": `/${data.bopomofo}/`}, {"text": `/${data.bopomofo2}/`}]
                     result.definitions = []
                     let definitions = {}
@@ -239,16 +248,6 @@ ApplicationWindow {
     }
 
     Connections {
-        target: qd.ocrEngine
-        function onStarted() {
-            console.log("OcrEngine started!")
-        }
-        function onStopped() {
-            console.log("OcrEngine stopped!")
-        }
-    }
-
-    Connections {
         target: qd
         function onQuery(text) {
             textField.text = text
@@ -263,7 +262,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         let geometry = qd.configCenter.value("geometry")
-        if (typeof geometry !== "undefined") {
+        if (geometry) {
             window.x = geometry.x
             window.y = geometry.y
             window.width = geometry.width

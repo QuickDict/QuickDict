@@ -2,7 +2,8 @@
     <qresource prefix="/">
         <file alias="home.qml">qml/home.qml</file>
         <file alias="Main.ui.qml">qml/Main.ui.qml</file>
-        <file alias="WebView.ui.qml">qml/WebView.ui.qml</file>
+        <file alias="Lookup.ui.qml">qml/Lookup.ui.qml</file>
+        <file alias="Translation.ui.qml">qml/Translation.ui.qml</file>
         <file alias="Settings.ui.qml">qml/Settings.ui.qml</file>
         <file alias="data.js">qml/data.js</file>
         <file alias="axios.min.js">../third_party/axios/dist/axios.min.js</file>

@@ -2,7 +2,7 @@ var sources =
 [
   {
     "text": "record",
-    "type": "word",
+    "type": "lookup",
     "sl": "en-US",
     "dl": "en-US",
     "engine": "WordNet (mockup)",
@@ -133,7 +133,7 @@ var sources =
 
   {
     "text": "record",
-    "type": "word",
+    "type": "lookup",
     "sl": "en-US",
     "dl": "en-US",
     "engine": "Oxford Dictionary (mockup)",

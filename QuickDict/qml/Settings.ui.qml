@@ -42,7 +42,7 @@ Page {
                 }
 
                 Repeater {
-                    model: qd.monitors
+                    model: qd.monitors.sort((first, second) => first.name.localeCompare(second.name))
                     delegate: CheckBox {
                         checked: modelData.enabled
                         text: modelData.name
@@ -71,7 +71,7 @@ Page {
                 }
 
                 Repeater {
-                    model: qd.dicts
+                    model: qd.dicts.sort((first, second) => first.name.localeCompare(second.name))
                     delegate: CheckBox {
                         checked: modelData.enabled
                         text: modelData.name

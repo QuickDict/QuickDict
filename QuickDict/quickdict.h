@@ -16,6 +16,8 @@ class QuickDict : public QObject
     Q_OBJECT
     Q_PROPERTY(QObject *ocrEngine READ ocrEngine CONSTANT);
     Q_PROPERTY(QObject *configCenter READ configCenter CONSTANT);
+    Q_PROPERTY(QList<QObject *> monitors READ monitors NOTIFY monitorsChanged);
+    Q_PROPERTY(QList<QObject *> dicts READ dicts NOTIFY dictsChanged);
     Q_PROPERTY(qreal dpScale READ dpScale WRITE setDpScale NOTIFY dpScaleChanged);
     Q_PROPERTY(qreal spScale READ spScale WRITE setSpScale NOTIFY spScaleChanged);
     Q_PROPERTY(qreal uiScale READ uiScale WRITE setUiScale NOTIFY uiScaleChanged);
@@ -47,13 +49,15 @@ public:
     Q_SIGNAL void uiScaleChanged();
 
     Q_INVOKABLE void registerMonitor(MonitorService *monitor);
-    Q_INVOKABLE QList<MonitorService *> monitors() const { return m_monitors; }
+    QList<QObject *> monitors() const;
     Q_INVOKABLE void registerDict(DictService *dict);
-    Q_INVOKABLE QList<DictService *> dicts() const { return m_dicts; }
+    QList<QObject *> dicts() const;
 
 Q_SIGNALS:
     void query(const QString &text);
     void queryResult(const QJsonObject &result);
+    void monitorsChanged();
+    void dictsChanged();
 
 private Q_SLOTS:
     void onMonitorEnabledChanged(bool enabled);

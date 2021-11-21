@@ -183,7 +183,7 @@ ApplicationWindow {
     Dict {
         id: mockDict
         name: qsTr("MockDict")
-        enabled: true
+        enabled: false
         description: qsTr("MockDict uses mockup data.")
 
         onQuery: {

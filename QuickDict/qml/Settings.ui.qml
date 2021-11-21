@@ -1,25 +1,85 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
 Page {
     id: settingsPage
     background: null
     title: qsTr("Settings")
 
-    Label {
-        text: qsTr("You are on Settings page.")
-        anchors.centerIn: parent
-    }
+    ScrollView {
+        anchors.fill: parent
+        contentWidth: parent.width
+        contentHeight: layout.implicitHeight + dp(16) // with margins
+        clip: true
 
-    TextEdit {
-        id: text
-        textFormat: Text.RichText
-        text: "See the <a href=\"http://qt-project.org\">Qt Project website</a>."
-        font.pixelSize: sp(20)
-        readOnly: true
-        selectByMouse: true
+        ColumnLayout {
+            id: layout
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+                margins: dp(8)
+            }
+            spacing: dp(16)
 
-        onLinkActivated: console.log(link + " link activated")
-        onLinkHovered: console.log(link + " link hovered")
+            ColumnLayout {
+                RowLayout {
+                    spacing: dp(8)
+                    Text {
+                        text: qsTr("Monitors")
+                        font.bold: true
+                        font.italic: true
+                        font.pixelSize: sp(20)
+                        color: Qt.rgba(0, 0, 0, 0.6)
+                    }
+                    Rectangle {
+                        Layout.preferredHeight: 2
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignCenter
+                        color: Qt.rgba(0, 0, 0, 0.38)
+                    }
+                }
+
+                Repeater {
+                    model: qd.monitors
+                    delegate: CheckBox {
+                        checked: modelData.enabled
+                        text: modelData.name
+
+                        onToggled: modelData.toggle()
+                    }
+                }
+            }
+
+            ColumnLayout {
+                RowLayout {
+                    spacing: dp(8)
+                    Text {
+                        text: qsTr("Dictionaries")
+                        font.bold: true
+                        font.italic: true
+                        font.pixelSize: sp(20)
+                        color: Qt.rgba(0, 0, 0, 0.6)
+                    }
+                    Rectangle {
+                        Layout.preferredHeight: 2
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignCenter
+                        color: Qt.rgba(0, 0, 0, 0.38)
+                    }
+                }
+
+                Repeater {
+                    model: qd.dicts
+                    delegate: CheckBox {
+                        checked: modelData.enabled
+                        text: modelData.name
+
+                        onToggled: modelData.toggle()
+                    }
+                }
+            }
+        }
     }
 }

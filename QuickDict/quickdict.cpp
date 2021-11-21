@@ -72,6 +72,7 @@ void QuickDict::registerMonitor(MonitorService *monitor)
     m_monitors.push_back(monitor);
     handleMonitor(monitor, monitor->enabled());
     connect(monitor, &MonitorService::enabledChanged, this, &QuickDict::onMonitorEnabledChanged);
+    emit monitorsChanged();
 }
 
 void QuickDict::registerDict(DictService *dict)
@@ -80,6 +81,23 @@ void QuickDict::registerDict(DictService *dict)
     m_dicts.push_back(dict);
     handleDict(dict, dict->enabled());
     connect(dict, &DictService::enabledChanged, this, &QuickDict::onDictEnabledChanged);
+    emit dictsChanged();
+}
+
+QList<QObject *> QuickDict::monitors() const
+{
+    QList<QObject *> l;
+    for (MonitorService *monitor : m_monitors)
+        l.append(qobject_cast<QObject *>(monitor));
+    return l;
+}
+
+QList<QObject *> QuickDict::dicts() const
+{
+    QList<QObject *> l;
+    for (DictService *dict : m_dicts)
+        l.append(qobject_cast<QObject *>(dict));
+    return l;
 }
 
 void QuickDict::onMonitorEnabledChanged(bool enabled)

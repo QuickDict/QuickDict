@@ -1,10 +1,10 @@
 #ifndef CLIPBOARDMONITOR_H
 #define CLIPBOARDMONITOR_H
 
-#include "monitorinterface.h"
+#include "monitorservice.h"
 #include <QClipboard>
 
-class ClipboardMonitor : public MonitorInterface
+class ClipboardMonitor : public MonitorService
 {
     Q_OBJECT
 public:
@@ -12,7 +12,7 @@ public:
     ~ClipboardMonitor();
 
 protected:
-    void doSetState(State state) override;
+    void doSetEnabled(bool enabled) override;
 
 private Q_SLOTS:
     void onChanged(QClipboard::Mode mode);

@@ -42,11 +42,11 @@ ApplicationWindow {
             Monitor {
                 id: textFieldMonitor
                 name: qsTr("TextFieldMonitor")
+                enabled: true
                 description: qsTr("TextFieldMonitor monitors text in TextField.")
 
                 Component.onCompleted: {
-                    qd.monitorService.registerMonitor(textFieldMonitor)
-                    console.log("TextFieldMonitor: loaded")
+                    qd.registerMonitor(textFieldMonitor)
                 }
             }
 
@@ -98,6 +98,7 @@ ApplicationWindow {
     Dict {
         id: urbanDict
         name: qsTr("UrbanDict")
+        enabled: true
         description: qsTr("UrbanDict uses data from https://www.urbandictionary.com.")
         property url url: "https://api.urbandictionary.com/v0/define?term="
 
@@ -121,15 +122,14 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            qd.dictService.registerDict(urbanDict)
-            urbanDict.setEnabled()
-            console.log("UrbanDict: loaded")
+            qd.registerDict(urbanDict)
         }
     }
 
     Dict {
         id: dictdDict
         name: qsTr("DictdDict")
+        enabled: true
         description: qsTr("DictdDict uses data from https://dict.org.")
 
         onQuery: {
@@ -137,9 +137,7 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            qd.dictService.registerDict(dictdDict)
-            dictdDict.setEnabled()
-            console.log("DictdDict: loaded")
+            qd.registerDict(dictdDict)
             url = "https://dict.org/bin/Dict?Form=Dict2&Database=*"
         }
         property url url
@@ -148,6 +146,7 @@ ApplicationWindow {
     Dict {
         id: moeDict
         name: qsTr("MoeDict")
+        enabled: true
         description: qsTr("MoeDict uses data from https://www.moedict.tw.")
         property url url: "https://www.moedict.tw/uni/"
 
@@ -177,15 +176,14 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            qd.dictService.registerDict(moeDict)
-            moeDict.setEnabled()
-            console.log("MoeDict: loaded")
+            qd.registerDict(moeDict)
         }
     }
 
     Dict {
         id: mockDict
         name: qsTr("MockDict")
+        enabled: false
         description: qsTr("MockDict uses mockup data.")
 
         onQuery: {
@@ -195,9 +193,7 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            qd.dictService.registerDict(mockDict)
-            // mockDict.setEnabled()
-            console.log("MockDict: loaded")
+            qd.registerDict(mockDict)
         }
     }
 
@@ -253,7 +249,7 @@ ApplicationWindow {
     }
 
     Connections {
-        target: qd.dictService
+        target: qd
         function onQuery(text) {
             textField.text = text
             showOnTop()

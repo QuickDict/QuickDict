@@ -5,7 +5,7 @@
 #include <QMutexLocker>
 #include <QThread>
 
-Q_LOGGING_CATEGORY(ocrEngine, "qd.ocr.engine")
+Q_LOGGING_CATEGORY(qdOcrEngine, "qd.ocr.engine")
 
 OcrEngine::OcrEngine()
     : m_tessApi(new tesseract::TessBaseAPI)
@@ -42,12 +42,12 @@ void OcrEngine::start()
         QString lang = settings->value("Language", "eng").toString();
         settings->endGroup();
         if (m_tessApi->Init(dataPath.isNull() ? nullptr : dataPath.toStdString().c_str(), lang.toStdString().c_str())) {
-            qCCritical(ocrEngine) << "Could not initialize tesseract.";
+            qCCritical(qdOcrEngine) << "Could not initialize tesseract.";
             return;
         }
 
         m_workerThread.start();
-        qCInfo(ocrEngine) << "OcrEngine started...";
+        qCInfo(qdOcrEngine) << "OcrEngine started...";
         emit started();
     }
 }
@@ -61,7 +61,7 @@ void OcrEngine::stop()
 
         m_workerThread.quit();
         m_workerThread.wait(200);
-        qCInfo(ocrEngine) << "OcrEngine stopped...";
+        qCInfo(qdOcrEngine) << "OcrEngine stopped...";
         emit stopped();
     }
 }

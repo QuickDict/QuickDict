@@ -1,4 +1,6 @@
 #include "quickdict.h"
+#include "dictservice.h"
+#include "monitorservice.h"
 #include <QGuiApplication>
 #include <QJSValue>
 #include <QScreen>
@@ -62,4 +64,54 @@ void QuickDict::setUiScale(qreal uiScale)
 {
     m_uiScale = uiScale;
     emit uiScaleChanged();
+}
+
+void QuickDict::registerMonitor(MonitorService *monitor)
+{
+    qCInfo(qdMonitor) << "Register monitor:" << monitor->name();
+    m_monitors.push_back(monitor);
+    handleMonitor(monitor, monitor->enabled());
+    connect(monitor, &MonitorService::enabledChanged, this, &QuickDict::onMonitorEnabledChanged);
+}
+
+void QuickDict::registerDict(DictService *dict)
+{
+    qCInfo(qdDict) << "Register dict:" << dict->name();
+    m_dicts.push_back(dict);
+    handleDict(dict, dict->enabled());
+    connect(dict, &DictService::enabledChanged, this, &QuickDict::onDictEnabledChanged);
+}
+
+void QuickDict::onMonitorEnabledChanged(bool enabled)
+{
+    MonitorService *monitor = qobject_cast<MonitorService *>(sender());
+    handleMonitor(monitor, enabled);
+}
+
+void QuickDict::onDictEnabledChanged(bool enabled)
+{
+    DictService *dict = qobject_cast<DictService *>(sender());
+    handleDict(dict, enabled);
+}
+
+void QuickDict::handleMonitor(MonitorService *monitor, bool enabled)
+{
+    qCInfo(qdMonitor) << "Monitor:" << monitor->name() << "enabled:" << enabled;
+    if (enabled) {
+        connect(monitor, &MonitorService::query, this, &QuickDict::query);
+    } else {
+        disconnect(monitor, &MonitorService::query, this, &QuickDict::query);
+    }
+}
+
+void QuickDict::handleDict(DictService *dict, bool enabled)
+{
+    qCInfo(qdDict) << "Dict:" << dict->name() << "enabled:" << enabled;
+    if (enabled) {
+        connect(this, &QuickDict::query, dict, &DictService::query);
+        connect(dict, &DictService::queryResult, this, &QuickDict::queryResult);
+    } else {
+        disconnect(this, &QuickDict::query, dict, &DictService::query);
+        disconnect(dict, &DictService::queryResult, this, &QuickDict::queryResult);
+    }
 }

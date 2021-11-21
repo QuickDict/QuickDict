@@ -1,9 +1,6 @@
 #include "clipboardmonitor.h"
 #include "configcenter.h"
-#include "dictinterface.h"
 #include "dictservice.h"
-#include "monitorinterface.h"
-#include "monitorservice.h"
 #include "mouseovermonitor.h"
 #include "ocrengine.h"
 #include "quickdict.h"
@@ -34,9 +31,8 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 int main(int argc, char *argv[])
 {
     qRegisterMetaType<OcrResult>("OcrResult");
-    // qmlRegisterType<Interface>("com.quickdict.components", 1, 0, "Interface");
-    qmlRegisterType<MonitorInterface>("com.quickdict.components", 1, 0, "Monitor");
-    qmlRegisterType<DictInterface>("com.quickdict.components", 1, 0, "Dict");
+    qmlRegisterType<MonitorService>("com.quickdict.components", 1, 0, "Monitor");
+    qmlRegisterType<DictService>("com.quickdict.components", 1, 0, "Dict");
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -75,48 +71,41 @@ int main(int argc, char *argv[])
     }
 
     QuickDict::createInstance();
-    QuickDict::instance()->setUiScale(1.5);
+    QuickDict *quickDict = QuickDict::instance();
+    quickDict->setUiScale(1.5);
 
     dir = QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
     if (!dir.exists(app.applicationName()) && !dir.mkdir(app.applicationName()))
         qCWarning(qd) << "Cannot make dir:" << dir.absoluteFilePath(app.applicationName());
     dir.cd(app.applicationName());
     ConfigCenter configCenter(dir.absoluteFilePath("settings.ini"));
-    QuickDict::instance()->setConfigCenter(&configCenter);
+    quickDict->setConfigCenter(&configCenter);
 
     OcrEngine ocrEngine;
-    QuickDict::instance()->setOcrEngine(&ocrEngine);
-
-    MonitorService monitorService;
-    QuickDict::instance()->setMonitorService(&monitorService);
+    quickDict->setOcrEngine(&ocrEngine);
 
     ClipboardMonitor clipboardMonitor;
-    monitorService.registerMonitor(&clipboardMonitor);
+    quickDict->registerMonitor(&clipboardMonitor);
     QHotkey clipboardMonitorHotkey(QKeySequence("Alt+Q"), true, &app);
     if (!clipboardMonitorHotkey.isRegistered())
         qCWarning(qd) << QString("Register ClipboardMonitor shortcut %1 failed")
                              .arg(clipboardMonitorHotkey.shortcut().toString());
     QObject::connect(&clipboardMonitorHotkey, &QHotkey::activated, qApp, [&clipboardMonitor]() {
         clipboardMonitor.toggle();
-        qCInfo(qd) << "ClipboardMonitor: " << clipboardMonitor.isEnabled();
+        qCInfo(qd) << "ClipboardMonitor: " << clipboardMonitor.enabled();
     });
     clipboardMonitor.setEnabled();
 
     MouseOverMonitor mouseOverMonitor;
-    monitorService.registerMonitor(&mouseOverMonitor);
+    quickDict->registerMonitor(&mouseOverMonitor);
     QHotkey mouseOverMonitorHotkey(QKeySequence("Alt+O"), true, &app);
     if (!mouseOverMonitorHotkey.isRegistered())
         qCWarning(qd) << QString("Register MouseOverMonitor shortcut %1 failed")
                              .arg(mouseOverMonitorHotkey.shortcut().toString());
     QObject::connect(&mouseOverMonitorHotkey, &QHotkey::activated, qApp, [&mouseOverMonitor]() {
         mouseOverMonitor.toggle();
-        qCInfo(qd) << "MouseOverMonitor: " << mouseOverMonitor.isEnabled();
+        qCInfo(qd) << "MouseOverMonitor: " << mouseOverMonitor.enabled();
     });
-
-    DictService dictService;
-    QuickDict::instance()->setDictService(&dictService);
-
-    QObject::connect(&monitorService, &MonitorService::query, &dictService, &DictService::query);
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/home.qml"));
@@ -130,9 +119,9 @@ int main(int argc, char *argv[])
         },
         Qt::QueuedConnection);
     // register `qd` in js engine
-    engine.rootContext()->setContextProperty("qd", QuickDict::instance());
+    engine.rootContext()->setContextProperty("qd", quickDict);
     // register `setTimeout` in js engine
-    engine.rootContext()->setContextObject(QuickDict::instance());
+    engine.rootContext()->setContextObject(quickDict);
     engine.load(url);
     QWindow *window = qobject_cast<QWindow *>(engine.rootObjects().at(0));
 #if ENABLE_KWIN_BLUR

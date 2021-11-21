@@ -129,7 +129,7 @@ Page {
     }
 
     Connections {
-        target: qd.dictService
+        target: qd
 
         function onQuery(text) {
             sources = []

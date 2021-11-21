@@ -2,7 +2,7 @@
 #include <QGuiApplication>
 
 ClipboardMonitor::ClipboardMonitor(QObject *parent)
-    : MonitorInterface(parent)
+    : MonitorService(parent)
 {
     setName(tr("ClipboardMonitor"));
     setDescription(tr("ClipboardMonitor monitors clipboard text."));
@@ -10,10 +10,10 @@ ClipboardMonitor::ClipboardMonitor(QObject *parent)
 
 ClipboardMonitor::~ClipboardMonitor() {}
 
-void ClipboardMonitor::doSetState(State state)
+void ClipboardMonitor::doSetEnabled(bool enabled)
 {
     QClipboard *clipboard = QGuiApplication::clipboard();
-    if (state == State::Enabled) {
+    if (enabled) {
         connect(clipboard, &QClipboard::changed, this, &ClipboardMonitor::onChanged);
     } else {
         disconnect(clipboard, &QClipboard::changed, this, &ClipboardMonitor::onChanged);

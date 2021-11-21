@@ -1,25 +1,20 @@
-#ifndef MONITORMANAGER_H
-#define MONITORMANAGER_H
+#ifndef MONITORSERVICE_H
+#define MONITORSERVICE_H
 
-#include <QList>
-#include <QObject>
+#include "service.h"
+#include <QLoggingCategory>
 
-class MonitorInterface;
-
-class MonitorService : public QObject
+class MonitorService : public Service
 {
     Q_OBJECT
 public:
     explicit MonitorService(QObject *parent = nullptr);
     virtual ~MonitorService();
 
-    Q_INVOKABLE void registerMonitor(MonitorInterface *monitor);
-
 Q_SIGNALS:
     void query(const QString &text);
-
-private:
-    QList<MonitorInterface *> m_monitors;
 };
 
-#endif // MONITORMANAGER_H
+Q_DECLARE_LOGGING_CATEGORY(qdMonitor)
+
+#endif // MONITORSERVICE_H

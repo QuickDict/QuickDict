@@ -1,13 +1,13 @@
 #ifndef MOUSEOVERMONITOR_H
 #define MOUSEOVERMONITOR_H
 
-#include "monitorinterface.h"
+#include "monitorservice.h"
 #include <QPoint>
 
 struct OcrResult;
 class QTimer;
 
-class MouseOverMonitor : public MonitorInterface
+class MouseOverMonitor : public MonitorService
 {
     Q_OBJECT
 public:
@@ -20,7 +20,7 @@ public:
     inline int busyInterval() const { return m_busyInterval; }
 
 protected:
-    void doSetState(State state) override;
+    void doSetEnabled(bool enabled) override;
 
 private Q_SLOTS:
     void timeout();

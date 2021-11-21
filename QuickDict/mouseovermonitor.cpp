@@ -8,7 +8,7 @@
 #include <QTimer>
 
 MouseOverMonitor::MouseOverMonitor(QObject *parent)
-    : MonitorInterface(parent)
+    : MonitorService(parent)
     , m_timer(new QTimer(this))
 {
     setName(tr("MouseOverMonitor"));
@@ -23,9 +23,9 @@ MouseOverMonitor::MouseOverMonitor(QObject *parent)
 
 MouseOverMonitor::~MouseOverMonitor() {}
 
-void MouseOverMonitor::doSetState(State state)
+void MouseOverMonitor::doSetEnabled(bool enabled)
 {
-    if (state == State::Enabled) {
+    if (enabled) {
         m_previousCursorMoving = true;
         m_previousCursor = QCursor::pos();
         m_timer->start(m_idleInterval);

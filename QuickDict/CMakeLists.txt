@@ -38,20 +38,16 @@ set(SOURCES
     main.cpp
     qimagecvmat.cpp
     qimagecvmat.h
-    interface.cpp
-    interface.h
-    monitorinterface.cpp
-    monitorinterface.h
+    service.cpp
+    service.h
+    monitorservice.cpp
+    monitorservice.h
+    dictservice.cpp
+    dictservice.h
     mouseovermonitor.cpp
     mouseovermonitor.h
     clipboardmonitor.cpp
     clipboardmonitor.h
-    monitorservice.cpp
-    monitorservice.h
-    dictinterface.cpp
-    dictinterface.h
-    dictservice.cpp
-    dictservice.h
     shortcutmanager.cpp
     shortcutmanager.h
     ocrengine.cpp

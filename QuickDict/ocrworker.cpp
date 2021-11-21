@@ -5,7 +5,7 @@
 #include <QBuffer>
 #include <QImage>
 
-Q_LOGGING_CATEGORY(ocrWorker, "qd.ocr.worker")
+Q_LOGGING_CATEGORY(qdOcrWorker, "qd.ocr.worker")
 
 OcrWorker::OcrWorker(tesseract::TessBaseAPI *tessApi, QObject *parent)
     : QObject(parent)
@@ -52,7 +52,7 @@ void OcrWorker::doExtractText(const QImage &image, const QPoint &p, int id)
         text = QString::fromUtf8(result);
         text.remove(QRegExp("[ \t\n]"));
         int index = std::round((p.x() - rect.left()) * (text.size() - 1) * 1.0 / (rect.right() - rect.left()));
-        qCDebug(ocrWorker) << "text: " << text << " index: " << index << "char: " << QString(text[index]);
+        qCDebug(qdOcrWorker) << "text: " << text << " index: " << index << "char: " << QString(text[index]);
         delete[] result;
     }
 

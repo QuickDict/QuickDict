@@ -70,7 +70,7 @@ Page {
             Layout.fillWidth: true
         }
         Text {
-            text: qsTr("The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE")
+            text: qsTr("The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.")
             font.pixelSize: sp(10)
             wrapMode: Text.WordWrap
             Layout.fillWidth: true

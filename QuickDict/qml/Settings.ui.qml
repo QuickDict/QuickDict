@@ -46,6 +46,8 @@ Page {
                     delegate: CheckBox {
                         checked: modelData.enabled
                         text: modelData.name
+                        ToolTip.visible: hovered
+                        ToolTip.text: modelData.description
 
                         onToggled: {
                             modelData.toggle()
@@ -53,6 +55,7 @@ Page {
                         Component.onCompleted: {
                             if (text === "TextFieldMonitor")
                                 enabled = false
+                            // NOTE: The tooltip won't show up when the control is disabled in Qt 5.15.2. This bug is fixed in Qt 6.1. see https://bugreports.qt.io/browse/QTBUG-30801.
                         }
                     }
                 }
@@ -81,6 +84,8 @@ Page {
                     delegate: CheckBox {
                         checked: modelData.enabled
                         text: modelData.name
+                        ToolTip.visible: hovered
+                        ToolTip.text: modelData.description
 
                         onToggled: modelData.toggle()
                     }

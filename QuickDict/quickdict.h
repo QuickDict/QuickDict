@@ -54,6 +54,7 @@ public:
     Q_INVOKABLE void registerDict(DictService *dict);
     QList<QObject *> dicts() const;
     Q_INVOKABLE DictService *dict(const QString &name) const;
+    Q_INVOKABLE QStringList availableLocales();
 
 Q_SIGNALS:
     void query(const QString &text);

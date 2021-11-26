@@ -118,6 +118,25 @@ DictService *QuickDict::dict(const QString &name) const
     return nullptr;
 }
 
+QStringList QuickDict::availableLocales()
+{
+    QStringList l;
+    l << QLocale(QLocale::Chinese, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::Chinese, QLocale::Taiwan).name();
+    l << QLocale(QLocale::English, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::French, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::German, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::Persian, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::Italian, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::Japanese, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::Urdu, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::Korean, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::Russian, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::Spanish, QLocale::AnyCountry).name();
+    l << QLocale(QLocale::Vietnamese, QLocale::AnyCountry).name();
+    return l;
+}
+
 void QuickDict::onMonitorEnabledChanged(bool enabled)
 {
     MonitorService *monitor = qobject_cast<MonitorService *>(sender());

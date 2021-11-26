@@ -6,14 +6,23 @@ Dict {
     name: qsTr("Google Translate")
     enabled: true
     description: qsTr("DictdDict uses data from https://translate.google.com.")
-    property url url: "https://translate.google.com/#view=home&op=translate&sl=auto&tl=en&text="
+    property string url: "https://translate.google.com/#view=home&op=translate&sl=auto&tl={tl}&text="
 
     onQuery: {
-        let result = {"engine": name, "text": text, "type": "translation", "url": url + text}
+        let tl = convertLangName(qd.configCenter.value("/lang/tl", "en_US"))
+        let result = {"engine": name, "text": text, "type": "translation", "url": url.replace("{tl}", tl) + text}
         googleTranslate.queryResult(result)
     }
 
     Component.onCompleted: {
         qd.registerDict(googleTranslate)
+    }
+
+    function convertLangName(name) {
+        if (name.startsWith("zh_"))
+            name = name.replace("_", "-")
+        else
+            name = name.replace(/_.+/, "")
+        return name
     }
 }

@@ -27,6 +27,55 @@ Page {
                 RowLayout {
                     spacing: dp(8)
                     Text {
+                        text: qsTr("Language")
+                        font.bold: true
+                        font.italic: true
+                        font.pixelSize: sp(20)
+                        color: Qt.rgba(0, 0, 0, 0.6)
+                    }
+                    Rectangle {
+                        Layout.preferredHeight: 2
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignCenter
+                        color: Qt.rgba(0, 0, 0, 0.38)
+                    }
+                }
+                RowLayout {
+                    Text {
+                        text: qsTr("Source Language:")
+                    }
+                    ComboBox {
+                        model: qd.availableLocales()
+
+                        onActivated: qd.configCenter.setValue("/lang/sl", currentText)
+
+                        Component.onCompleted: {
+                            let lang = qd.configCenter.value("/lang/sl", "en_US")
+                            currentIndex = model.indexOf(lang)
+                        }
+                    }
+                }
+                RowLayout {
+                    Text {
+                        text: qsTr("Target Language:")
+                    }
+                    ComboBox {
+                        model: qd.availableLocales()
+
+                        onActivated: qd.configCenter.setValue("/lang/tl", currentText)
+
+                        Component.onCompleted: {
+                            let lang = qd.configCenter.value("/lang/tl", "en_US")
+                            currentIndex = model.indexOf(lang)
+                        }
+                    }
+                }
+            }
+
+            ColumnLayout {
+                RowLayout {
+                    spacing: dp(8)
+                    Text {
                         text: qsTr("Monitors")
                         font.bold: true
                         font.italic: true

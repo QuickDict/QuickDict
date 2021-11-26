@@ -170,7 +170,8 @@ ApplicationWindow {
     }
 
     function showOnTop() {
-        window.show()
+        if (!window.visible)
+            window.show()
         window.raise()
         window.requestActivate()
     }

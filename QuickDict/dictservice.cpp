@@ -7,3 +7,11 @@ DictService::DictService(QObject *parent)
 {}
 
 DictService::~DictService() {}
+
+void DictService::setDelegate(QQmlComponent *delegate)
+{
+    if (m_delegate != delegate) {
+        m_delegate = delegate;
+        emit delegateChanged();
+    }
+}

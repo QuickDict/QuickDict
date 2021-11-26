@@ -50,8 +50,10 @@ public:
 
     Q_INVOKABLE void registerMonitor(MonitorService *monitor);
     QList<QObject *> monitors() const;
+    Q_INVOKABLE MonitorService *monitor(const QString &name) const;
     Q_INVOKABLE void registerDict(DictService *dict);
     QList<QObject *> dicts() const;
+    Q_INVOKABLE DictService *dict(const QString &name) const;
 
 Q_SIGNALS:
     void query(const QString &text);

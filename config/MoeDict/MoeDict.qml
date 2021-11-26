@@ -12,7 +12,7 @@ Dict {
         axios.get(url + text)
             .then(function (response) {
                 let data = response.data.heteronyms[0]
-                let result = {"engine": "萌典", "text": response.data.title, "type": "lookup"}
+                let result = {"engine": name, "text": response.data.title, "type": "lookup"}
                 result.phonetic = [{"text": `/${data.bopomofo}/`}, {"text": `/${data.bopomofo2}/`}]
                 result.definitions = []
                 let definitions = {}

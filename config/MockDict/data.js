@@ -5,7 +5,7 @@ var sources =
     "type": "lookup",
     "sl": "en-US",
     "dl": "en-US",
-    "engine": "WordNet (mockup)",
+    "engine": "MockDict",
     "definitions": [
       {
         "partOfSpeech": "noun",
@@ -136,7 +136,7 @@ var sources =
     "type": "lookup",
     "sl": "en-US",
     "dl": "en-US",
-    "engine": "Oxford Dictionary (mockup)",
+    "engine": "MockDict",
     "phonetic": [
       {
         "text": "/ˈrɛkərd/",

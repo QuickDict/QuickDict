@@ -92,12 +92,30 @@ QList<QObject *> QuickDict::monitors() const
     return l;
 }
 
+MonitorService *QuickDict::monitor(const QString &name) const
+{
+    for (MonitorService *monitor : m_monitors) {
+        if (monitor->name() == name)
+            return monitor;
+    }
+    return nullptr;
+}
+
 QList<QObject *> QuickDict::dicts() const
 {
     QList<QObject *> l;
     for (DictService *dict : m_dicts)
         l.append(qobject_cast<QObject *>(dict));
     return l;
+}
+
+DictService *QuickDict::dict(const QString &name) const
+{
+    for (DictService *dict : m_dicts) {
+        if (dict->name() == name)
+            return dict;
+    }
+    return nullptr;
 }
 
 void QuickDict::onMonitorEnabledChanged(bool enabled)

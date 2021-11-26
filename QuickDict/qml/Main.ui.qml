@@ -69,6 +69,8 @@ Page {
         function onQuery(text) {
             lookupResults = []
             translationResults = []
+            lookupResultsChanged()
+            translationResultsChanged()
         }
         function onQueryResult(result) {
             if (result.type === "lookup") {

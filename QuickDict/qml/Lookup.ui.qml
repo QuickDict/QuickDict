@@ -24,7 +24,7 @@ Page {
             spacing: dp(16)
 
             Repeater {
-                id: repeater
+                id: lookupRepeater
 
                 ColumnLayout {
                     spacing: dp(8)
@@ -142,6 +142,6 @@ Page {
     }
 
     function updateResults(results) {
-        repeater.model = results
+        lookupRepeater.model = results
     }
 }

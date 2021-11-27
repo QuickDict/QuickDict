@@ -57,7 +57,7 @@ Item {
         // scroll down lookup page
         sequence: "J"
         enabled: mainPage.currentIndex == 0
-        property var mainPage
+        property var mainPage: {"currentIndex": 0} // this default value is to prevent warning of undefined property
         property var lookupPage
 
         onActivated: {
@@ -76,7 +76,7 @@ Item {
         // scroll up lookup page
         sequence: "K"
         enabled: mainPage.currentIndex == 0
-        property var mainPage
+        property var mainPage: {"currentIndex": 0} // this default value is to prevent warning of undefined property
         property var lookupPage
         onActivated: {
             if (mainPage.currentIndex == 0)

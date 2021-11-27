@@ -75,8 +75,11 @@ Item {
         // activate QuickDict
         sequence: "Alt+Q"
         onActivated: {
-            if (!window.visible)
+            if (!window.visible) {
                 window.show()
+                textField.forceActiveFocus()
+                textField.selectAll()
+            }
             window.raise()
             window.requestActivate()
         }

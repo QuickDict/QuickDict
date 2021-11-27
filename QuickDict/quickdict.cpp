@@ -1,6 +1,7 @@
 #include "quickdict.h"
 #include "dictservice.h"
 #include "monitorservice.h"
+#include <QFontMetrics>
 #include <QGuiApplication>
 #include <QJSValue>
 #include <QScreen>
@@ -142,6 +143,12 @@ QObject *QuickDict::findChild(const QString &name, QObject *parent) const
     if (!parent)
         parent = qApp;
     return parent->findChild<QObject *>(name);
+}
+
+QRect QuickDict::textBoundingRect(const QFont &font, const QString &text) const
+{
+    QFontMetrics fm(font);
+    return fm.boundingRect(text);
 }
 
 void QuickDict::onMonitorEnabledChanged(bool enabled)

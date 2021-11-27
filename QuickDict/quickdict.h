@@ -56,6 +56,7 @@ public:
     Q_INVOKABLE DictService *dict(const QString &name) const;
     Q_INVOKABLE QStringList availableLocales() const;
     Q_INVOKABLE QObject *findChild(const QString &name, QObject *parent = nullptr) const;
+    Q_INVOKABLE QRect textBoundingRect(const QFont &font, const QString &text) const;
 
 Q_SIGNALS:
     void query(const QString &text);

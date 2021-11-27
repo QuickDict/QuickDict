@@ -104,33 +104,46 @@ Page {
                                     Layout.alignment: Qt.AlignTop
                                 }
                                 ColumnLayout {
+                                    Layout.minimumWidth: 0
                                     TextEdit {
-                                        Layout.fillWidth: true
-                                        textFormat: Text.RichText
                                         text: modelData.definition
                                         font.pixelSize: sp(12)
-                                        wrapMode: Text.WordWrap
+                                        Layout.fillWidth: boundingRect.width > parent.width
+                                        wrapMode: Text.Wrap
                                         readOnly: true
                                         selectByMouse: true
+
+                                        property rect boundingRect: Qt.rect(0, 0, 0, 0)
+
+                                        Component.onCompleted: {
+                                            boundingRect = qd.textBoundingRect(font, text)
+                                        }
                                     }
                                     Repeater {
                                         model: modelData.examples
 
                                         RowLayout {
+                                            Layout.minimumWidth: 0
                                             Text {
+                                                id: bulletText
                                                 text: "\u2022"
                                                 font.pixelSize: sp(12)
                                                 color: Qt.rgba(0, 0, 0, 0.6)
                                                 Layout.alignment: Qt.AlignTop
                                             }
                                             TextEdit {
-                                                Layout.fillWidth: true
-                                                textFormat: Text.RichText
                                                 text: modelData
                                                 font.pixelSize: sp(12)
-                                                wrapMode: Text.WordWrap
+                                                Layout.fillWidth: bulletText.width + parent.spacing + boundingRect.width > parent.width
+                                                wrapMode: Text.Wrap
                                                 readOnly: true
                                                 selectByMouse: true
+
+                                                property rect boundingRect: Qt.rect(0, 0, 0, 0)
+
+                                                Component.onCompleted: {
+                                                    boundingRect = qd.textBoundingRect(font, text)
+                                                }
                                             }
                                         }
                                     }

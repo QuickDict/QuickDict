@@ -149,6 +149,9 @@ ApplicationWindow {
             textField.text = text
             showOnTop()
         }
+        function onQueryResult(result) {
+            stackView.forceActiveFocus()
+        }
     }
 
     onXChanged: startSaveGeometryTimer()

@@ -125,7 +125,7 @@ ApplicationWindow {
 
     Loader {
         id: userInitLoader
-        source: StandardPaths.locate(StandardPaths.ConfigLocation, "QuickDict/qml/init.qml")
+        source: StandardPaths.locate(StandardPaths.GenericConfigLocation, "QuickDict/qml/init.qml")
         active: false
         asynchronous: true
     }
@@ -167,7 +167,6 @@ ApplicationWindow {
             window.width = geometry.width
             window.height = geometry.height
         }
-
         userInitLoader.active = true
 
         textField.forceActiveFocus()

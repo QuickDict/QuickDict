@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
     QuickDict *quickDict = QuickDict::instance();
     quickDict->setUiScale(1.5);
 
-    dir = QDir(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
+    dir = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation));
     if (!dir.exists(app.applicationName()) && !dir.mkdir(app.applicationName()))
         qCWarning(qd) << "Cannot make dir:" << dir.absoluteFilePath(app.applicationName());
     dir.cd(app.applicationName());

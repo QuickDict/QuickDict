@@ -1,6 +1,7 @@
 #include "clipboardmonitor.h"
 #include "configcenter.h"
 #include "dictservice.h"
+#include "hotkey.h"
 #include "mouseovermonitor.h"
 #include "ocrengine.h"
 #include "quickdict.h"
@@ -33,6 +34,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<OcrResult>("OcrResult");
     qmlRegisterType<MonitorService>("com.quickdict.components", 1, 0, "Monitor");
     qmlRegisterType<DictService>("com.quickdict.components", 1, 0, "Dict");
+    qmlRegisterType<Hotkey>("com.quickdict.components", 1, 0, "Hotkey");
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

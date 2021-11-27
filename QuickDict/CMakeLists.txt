@@ -48,8 +48,8 @@ set(SOURCES
     mouseovermonitor.h
     clipboardmonitor.cpp
     clipboardmonitor.h
-    shortcutmanager.cpp
-    shortcutmanager.h
+    hotkey.cpp
+    hotkey.h
     ocrengine.cpp
     ocrengine.h
     ocrworker.cpp

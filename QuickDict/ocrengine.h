@@ -17,7 +17,7 @@ class OcrEngine : public QObject
 {
     Q_OBJECT
 public:
-    OcrEngine();
+    explicit OcrEngine(QObject *parent = nullptr);
     ~OcrEngine();
 
     Q_INVOKABLE void start();

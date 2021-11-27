@@ -7,8 +7,9 @@
 
 Q_LOGGING_CATEGORY(qdOcrEngine, "qd.ocr.engine")
 
-OcrEngine::OcrEngine()
-    : m_tessApi(new tesseract::TessBaseAPI)
+OcrEngine::OcrEngine(QObject *parent)
+    : QObject(parent)
+    , m_tessApi(new tesseract::TessBaseAPI)
     , m_ocrWorker(new OcrWorker(m_tessApi))
 {
     m_ocrWorker->moveToThread(&m_workerThread); // OcrWorker cannot have a parent

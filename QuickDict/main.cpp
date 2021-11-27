@@ -86,13 +86,13 @@ int main(int argc, char *argv[])
     OcrEngine ocrEngine;
     quickDict->setOcrEngine(&ocrEngine);
 
-    ClipboardMonitor clipboardMonitor;
+    ClipboardMonitor clipboardMonitor(quickDict);
     quickDict->registerMonitor(&clipboardMonitor);
 
-    MouseOverMonitor mouseOverMonitor;
+    MouseOverMonitor mouseOverMonitor(quickDict);
     quickDict->registerMonitor(&mouseOverMonitor);
 
-    QQmlApplicationEngine engine;
+    QQmlApplicationEngine engine(quickDict);
     const QUrl url(QStringLiteral("qrc:/home.qml"));
     QObject::connect(
         &engine,

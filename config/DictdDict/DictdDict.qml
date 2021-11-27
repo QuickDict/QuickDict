@@ -2,7 +2,6 @@ import QtQuick 2.15
 import com.quickdict.components 1.0
 
 Dict {
-    id: dictdDict
     name: qsTr("DictdDict")
     enabled: true
     description: qsTr("DictdDict uses data from https://dict.org.")
@@ -10,10 +9,10 @@ Dict {
 
     onQuery: {
         let result = {"engine": name, "text": text, "type": "translation", "url": url + text}
-        dictdDict.queryResult(result)
+        queryResult(result)
     }
 
     Component.onCompleted: {
-        qd.registerDict(dictdDict)
+        qd.registerDict(this)
     }
 }

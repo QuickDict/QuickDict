@@ -2,7 +2,6 @@ import QtQuick 2.15
 import com.quickdict.components 1.0
 
 Dict {
-    id: moeDict
     name: qsTr("MoeDict")
     enabled: true
     description: qsTr("MoeDict uses data from https://www.moedict.tw.")
@@ -26,7 +25,7 @@ Dict {
                 for (const e of Object.values(definitions)) {
                     result.definitions.push(e)
                 }
-                moeDict.queryResult(result)
+                queryResult(result)
             })
             .catch(function (error) {
                 console.log("MoeDict:", error)
@@ -34,6 +33,6 @@ Dict {
     }
 
     Component.onCompleted: {
-        qd.registerDict(moeDict)
+        qd.registerDict(this)
     }
 }

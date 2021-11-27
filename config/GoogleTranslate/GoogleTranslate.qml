@@ -2,7 +2,6 @@ import QtQuick 2.15
 import com.quickdict.components 1.0
 
 Dict {
-    id: googleTranslate
     name: qsTr("Google Translate")
     enabled: true
     description: qsTr("DictdDict uses data from https://translate.google.com.")
@@ -11,11 +10,11 @@ Dict {
     onQuery: {
         let tl = convertLangName(qd.configCenter.value("/lang/tl", "en_US"))
         let result = {"engine": name, "text": text, "type": "translation", "url": url.replace("{tl}", tl) + text}
-        googleTranslate.queryResult(result)
+        queryResult(result)
     }
 
     Component.onCompleted: {
-        qd.registerDict(googleTranslate)
+        qd.registerDict(this)
     }
 
     function convertLangName(name) {

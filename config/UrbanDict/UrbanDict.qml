@@ -2,10 +2,9 @@ import QtQuick 2.15
 import com.quickdict.components 1.0
 
 Dict {
-    id: urbanDict
     name: qsTr("Urban Dictionary")
     enabled: true
-    description: qsTr("UrbanDict uses data from https://www.urbandictionary.com.")
+    description: qsTr("Urban Dictionary uses data from https://www.urbandictionary.com.")
     property url url: "https://api.urbandictionary.com/v0/define?term="
 
     onQuery: {
@@ -20,7 +19,7 @@ Dict {
                     definitions.list.push({"definition": entry.definition, "examples": entry.example})
                 }
                 result.definitions = [definitions]
-                urbanDict.queryResult(result)
+                queryResult(result)
             })
             .catch(function (error) {
                 console.log("UrbanDict:", error)
@@ -28,6 +27,6 @@ Dict {
     }
 
     Component.onCompleted: {
-        qd.registerDict(urbanDict)
+        qd.registerDict(this)
     }
 }

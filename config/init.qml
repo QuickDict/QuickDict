@@ -7,9 +7,9 @@ import "MoeDict" as MoeDict
 import "MockDict" as MockDict
 
 Item {
-    UrbanDict.UrbanDict {}
-    DictdDict.DictdDict {}
-    GoogleTranslate.GoogleTranslate {}
-    MoeDict.MoeDict {}
-    MockDict.MockDict {}
+    UrbanDict.UrbanDict { id: urbanDict }
+    DictdDict.DictdDict { id: dictdDict}
+    GoogleTranslate.GoogleTranslate { id: googleTranslate }
+    MoeDict.MoeDict { id: moeDict }
+    MockDict.MockDict { id: mockDict }
 }

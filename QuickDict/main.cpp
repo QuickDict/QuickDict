@@ -88,25 +88,9 @@ int main(int argc, char *argv[])
 
     ClipboardMonitor clipboardMonitor;
     quickDict->registerMonitor(&clipboardMonitor);
-    QHotkey clipboardMonitorHotkey(QKeySequence("Alt+Q"), true, &app);
-    if (!clipboardMonitorHotkey.isRegistered())
-        qCWarning(qd) << QString("Register ClipboardMonitor shortcut %1 failed")
-                             .arg(clipboardMonitorHotkey.shortcut().toString());
-    QObject::connect(&clipboardMonitorHotkey, &QHotkey::activated, qApp, [&clipboardMonitor]() {
-        clipboardMonitor.toggle();
-        qCInfo(qd) << "ClipboardMonitor: " << clipboardMonitor.enabled();
-    });
 
     MouseOverMonitor mouseOverMonitor;
     quickDict->registerMonitor(&mouseOverMonitor);
-    QHotkey mouseOverMonitorHotkey(QKeySequence("Alt+O"), true, &app);
-    if (!mouseOverMonitorHotkey.isRegistered())
-        qCWarning(qd) << QString("Register MouseOverMonitor shortcut %1 failed")
-                             .arg(mouseOverMonitorHotkey.shortcut().toString());
-    QObject::connect(&mouseOverMonitorHotkey, &QHotkey::activated, qApp, [&mouseOverMonitor]() {
-        mouseOverMonitor.toggle();
-        qCInfo(qd) << "MouseOverMonitor: " << mouseOverMonitor.enabled();
-    });
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/home.qml"));

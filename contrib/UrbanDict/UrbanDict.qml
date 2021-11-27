@@ -3,7 +3,6 @@ import com.quickdict.components 1.0
 
 Dict {
     name: qsTr("Urban Dictionary")
-    enabled: true
     description: qsTr("Urban Dictionary uses data from https://www.urbandictionary.com.")
     property url url: "https://api.urbandictionary.com/v0/define?term="
 

@@ -7,11 +7,26 @@ import "MoeDict" as MoeDict
 import "MockDict" as MockDict
 
 Item {
-    UrbanDict.UrbanDict { id: urbanDict }
-    DictdDict.DictdDict { id: dictdDict}
-    GoogleTranslate.GoogleTranslate { id: googleTranslate }
-    MoeDict.MoeDict { id: moeDict }
-    MockDict.MockDict { id: mockDict }
+    UrbanDict.UrbanDict {
+        id: urbanDict
+        enabled: true
+    }
+    DictdDict.DictdDict {
+        id: dictdDict
+        enabled: true
+    }
+    GoogleTranslate.GoogleTranslate {
+        id: googleTranslate
+        enabled: true
+    }
+    MoeDict.MoeDict {
+        id: moeDict
+        enabled: true
+    }
+    MockDict.MockDict {
+        id: mockDict
+        enabled: false
+    }
 
     Shortcut {
         // hide QuickDict window

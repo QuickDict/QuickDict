@@ -4,7 +4,6 @@ import "data.js" as Data
 
 Dict {
     name: qsTr("MockDict")
-    enabled: false
     description: qsTr("MockDict uses mockup data.")
 
     onQuery: {

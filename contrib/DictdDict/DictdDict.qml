@@ -3,7 +3,6 @@ import com.quickdict.components 1.0
 
 Dict {
     name: qsTr("DictdDict")
-    enabled: true
     description: qsTr("DictdDict uses data from https://dict.org.")
     property url url: "https://dict.org/bin/Dict?Form=Dict2&Database=*&Query="
 

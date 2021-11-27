@@ -3,7 +3,6 @@ import com.quickdict.components 1.0
 
 Dict {
     name: qsTr("MoeDict")
-    enabled: true
     description: qsTr("MoeDict uses data from https://www.moedict.tw.")
     property url url: "https://www.moedict.tw/uni/"
 

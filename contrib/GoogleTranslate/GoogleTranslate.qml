@@ -3,7 +3,6 @@ import com.quickdict.components 1.0
 
 Dict {
     name: qsTr("Google Translate")
-    enabled: true
     description: qsTr("DictdDict uses data from https://translate.google.com.")
     property string url: "https://translate.google.com/#view=home&op=translate&sl=auto&tl={tl}&text="
 

@@ -56,19 +56,38 @@ Item {
     Shortcut {
         // scroll down lookup page
         sequence: "J"
+        enabled: mainPage.currentIndex == 0
+        property var mainPage
+        property var lookupPage
+
         onActivated: {
-            let lookupPage = qd.findChild("lookupPage", window)
-            if (lookupPage)
+            if (mainPage.currentIndex == 0)
                 lookupPage.scrollUp()
+        }
+        Component.onCompleted: {
+            // wait all components are loaded
+            setTimeout(() => {
+                mainPage = qd.findChild("mainPage", window)
+                lookupPage = qd.findChild("lookupPage", window)
+            }, 500)
         }
     }
     Shortcut {
         // scroll up lookup page
         sequence: "K"
+        enabled: mainPage.currentIndex == 0
+        property var mainPage
+        property var lookupPage
         onActivated: {
-            let lookupPage = qd.findChild("lookupPage", window)
-            if (lookupPage)
+            if (mainPage.currentIndex == 0)
                 lookupPage.scrollDown()
+        }
+        Component.onCompleted: {
+            // wait all components are loaded
+            setTimeout(() => {
+                mainPage = qd.findChild("mainPage", window)
+                lookupPage = qd.findChild("lookupPage", window)
+            }, 500)
         }
     }
     Hotkey {

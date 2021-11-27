@@ -7,6 +7,7 @@ Page {
     title: qsTr("QuickDcit")
     background: null
 
+    property alias currentIndex: view.currentIndex
     property var lookupResults: []
     property var translationResults: []
 
@@ -18,7 +19,7 @@ Page {
             id: lookupLoader
             source: "Lookup.ui.qml"
             asynchronous: true
-            active: view.currentIndex == SwipeView.index
+            active: true
 
             onLoaded: {
                 item.updateResults(lookupResults)

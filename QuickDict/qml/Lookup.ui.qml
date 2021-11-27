@@ -4,10 +4,12 @@ import QtQuick.Layouts 1.15
 
 Page {
     id: lookupPage
+    objectName: "lookupPage"
     title: qsTr("Lookup")
     background: null
 
     ScrollView {
+        id: lookupPageScrollView
         anchors.fill: parent
         contentWidth: parent.width
         contentHeight: layout.implicitHeight + dp(16) // with margins
@@ -143,5 +145,13 @@ Page {
 
     function updateResults(results) {
         lookupRepeater.model = results
+    }
+    function scrollUp() {
+        let step = 100.0 / lookupPageScrollView.contentHeight * 0.1
+        lookupPageScrollView.ScrollBar.vertical.position = Math.min(lookupPageScrollView.ScrollBar.vertical.position + step, 1.0 - lookupPageScrollView.ScrollBar.vertical.size)
+    }
+    function scrollDown() {
+        let step = 100.0 / lookupPageScrollView.contentHeight * 0.1
+        lookupPageScrollView.ScrollBar.vertical.position = Math.max(lookupPageScrollView.ScrollBar.vertical.position - step, 0.0)
     }
 }

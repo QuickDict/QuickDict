@@ -118,7 +118,7 @@ DictService *QuickDict::dict(const QString &name) const
     return nullptr;
 }
 
-QStringList QuickDict::availableLocales()
+QStringList QuickDict::availableLocales() const
 {
     QStringList l;
     l << QLocale(QLocale::Chinese, QLocale::AnyCountry).name();
@@ -135,6 +135,13 @@ QStringList QuickDict::availableLocales()
     l << QLocale(QLocale::Spanish, QLocale::AnyCountry).name();
     l << QLocale(QLocale::Vietnamese, QLocale::AnyCountry).name();
     return l;
+}
+
+QObject *QuickDict::findChild(const QString &name, QObject *parent) const
+{
+    if (!parent)
+        parent = qApp;
+    return parent->findChild<QObject *>(name);
 }
 
 void QuickDict::onMonitorEnabledChanged(bool enabled)

@@ -53,6 +53,24 @@ Item {
             textField.selectAll()
         }
     }
+    Shortcut {
+        // scroll down lookup page
+        sequence: "J"
+        onActivated: {
+            let lookupPage = qd.findChild("lookupPage", window)
+            if (lookupPage)
+                lookupPage.scrollUp()
+        }
+    }
+    Shortcut {
+        // scroll up lookup page
+        sequence: "K"
+        onActivated: {
+            let lookupPage = qd.findChild("lookupPage", window)
+            if (lookupPage)
+                lookupPage.scrollDown()
+        }
+    }
     Hotkey {
         // activate QuickDict
         sequence: "Alt+Q"

@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 
 Page {
     id: mainPage
+    objectName: "mainPage"
     title: qsTr("QuickDcit")
     background: null
 

@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.15
 
 Page {
     id: settingsPage
+    objectName: "settingsPage"
     background: null
     title: qsTr("Settings")
 

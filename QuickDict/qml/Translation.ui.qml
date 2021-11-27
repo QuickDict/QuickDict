@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.15
 
 Page {
     id: translationPage
+    objectName: "translationPage"
     title: qsTr("Translation")
     background: null
 

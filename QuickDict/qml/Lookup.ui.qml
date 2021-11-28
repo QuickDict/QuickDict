@@ -160,11 +160,11 @@ Page {
         lookupRepeater.model = results
     }
     function scrollUp() {
-        let step = 100.0 / lookupPageScrollView.contentHeight * 0.1
+        let step = 100.0 / (lookupPageScrollView.contentHeight / dp(1)) * 0.1
         lookupPageScrollView.ScrollBar.vertical.position = Math.min(lookupPageScrollView.ScrollBar.vertical.position + step, 1.0 - lookupPageScrollView.ScrollBar.vertical.size)
     }
     function scrollDown() {
-        let step = 100.0 / lookupPageScrollView.contentHeight * 0.1
+        let step = 100.0 / (lookupPageScrollView.contentHeight / dp(1)) * 0.1
         lookupPageScrollView.ScrollBar.vertical.position = Math.max(lookupPageScrollView.ScrollBar.vertical.position - step, 0.0)
     }
 }

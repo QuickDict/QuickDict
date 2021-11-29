@@ -5,6 +5,7 @@ import "DictdDict" as DictdDict
 import "GoogleTranslate" as GoogleTranslate
 import "MoeDict" as MoeDict
 import "MockDict" as MockDict
+import "ExampleDict" as ExampleDict
 
 Item {
     UrbanDict.UrbanDict {
@@ -25,6 +26,9 @@ Item {
     }
     MockDict.MockDict {
         id: mockDict
+        enabled: false
+    }
+    ExampleDict.ExampleDict {
         enabled: false
     }
 

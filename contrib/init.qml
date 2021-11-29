@@ -8,6 +8,9 @@ import "MockDict" as MockDict
 import "ExampleDict" as ExampleDict
 
 Item {
+    property var mainPage: {"currentIndex": 0} // this default value is to prevent warning of undefined property
+    property var lookupPage
+
     UrbanDict.UrbanDict {
         id: urbanDict
         enabled: true
@@ -58,40 +61,37 @@ Item {
         }
     }
     Shortcut {
+        // swipe left on mainPage
+        sequence: "H"
+        enabled: mainPage.currentIndex == 1
+
+        onActivated: mainPage.currentIndex = 0
+    }
+    Shortcut {
+        // swipe right on mainPage
+        sequence: "L"
+        enabled: mainPage.currentIndex == 0
+
+        onActivated: mainPage.currentIndex = 1
+    }
+    Shortcut {
         // scroll down lookup page
         sequence: "J"
         enabled: mainPage.currentIndex == 0
-        property var mainPage: {"currentIndex": 0} // this default value is to prevent warning of undefined property
-        property var lookupPage
 
         onActivated: {
             if (mainPage.currentIndex == 0)
                 lookupPage.scrollUp()
-        }
-        Component.onCompleted: {
-            // wait all components are loaded
-            setTimeout(() => {
-                mainPage = qd.findChild("mainPage", window)
-                lookupPage = qd.findChild("lookupPage", window)
-            }, 500)
         }
     }
     Shortcut {
         // scroll up lookup page
         sequence: "K"
         enabled: mainPage.currentIndex == 0
-        property var mainPage: {"currentIndex": 0} // this default value is to prevent warning of undefined property
-        property var lookupPage
+
         onActivated: {
             if (mainPage.currentIndex == 0)
                 lookupPage.scrollDown()
-        }
-        Component.onCompleted: {
-            // wait all components are loaded
-            setTimeout(() => {
-                mainPage = qd.findChild("mainPage", window)
-                lookupPage = qd.findChild("lookupPage", window)
-            }, 500)
         }
     }
     Hotkey {
@@ -124,5 +124,13 @@ Item {
             if (m)
                 m.toggle()
         }
+    }
+
+    Component.onCompleted: {
+        // wait all components are loaded
+        setTimeout(() => {
+            mainPage = qd.findChild("mainPage", window)
+            lookupPage = qd.findChild("lookupPage", window)
+        }, 500)
     }
 }

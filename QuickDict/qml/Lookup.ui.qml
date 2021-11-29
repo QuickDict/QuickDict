@@ -159,12 +159,12 @@ Page {
     function updateResults(results) {
         lookupRepeater.model = results
     }
-    function scrollUp() {
-        let step = 100.0 / (lookupPageScrollView.contentHeight / dp(1)) * 0.1
-        lookupPageScrollView.ScrollBar.vertical.position = Math.min(lookupPageScrollView.ScrollBar.vertical.position + step, 1.0 - lookupPageScrollView.ScrollBar.vertical.size)
+    function scrollUp(step = 0.1) {
+        let relativeStep = 100.0 / (lookupPageScrollView.contentHeight / dp(1)) * step
+        lookupPageScrollView.ScrollBar.vertical.position = Math.min(lookupPageScrollView.ScrollBar.vertical.position + relativeStep, 1.0 - lookupPageScrollView.ScrollBar.vertical.size)
     }
-    function scrollDown() {
-        let step = 100.0 / (lookupPageScrollView.contentHeight / dp(1)) * 0.1
-        lookupPageScrollView.ScrollBar.vertical.position = Math.max(lookupPageScrollView.ScrollBar.vertical.position - step, 0.0)
+    function scrollDown(step = 0.1) {
+        let relativeStep = 100.0 / (lookupPageScrollView.contentHeight / dp(1)) * step
+        lookupPageScrollView.ScrollBar.vertical.position = Math.max(lookupPageScrollView.ScrollBar.vertical.position - relativeStep, 0.0)
     }
 }

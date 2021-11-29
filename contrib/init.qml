@@ -75,7 +75,7 @@ Item {
         onActivated: mainPage.currentIndex = 1
     }
     Shortcut {
-        // scroll down lookup page
+        // scroll up lookup page
         sequence: "J"
         enabled: mainPage.currentIndex == 0
 
@@ -85,7 +85,7 @@ Item {
         }
     }
     Shortcut {
-        // scroll up lookup page
+        // scroll down lookup page
         sequence: "K"
         enabled: mainPage.currentIndex == 0
 

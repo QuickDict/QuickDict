@@ -41,6 +41,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
+    // fix "WebEngineContext used before QtWebEngine::initialize() or OpenGL context creation failed."
+    QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     // QQmlApplicationEngine requires QAppliction
     QApplication app(argc, argv);
     app.setOrganizationName("QuickDict");

@@ -160,7 +160,7 @@ ApplicationWindow {
     onHeightChanged: startSaveGeometryTimer()
 
     Component.onCompleted: {
-        let geometry = qd.configCenter.value("geometry")
+        let geometry = qd.configCenter.value("/geometry")
         if (geometry) {
             window.x = geometry.x
             window.y = geometry.y
@@ -180,7 +180,7 @@ ApplicationWindow {
     }
 
     function saveGeometry() {
-        qd.configCenter.setValue("geometry", Qt.rect(window.x, window.y, window.width, window.height))
+        qd.configCenter.setValue("/geometry", Qt.rect(window.x, window.y, window.width, window.height))
     }
 
     function startSaveGeometryTimer() {

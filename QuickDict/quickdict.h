@@ -18,6 +18,11 @@ class QuickDict : public QObject
     Q_PROPERTY(QObject *configCenter READ configCenter CONSTANT);
     Q_PROPERTY(QList<QObject *> monitors READ monitors NOTIFY monitorsChanged);
     Q_PROPERTY(QList<QObject *> dicts READ dicts NOTIFY dictsChanged);
+
+    // convience properties
+    Q_PROPERTY(QString sourceLanguage READ sourceLanguage WRITE setSourceLanguage NOTIFY sourceLanguageChanged);
+    Q_PROPERTY(QString targetLanguage READ targetLanguage WRITE setTargetLanguage NOTIFY targetLanguageChanged);
+
     Q_PROPERTY(qreal dpScale READ dpScale WRITE setDpScale NOTIFY dpScaleChanged);
     Q_PROPERTY(qreal spScale READ spScale WRITE setSpScale NOTIFY spScaleChanged);
     Q_PROPERTY(qreal uiScale READ uiScale WRITE setUiScale NOTIFY uiScaleChanged);
@@ -32,7 +37,15 @@ public:
     inline OcrEngine *ocrEngine() const { return m_ocrEngine; }
     inline void setOcrEngine(OcrEngine *ocrEngine) { m_ocrEngine = ocrEngine; }
     inline ConfigCenter *configCenter() const { return m_configCenter; }
-    inline void setConfigCenter(ConfigCenter *configCenter) { m_configCenter = configCenter; }
+    void setConfigCenter(ConfigCenter *configCenter);
+    QString sourceLanguage() const;
+    void setSourceLanguage(const QString &sourceLang);
+    Q_SIGNAL void sourceLanguageChanged(const QString &sourceLang);
+    QString targetLanguage() const;
+    void setTargetLanguage(const QString &targetLang);
+    Q_SIGNAL void targetLanguageChanged(const QString &targetLang);
+
+    void loadConfig();
 
     Q_INVOKABLE void setTimeout(const QVariant &function, int delay = 0);
     Q_INVOKABLE qreal dp(qreal value) const;
@@ -67,6 +80,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void onMonitorEnabledChanged(bool enabled);
     void onDictEnabledChanged(bool enabled);
+    void onConfigChanged(const QString &key, const QVariant &value);
 
 private:
     void handleMonitor(MonitorService *monitor, bool enabled);

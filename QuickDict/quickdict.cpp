@@ -1,4 +1,5 @@
 #include "quickdict.h"
+#include "configcenter.h"
 #include "dictservice.h"
 #include "monitorservice.h"
 #include <QFontMetrics>
@@ -23,6 +24,40 @@ void QuickDict::createInstance()
 {
     if (!_instance)
         _instance = new QuickDict;
+}
+
+void QuickDict::setConfigCenter(ConfigCenter *configCenter)
+{
+    m_configCenter = configCenter;
+    connect(m_configCenter, &ConfigCenter::valueChanged, this, &QuickDict::onConfigChanged);
+}
+
+QString QuickDict::sourceLanguage() const
+{
+    return configCenter()->value("/lang/sl", "en_US").toString();
+}
+
+void QuickDict::setSourceLanguage(const QString &sourceLang)
+{
+    configCenter()->setValue("/lang/sl", sourceLang);
+}
+
+QString QuickDict::targetLanguage() const
+{
+    return configCenter()->value("/lang/tl", "en_US").toString();
+}
+
+void QuickDict::setTargetLanguage(const QString &targetLang)
+{
+    configCenter()->setValue("/lang/tl", targetLang);
+}
+
+void QuickDict::loadConfig()
+{
+    QString sl = configCenter()->value("/lang/sl", "en_US").toString();
+    emit sourceLanguageChanged(sl);
+    QString tl = configCenter()->value("/lang/tl", "en_US").toString();
+    emit targetLanguageChanged(tl);
 }
 
 void QuickDict::setTimeout(const QVariant &function, int delay)
@@ -182,5 +217,14 @@ void QuickDict::handleDict(DictService *dict, bool enabled)
     } else {
         disconnect(this, &QuickDict::query, dict, &DictService::query);
         disconnect(dict, &DictService::queryResult, this, &QuickDict::queryResult);
+    }
+}
+
+void QuickDict::onConfigChanged(const QString &key, const QVariant &value)
+{
+    if (key == QStringLiteral("/lang/sl")) {
+        emit sourceLanguageChanged(value.toString());
+    } else if (key == QStringLiteral("/lang/tl")) {
+        emit targetLanguageChanged(value.toString());
     }
 }

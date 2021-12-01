@@ -16,6 +16,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QStandardPaths>
+#include <QTimer>
 #include <QWindow>
 
 static QFile logFile;
@@ -108,6 +109,9 @@ int main(int argc, char *argv[])
     // register `setTimeout` in js engine
     engine.rootContext()->setContextObject(quickDict);
     engine.load(url);
+
+    QTimer::singleShot(200, quickDict, [quickDict]() { quickDict->loadConfig(); });
+
     QWindow *window = qobject_cast<QWindow *>(engine.rootObjects().at(0));
 #if ENABLE_KWIN_BLUR
     // window->setProperty("color", "transparent");

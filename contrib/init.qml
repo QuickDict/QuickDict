@@ -54,7 +54,7 @@ Item {
     }
     Shortcut {
         // focus on TextField
-        sequence: "Alt+L"
+        sequence: "Ctrl+L"
         context: Qt.ApplicationShortcut
         onActivated: {
             while (stackView.depth > 1)

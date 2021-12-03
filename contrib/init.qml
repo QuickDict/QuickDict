@@ -5,6 +5,7 @@ import "DictdDict" as DictdDict
 import "GoogleTranslate" as GoogleTranslate
 import "MoeDict" as MoeDict
 import "MockDict" as MockDict
+import "DeepLTranslate" as DeepLTranslate
 import "ExampleDict" as ExampleDict
 
 Item {
@@ -30,6 +31,10 @@ Item {
     MockDict.MockDict {
         id: mockDict
         enabled: false
+    }
+    DeepLTranslate.DeepLTranslate {
+        enabled: true
+        authKey: "your-auth-key"
     }
     ExampleDict.ExampleDict {
         enabled: false

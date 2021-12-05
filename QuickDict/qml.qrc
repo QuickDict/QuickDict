@@ -6,6 +6,7 @@
         <file alias="Translation.ui.qml">qml/Translation.ui.qml</file>
         <file alias="Settings.ui.qml">qml/Settings.ui.qml</file>
         <file alias="About.ui.qml">qml/About.ui.qml</file>
+        <file alias="components/Phonetic.ui.qml">qml/components/Phonetic.ui.qml</file>
         <file alias="axios.min.js">../third_party/axios/dist/axios.min.js</file>
         <file>qtquickcontrols2.conf</file>
     </qresource>

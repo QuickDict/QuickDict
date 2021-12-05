@@ -29,8 +29,6 @@ Page {
                 id: lookupRepeater
 
                 ColumnLayout {
-                    spacing: dp(8)
-
                     RowLayout {
                         spacing: dp(8)
                         Text {
@@ -74,21 +72,29 @@ Page {
                 }
                 Repeater {
                     model: modelData.phonetic
-                    Text {
-                        text: modelData.text
-                        font.pixelSize: sp(12)
-                        color: Qt.rgba(0, 0, 0, 0.87)
+                    Loader {
+                        source: "components/Phonetic.ui.qml"
+                        onLoaded: item.modelData = modelData
                     }
                 }
             }
             Repeater {
                 model: modelData.definitions
                 ColumnLayout {
-                    Text {
-                        text: typeof modelData.partOfSpeech !== "undefined" ? modelData.partOfSpeech : null
-                        visible: text ? true : false
-                        font.bold: true
-                        font.pixelSize: sp(12)
+                    RowLayout {
+                        spacing: dp(8)
+                        Text {
+                            text: typeof modelData.partOfSpeech !== "undefined" ? modelData.partOfSpeech : null
+                            visible: text ? true : false
+                            font.bold: true
+                            font.pixelSize: sp(12)
+                            color: Qt.rgba(0, 0, 0, 0.6)
+                        }
+                        Loader {
+                            source: "components/Phonetic.ui.qml"
+                            active: typeof modelData.phonetic !== "undefined"
+                            onLoaded: item.modelData = modelData.phonetic
+                        }
                     }
                     ColumnLayout {
                         Layout.leftMargin: dp(8)

@@ -50,6 +50,8 @@ int main(int argc, char *argv[])
     app.setApplicationName("QuickDict");
     app.setWindowIcon(QIcon(":/images/QuickDict-32x32.png"));
 
+    app.setQuitOnLastWindowClosed(false);
+
     QString messagePattern =
 #ifdef QT_DEBUG
         "[%{time yyyy-MM-dd h:mm:ss.zzz t} "

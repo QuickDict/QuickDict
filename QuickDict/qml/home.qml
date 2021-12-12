@@ -105,9 +105,8 @@ ApplicationWindow {
             MenuItem {
                 text: qsTr("Show")
                 onTriggered: {
+                    focusOnTextField()
                     showOnTop()
-                    textField.forceActiveFocus()
-                    textField.selectAll()
                 }
             }
             MenuItem {
@@ -117,9 +116,8 @@ ApplicationWindow {
         }
 
         onActivated: {
+            focusOnTextField()
             showOnTop()
-            textField.forceActiveFocus()
-            textField.selectAll()
         }
     }
 
@@ -177,6 +175,15 @@ ApplicationWindow {
             window.show()
         window.raise()
         window.requestActivate()
+    }
+
+    function focusOnTextField() {
+        while (stackView.depth > 1)
+            stackView.pop()
+        if (drawer.activeFocus)
+            drawer.close()
+        textField.forceActiveFocus()
+        textField.selectAll()
     }
 
     function saveGeometry() {

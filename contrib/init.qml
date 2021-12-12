@@ -56,14 +56,7 @@ Item {
         // focus on TextField
         sequence: "Ctrl+L"
         context: Qt.ApplicationShortcut
-        onActivated: {
-            while (stackView.depth > 1)
-                stackView.pop()
-            if (drawer.activeFocus)
-                drawer.close()
-            textField.forceActiveFocus()
-            textField.selectAll()
-        }
+        onActivated: window.focusOnTextField()
     }
     Shortcut {
         // swipe left on mainPage
@@ -103,13 +96,9 @@ Item {
         // activate QuickDict
         sequence: "Alt+Q"
         onActivated: {
-            if (!window.visible) {
-                window.show()
-                textField.forceActiveFocus()
-                textField.selectAll()
-            }
-            window.raise()
-            window.requestActivate()
+            if (!window.visible)
+                window.focusOnTextField()
+            window.showOnTop()
         }
     }
     Hotkey {

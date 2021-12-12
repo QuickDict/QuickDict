@@ -7,7 +7,7 @@ import "axios.min.js" as Axios
 ApplicationWindow {
     id: window
     objectName: "window"
-    title: stackView.depth > 1 ? stackView.currentItem.title + qsTr(" - QuickDcit") : qsTr("QuickDcit")
+    title: stackView.depth > 1 ? stackView.currentItem.title + qsTr(" - QuickDict") : qsTr("QuickDict")
     width: dp(280)
     height: dp(400)
     minimumWidth: dp(250)

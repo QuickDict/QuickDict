@@ -4,7 +4,7 @@ import QtQuick.Controls 2.15
 Page {
     id: mainPage
     objectName: "mainPage"
-    title: qsTr("QuickDcit")
+    title: qsTr("QuickDict")
     background: null
 
     property alias currentIndex: view.currentIndex

@@ -10,6 +10,7 @@
 #include <KWindowEffects>
 #endif
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QDir>
 #include <QHotkey>
 #include <QLoggingCategory>
@@ -20,6 +21,8 @@
 #include <QWindow>
 
 static QFile logFile;
+static QtMessageHandler defaultMessageHandler;
+static bool debugFlag;
 
 void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &message)
 {
@@ -28,6 +31,9 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
     logFile.write(qFormatLogMessage(type, context, message).toUtf8().append('\n'));
     logFile.flush();
+
+    if (debugFlag)
+        defaultMessageHandler(type, context, message); // output to the terminal
 }
 
 int main(int argc, char *argv[])
@@ -48,9 +54,19 @@ int main(int argc, char *argv[])
     app.setOrganizationName("QuickDict");
     app.setOrganizationDomain("https://github.com/QuickDict/QuickDict");
     app.setApplicationName("QuickDict");
+    app.setApplicationVersion("0.2.0");
     app.setWindowIcon(QIcon(":/images/QuickDict-32x32.png"));
 
     app.setQuitOnLastWindowClosed(false);
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription(QObject::tr("QuickDict is a cross-platform dictionary/translation application."));
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addOption({{"d", "debug"}, QObject::tr("Print log messages.")});
+    parser.process(app);
+
+    debugFlag = parser.isSet("debug");
 
     QString messagePattern =
 #ifdef QT_DEBUG
@@ -73,8 +89,8 @@ int main(int argc, char *argv[])
         logFile.setFileName(dir.absoluteFilePath("log"));
         if (!logFile.open(QIODevice::Append | QIODevice::Text))
             qCWarning(qd) << "Cannot open file:" << logFile.fileName();
-        // else
-        //     qInstallMessageHandler(messageHandler);
+        else
+            defaultMessageHandler = qInstallMessageHandler(messageHandler);
     }
 
     QuickDict::createInstance();

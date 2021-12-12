@@ -19,6 +19,7 @@ Dict {
                 wrapMode: Text.Wrap
                 font.pixelSize: sp(12)
                 Layout.leftMargin: dp(8)
+                Layout.fillWidth: true
                 readOnly: true
                 selectByMouse: true
             }

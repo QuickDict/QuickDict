@@ -27,7 +27,7 @@ git clone --recurse-submodules https://github.com/QuickDict/QuickDict
 cd QuickDict
 cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake -DOpenCV_DIR=/C/Program\ Files/opencv/build/
 cmake --build build
-cp -r contrib/ ~/AppData/Local/QuickDict/qml
+cp -r contrib/* ~/AppData/Local/QuickDict/qml/
 ./build/debug/QuickDict/QuickDict
 ```
 

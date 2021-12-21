@@ -4,3 +4,6 @@
 [submodule "third_party/axios"]
 	path = third_party/axios
 	url = https://github.com/axios/axios
+[submodule "third_party/libmobi"]
+	path = third_party/libmobi
+	url = https://github.com/bfabiszewski/libmobi

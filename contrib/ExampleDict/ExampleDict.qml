@@ -4,11 +4,13 @@ import com.quickdict.components 1.0
 Dict {
     name: qsTr("Example Dict")
     description: qsTr("Example Dict demonstrates how to write your own dict plugins.")
-    property var delegate: Component {
-        Text {
+    delegate: Component {
+        TextEdit {
             id: text
             property var modelData
             text: modelData.result
+            font.pixelSize: sp(12)
+            wrapMode: Text.Wrap
         }
     }
 

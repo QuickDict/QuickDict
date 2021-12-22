@@ -10,7 +10,7 @@ ClipboardMonitor::ClipboardMonitor(QObject *parent)
 
 ClipboardMonitor::~ClipboardMonitor() {}
 
-void ClipboardMonitor::doSetEnabled(bool enabled)
+bool ClipboardMonitor::doSetEnabled(bool enabled)
 {
     QClipboard *clipboard = QGuiApplication::clipboard();
     if (enabled) {
@@ -18,6 +18,7 @@ void ClipboardMonitor::doSetEnabled(bool enabled)
     } else {
         disconnect(clipboard, &QClipboard::changed, this, &ClipboardMonitor::onChanged);
     }
+    return true;
 }
 
 void ClipboardMonitor::onChanged(QClipboard::Mode mode)

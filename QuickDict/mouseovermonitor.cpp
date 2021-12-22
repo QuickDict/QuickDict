@@ -23,7 +23,7 @@ MouseOverMonitor::MouseOverMonitor(QObject *parent)
 
 MouseOverMonitor::~MouseOverMonitor() {}
 
-void MouseOverMonitor::doSetEnabled(bool enabled)
+bool MouseOverMonitor::doSetEnabled(bool enabled)
 {
     if (enabled) {
         m_previousCursorMoving = true;
@@ -34,6 +34,7 @@ void MouseOverMonitor::doSetEnabled(bool enabled)
         m_timer->stop();
         QuickDict::instance()->ocrEngine()->stop();
     }
+    return true;
 }
 
 void MouseOverMonitor::timeout()

@@ -12,7 +12,7 @@ public:
     ~ClipboardMonitor();
 
 protected:
-    void doSetEnabled(bool enabled) override;
+    bool doSetEnabled(bool enabled) override;
 
 private Q_SLOTS:
     void onChanged(QClipboard::Mode mode);

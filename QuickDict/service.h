@@ -33,7 +33,10 @@ Q_SIGNALS:
     void enabledChanged(bool enabled);
 
 protected:
-    virtual void doSetEnabled(bool enabled) {}
+    /**
+     * @return @c true if successful, @c false otherwise.
+     */
+    virtual bool doSetEnabled(bool enabled) { return true; }
 
 private:
     void saveConfig();

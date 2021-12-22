@@ -30,7 +30,8 @@ void Service::setDescription(const QString &description)
 void Service::setEnabled(bool enabled)
 {
     if (m_enabled != enabled) {
-        doSetEnabled(enabled);
+        if (!doSetEnabled(enabled))
+            return;
         m_enabled = enabled;
         saveConfig();
 

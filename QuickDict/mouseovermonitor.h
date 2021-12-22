@@ -20,7 +20,7 @@ public:
     inline int busyInterval() const { return m_busyInterval; }
 
 protected:
-    void doSetEnabled(bool enabled) override;
+    bool doSetEnabled(bool enabled) override;
 
 private Q_SLOTS:
     void timeout();

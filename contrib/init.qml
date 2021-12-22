@@ -6,6 +6,7 @@ import "GoogleTranslate" as GoogleTranslate
 import "MoeDict" as MoeDict
 import "MockDict" as MockDict
 import "DeepLTranslate" as DeepLTranslate
+import "OxfordDictionaries" as OxfordDictionaries
 import "ExampleDict" as ExampleDict
 
 Item {
@@ -35,6 +36,13 @@ Item {
     DeepLTranslate.DeepLTranslate {
         enabled: true
         authKey: "your-auth-key"
+    }
+    OxfordDictionaries.OxfordDictionaries {
+        id: oxfordDictionaries
+        enabled: true
+        appId: "your-appId"
+        appKey: "your-appKey"
+        strictMatch: true
     }
     ExampleDict.ExampleDict {
         enabled: false

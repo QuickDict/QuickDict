@@ -27,8 +27,16 @@ Page {
                 margins: dp(8)
                 topMargin: dp(20)
             }
-            spacing: dp(16)
+            spacing: dp(0)
 
+            Text {
+                text: "V0.2.0"
+                font.bold: true
+                font.italic: true
+                font.pixelSize: sp(20)
+                font.family: aliceInWonderlandFont.name
+                Layout.alignment: Qt.AlignRight
+            }
             Text {
                 text: "QuickDict"
                 font.bold: true

@@ -53,6 +53,5 @@ Dict {
             baseURL: String(url),
             headers: {"app_id": appId, "app_key": appKey}
             })
-        qd.registerDict(this)
     }
 }

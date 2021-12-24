@@ -10,8 +10,4 @@ Dict {
         let result = {"engine": name, "text": text, "type": "translation", "url": url + text}
         queryResult(result)
     }
-
-    Component.onCompleted: {
-        qd.registerDict(this)
-    }
 }

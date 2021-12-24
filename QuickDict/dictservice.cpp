@@ -1,4 +1,5 @@
 #include "dictservice.h"
+#include "quickdict.h"
 
 Q_LOGGING_CATEGORY(qdDict, "qd.dict")
 
@@ -14,4 +15,11 @@ void DictService::setDelegate(QQmlComponent *delegate)
         m_delegate = delegate;
         emit delegateChanged();
     }
+}
+
+void DictService::classBegin() {}
+
+void DictService::componentComplete()
+{
+    QuickDict::instance()->registerDict(this);
 }

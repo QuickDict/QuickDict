@@ -46,7 +46,6 @@ Dict {
     }
 
     Component.onCompleted: {
-        qd.registerDict(this)
         qd.targetLanguageChanged.connect((lang) => {
                 tl = lang.substr(0, 2).toUpperCase();
             })

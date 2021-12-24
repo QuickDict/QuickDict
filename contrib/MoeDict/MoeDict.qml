@@ -30,8 +30,4 @@ Dict {
                 console.log("MoeDict:", error)
             })
     }
-
-    Component.onCompleted: {
-        qd.registerDict(this)
-    }
 }

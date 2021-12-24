@@ -18,8 +18,4 @@ Dict {
         let result = {"engine": name, "text": text, "result": "This is the result of Example Dict.", "type": "lookup"}
         queryResult(result)
     }
-
-    Component.onCompleted: {
-        qd.registerDict(this)
-    }
 }

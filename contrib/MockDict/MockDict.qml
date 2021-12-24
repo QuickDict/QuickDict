@@ -11,8 +11,4 @@ Dict {
             queryResult(source)
         }
     }
-
-    Component.onCompleted: {
-        qd.registerDict(this)
-    }
 }

@@ -13,7 +13,6 @@ Dict {
     }
 
     Component.onCompleted: {
-        qd.registerDict(this)
         qd.targetLanguageChanged.connect((lang) => {
                 if (lang.startsWith("zh_"))
                     tl = lang.replace("_", "-")

@@ -24,8 +24,4 @@ Dict {
                 console.log("UrbanDict:", error)
             })
     }
-
-    Component.onCompleted: {
-        qd.registerDict(this)
-    }
 }

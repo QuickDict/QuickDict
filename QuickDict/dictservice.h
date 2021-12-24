@@ -4,19 +4,24 @@
 #include "service.h"
 #include <QJsonObject>
 #include <QLoggingCategory>
+#include <QQmlParserStatus>
 
 class QQmlComponent;
 
-class DictService : public Service
+class DictService : public Service, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
 public:
     explicit DictService(QObject *parent = nullptr);
     virtual ~DictService();
 
-    QQmlComponent *delegate() const {return m_delegate;}
+    QQmlComponent *delegate() const { return m_delegate; }
     void setDelegate(QQmlComponent *delegate);
+
+    void classBegin() override;
+    void componentComplete() override;
 
 Q_SIGNALS:
     void delegateChanged();

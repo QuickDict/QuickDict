@@ -134,7 +134,7 @@ Page {
                     delegate: CheckBox {
                         checked: modelData.enabled
                         text: modelData.name
-                        ToolTip.visible: hovered
+                        ToolTip.visible: hovered && modelData.description
                         ToolTip.text: modelData.description
 
                         onToggled: modelData.toggle()

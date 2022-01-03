@@ -80,6 +80,8 @@ int main(int argc, char *argv[])
 #endif
     qSetMessagePattern(messagePattern);
     QLoggingCategory::setFilterRules("qd.*=true");
+    if (!debugFlag)
+        QLoggingCategory::setFilterRules("qd.*.debug=false");
 
     QDir dir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation));
     if (!dir.exists(app.applicationName()) && !dir.mkdir(app.applicationName()))

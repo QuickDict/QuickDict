@@ -13,7 +13,14 @@ void Service::setName(const QString &name)
 {
     if (m_name != name) {
         m_name = name;
-        loadConfig();
+
+        if (!m_name.isEmpty()) {
+            QVariant enabled = QuickDict::instance()->configCenter()->value(m_interfaceName + m_name);
+            if (enabled.isValid())
+                loadConfig();
+            else
+                saveConfig();
+        }
 
         emit nameChanged(m_name);
     }

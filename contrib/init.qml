@@ -15,37 +15,30 @@ Item {
 
     UrbanDict.UrbanDict {
         id: urbanDict
-        enabled: true
     }
     DictdDict.DictdDict {
         id: dictdDict
-        enabled: true
     }
     GoogleTranslate.GoogleTranslate {
         id: googleTranslate
-        enabled: true
     }
     MoeDict.MoeDict {
         id: moeDict
-        enabled: true
     }
     MockDict.MockDict {
         id: mockDict
-        enabled: false
     }
     DeepLTranslate.DeepLTranslate {
-        enabled: true
         authKey: "your-auth-key"
     }
     OxfordDictionaries.OxfordDictionaries {
         id: oxfordDictionaries
-        enabled: true
         appId: "your-appId"
         appKey: "your-appKey"
         strictMatch: true
     }
     ExampleDict.ExampleDict {
-        enabled: false
+        id: exampleDict
     }
 
     Shortcut {

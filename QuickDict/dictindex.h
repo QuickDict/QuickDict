@@ -12,7 +12,7 @@
 #include <utility>
 #include <vector>
 
-using Size = uint;
+using Size = unsigned int;
 
 template<typename Key, typename Value>
 struct DictIndexNode
@@ -189,7 +189,7 @@ public:
         Size children_offset = ftell(fp);
         for (int i = 0; i < num; ++i)
             fwrite(&begin, sizeof(begin), 1, fp); // placeholder
-        Size children_offset_arr[num];
+        Size *children_offset_arr = (Size *) malloc(sizeof(Size) * num);
         for (int i = 0; i < num; ++i) {
             children_offset_arr[i] = ftell(fp);
             serialize(fp, node->_children[i]);
@@ -198,6 +198,7 @@ public:
         for (int i = 0; i < num; ++i) {
             fwrite(&children_offset_arr[i], sizeof(Size), 1, fp);
         }
+        free(children_offset_arr);
 
         fseek(fp, 0, SEEK_END);
         Size end = ftell(fp);
@@ -215,7 +216,7 @@ public:
         ushort num = node->_children.size();
         fread(&num, sizeof(num), 1, fp);
         node->_children.resize(num);
-        Size children_offset_arr[num];
+        Size *children_offset_arr = (Size *) malloc(sizeof(Size) * num);
         fread(children_offset_arr, sizeof(Size), num, fp);
         for (int i = 0; i < num; ++i) {
             fseek(fp, children_offset_arr[i], SEEK_SET);
@@ -223,6 +224,7 @@ public:
             deserialize(fp, child);
             node->_children[i] = child;
         }
+        free(children_offset_arr);
 
         fseek(fp, 0, SEEK_END);
         Size end = ftell(fp);

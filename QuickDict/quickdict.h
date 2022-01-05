@@ -2,6 +2,9 @@
 #define QUICKDICT_H
 
 #include "service.h"
+#ifdef ENABLE_OPENCC
+#include <opencc/opencc.h>
+#endif
 #include <QJsonObject>
 #include <QLoggingCategory>
 #include <QObject>
@@ -71,6 +74,10 @@ public:
     Q_INVOKABLE QObject *findChild(const QString &name, QObject *parent = nullptr) const;
     Q_INVOKABLE QRect textBoundingRect(const QFont &font, const QString &text) const;
 
+#ifdef ENABLE_OPENCC
+    opencc::SimpleConverter const *openccConverter() const { return &m_openccConverter; }
+#endif
+
 Q_SIGNALS:
     void query(const QString &text);
     void queryResult(const QJsonObject &result);
@@ -94,6 +101,10 @@ private:
 
     QList<MonitorService *> m_monitors;
     QList<DictService *> m_dicts;
+
+#ifdef ENABLE_OPENCC
+    const opencc::SimpleConverter m_openccConverter{"t2s.json"};
+#endif
 
     qreal m_dpScale = 1.0;
     qreal m_spScale = 1.0;

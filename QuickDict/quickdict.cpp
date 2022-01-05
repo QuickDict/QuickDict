@@ -14,11 +14,18 @@ QuickDict *QuickDict::_instance = nullptr;
 
 QuickDict::QuickDict(QObject *parent)
     : QObject(parent)
+#ifdef ENABLE_HUNSPELL
+    // TODO: make it configurable
+    , m_hunspell(new Hunspell("/usr/share/hunspell/en_US.aff", "/usr/share/hunspell/en_US.dic"))
+#endif
 {
     m_pixelScale = qApp->primaryScreen()->physicalDotsPerInch() / 160.0;
 }
 
-QuickDict::~QuickDict() {}
+QuickDict::~QuickDict()
+{
+    delete m_hunspell;
+}
 
 void QuickDict::createInstance()
 {

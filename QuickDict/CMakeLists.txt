@@ -90,6 +90,15 @@ if(ENABLE_OPENCC)
     list(APPEND LIBS ${OPENCC_LIBRARIES})
 endif()
 
+set(HUNSPELL_MIN_VERSION 1.7.0)
+option(ENABLE_HUNSPELL "Enable Hunspell" ON)
+if(ENABLE_HUNSPELL)
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(HUNSPELL ${HUNSPELL_MIN_VERSION} REQUIRED hunspell)
+    add_compile_definitions(ENABLE_HUNSPELL)
+    list(APPEND LIBS ${HUNSPELL_LIBRARIES})
+endif()
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QuickDict
         MANUAL_FINALIZATION

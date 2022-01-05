@@ -3,6 +3,9 @@
 #ifdef ENABLE_OPENCC
 #include <opencc/opencc.h>
 #endif
+#ifdef ENABLE_HUNSPELL
+#include <hunspell/hunspell.hxx>
+#endif
 #include <QFileInfo>
 
 MobiDict::MobiDict(QObject *parent)
@@ -85,23 +88,39 @@ bool MobiDict::doSetEnabled(bool enabled)
 
 void MobiDict::onQuery(const QString &text)
 {
-#ifdef ENABLE_OPENCC
-    auto node = m_dictIndex->findEntry(
-        QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(text.toStdString())));
-#else
-    auto node = m_dictIndex->findEntry(text);
-#endif
-    if (node) {
-        qCDebug(qdDict) << "Dict:" << name() << "query:" << text << "count:" << node->_value.size();
-        for (const MobiEntry &entry : node->_value) {
-            QString definition = QString::fromUtf8(reinterpret_cast<const char *>(m_rawMarkup->flow->data + entry.first),
-                                                   entry.second);
-
-            QJsonObject result{{"engine", name()}, {"text", text}, {"result", definition}, {"type", "lookup"}};
-            emit queryResult(result);
-        }
+    QStringList textList;
+#ifdef ENABLE_HUNSPELL
+    std::vector<std::string> l = QuickDict::instance()->hunspell()->stem(text.toStdString());
+    if (!l.empty()) {
+        for (const auto &s : l)
+            textList.append(QString::fromStdString(s));
     } else {
-        qCDebug(qdDict) << "Dict:" << name() << "query: No entry for" << text;
+        textList << text;
+    }
+#else
+    textList << text;
+#endif
+
+    for (const QString &_text : qAsConst(textList)) {
+#ifdef ENABLE_OPENCC
+        auto node = m_dictIndex->findEntry(
+            QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(_text.toStdString())));
+#else
+        auto node = m_dictIndex->findEntry(_text);
+#endif
+        if (node) {
+            qCDebug(qdDict) << "Dict:" << name() << "query:" << _text << "count:" << node->_value.size();
+            for (const MobiEntry &entry : node->_value) {
+                QString definition = QString::fromUtf8(reinterpret_cast<const char *>(m_rawMarkup->flow->data
+                                                                                      + entry.first),
+                                                       entry.second);
+
+                QJsonObject result{{"engine", name()}, {"text", _text}, {"result", definition}, {"type", "lookup"}};
+                emit queryResult(result);
+            }
+        } else {
+            qCDebug(qdDict) << "Dict:" << name() << "query: No entry for" << _text;
+        }
     }
 }
 

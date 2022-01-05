@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import com.quickdict.components 1.0
+import QtQuick.Layouts 1.15
 import "UrbanDict" as UrbanDict
 import "DictdDict" as DictdDict
 import "GoogleTranslate" as GoogleTranslate
@@ -13,6 +14,12 @@ Item {
     property var mainPage: {"currentIndex": 0} // this default value is to prevent warning of undefined property
     property var lookupPage
 
+    MobiDict {
+        id: exampleMobiDict
+        name: "Example Mobi Dict"
+        source: "/home/user/Dictionaries/Example_Mobi_Dict.mobi"
+        delegate: mobiDelegate
+    }
     UrbanDict.UrbanDict {
         id: urbanDict
     }
@@ -118,6 +125,21 @@ Item {
             let m = qd.monitor("MouseOverMonitor")
             if (m)
                 m.toggle()
+        }
+    }
+
+    Component {
+        id: mobiDelegate
+        TextEdit {
+            id: text
+            property var modelData
+            text: modelData.result
+            font.pixelSize: sp(12)
+            textFormat: TextEdit.RichText
+            wrapMode: Text.Wrap
+            readOnly: true
+            selectByMouse: true
+            Layout.fillWidth: true
         }
     }
 

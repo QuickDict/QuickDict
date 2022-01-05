@@ -32,6 +32,8 @@ else()
     find_package(Leptonica ${LEPTONICA_MIN_VERSION} REQUIRED lept)
 endif()
 
+include_directories(${PROJECT_SOURCE_DIR}/third_party)
+
 set(TS_FILES QuickDict_zh_CN.ts)
 
 set(SOURCES
@@ -44,6 +46,9 @@ set(SOURCES
     monitorservice.h
     dictservice.cpp
     dictservice.h
+    dictindex.h
+    mobidict.cpp
+    mobidict.h
     mouseovermonitor.cpp
     mouseovermonitor.h
     clipboardmonitor.cpp
@@ -63,7 +68,7 @@ set(SOURCES
     ${TS_FILES}
 )
 
-set(LIBS Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Quick qhotkey ${OpenCV_LIBRARIES} ${Tesseract_LIBRARIES} ${Leptonica_LIBRARIES})
+set(LIBS Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Quick qhotkey ${OpenCV_LIBRARIES} ${Tesseract_LIBRARIES} ${Leptonica_LIBRARIES} mobi)
 
 set(KF5_MIN_VERSION 5.82.0)
 option(ENABLE_KWIN_BLUR "Enable KWin to blur the background" OFF)

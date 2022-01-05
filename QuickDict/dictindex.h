@@ -91,10 +91,10 @@ public:
         int n = key.size();
         int index = 0;
         for (; index < n; ++index) {
-            DictIndexNode *child = previousNode->findChild(key[index]);
-            if (!child)
+            // Since it's sorted, we just need to look at the rightest child.
+            if (previousNode->_children.empty() || previousNode->_children.back()->_key != key[index])
                 break;
-            previousNode = child;
+            previousNode = previousNode->_children.back();
         }
         // minimize(index);
         DictIndexNode *ret = previousNode;

@@ -6,6 +6,9 @@
 #ifdef ENABLE_HUNSPELL
 #include <hunspell/hunspell.hxx>
 #endif
+#ifdef ENABLE_UNAC
+#include <unac/unac.h>
+#endif
 #include <QFileInfo>
 
 MobiDict::MobiDict(QObject *parent)
@@ -102,13 +105,20 @@ void MobiDict::onQuery(const QString &text)
     textList << trimmed;
 #endif
 
-    for (const QString &_text : qAsConst(textList)) {
+    for (QString _text : qAsConst(textList)) {
 #ifdef ENABLE_OPENCC
-        auto node = m_dictIndex->findEntry(
-            QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(_text.toStdString())));
-#else
-        auto node = m_dictIndex->findEntry(_text);
+        _text = QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(_text.toStdString()));
 #endif
+#ifdef ENABLE_UNAC
+        std::string utf8Text = _text.toStdString();
+        char *unaccented = nullptr;
+        size_t len;
+        if (unac_string("UTF8", utf8Text.c_str(), utf8Text.size(), &unaccented, &len) != -1) {
+            _text = QString::fromUtf8(unaccented, len);
+            free(unaccented);
+        }
+#endif
+        auto node = m_dictIndex->findEntry(_text);
         if (node) {
             qCDebug(qdDict) << "Dict:" << name() << "query:" << _text << "count:" << node->_value.size();
             for (const MobiEntry &entry : node->_value) {
@@ -218,10 +228,20 @@ bool MobiDict::buildIndex()
         entries.reserve(count);
     for (size_t i = 0; i < count; ++i) {
         const MOBIIndexEntry *orth_entry = &m_rawMarkup->orth->entries[i];
+        QString text;
 #ifdef ENABLE_OPENCC
-        QString text = QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(orth_entry->label));
+        text = QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(orth_entry->label));
 #else
-        QString text = QString::fromUtf8(orth_entry->label);
+        text = QString::fromUtf8(orth_entry->label);
+#endif
+#ifdef ENABLE_UNAC
+        std::string utf8Text = text.toStdString();
+        char *unaccented = nullptr;
+        size_t len;
+        if (unac_string("UTF8", utf8Text.c_str(), utf8Text.size(), &unaccented, &len) != -1) {
+            text = QString::fromUtf8(unaccented, len);
+            free(unaccented);
+        }
 #endif
         MobiEntry entry;
         entry.first = mobi_get_orth_entry_start_offset(orth_entry);
@@ -237,7 +257,7 @@ bool MobiDict::buildIndex()
     }
 
     if (!sorted()
-#ifdef ENABLE_OPENCC
+#if defined(ENABLE_OPENCC) || defined(ENABLE_UNAC)
         || true
 #endif
     ) {

@@ -88,17 +88,18 @@ bool MobiDict::doSetEnabled(bool enabled)
 
 void MobiDict::onQuery(const QString &text)
 {
+    QString trimmed = text.trimmed();
     QStringList textList;
 #ifdef ENABLE_HUNSPELL
-    std::vector<std::string> l = QuickDict::instance()->hunspell()->stem(text.toStdString());
+    std::vector<std::string> l = QuickDict::instance()->hunspell()->stem(trimmed.toStdString());
     if (!l.empty()) {
         for (const auto &s : l)
             textList.append(QString::fromStdString(s));
     } else {
-        textList << text;
+        textList << trimmed;
     }
 #else
-    textList << text;
+    textList << trimmed;
 #endif
 
     for (const QString &_text : qAsConst(textList)) {

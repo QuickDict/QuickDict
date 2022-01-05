@@ -99,6 +99,14 @@ if(ENABLE_HUNSPELL)
     list(APPEND LIBS ${HUNSPELL_LIBRARIES})
 endif()
 
+set(UNAC_MIN_VERSION 1.8.0)
+option(ENABLE_UNAC "Enable unac" ON)
+if(ENABLE_UNAC)
+    add_compile_definitions(ENABLE_UNAC)
+    set(UNAC_LIBRARIES unac)
+    list(APPEND LIBS ${UNAC_LIBRARIES})
+endif()
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QuickDict
         MANUAL_FINALIZATION

@@ -224,7 +224,11 @@ bool MobiDict::buildIndex()
     const size_t count = m_rawMarkup->orth->total_entries_count;
 
     std::vector<std::pair<QString, MobiEntry>> entries;
-    if (!sorted())
+    bool needSort = !sorted();
+#if defined(ENABLE_OPENCC) || defined(ENABLE_UNAC)
+    needSort = true;
+#endif
+    if (needSort)
         entries.reserve(count);
     for (size_t i = 0; i < count; ++i) {
         const MOBIIndexEntry *orth_entry = &m_rawMarkup->orth->entries[i];
@@ -246,7 +250,7 @@ bool MobiDict::buildIndex()
         MobiEntry entry;
         entry.first = mobi_get_orth_entry_start_offset(orth_entry);
         entry.second = mobi_get_orth_entry_text_length(orth_entry);
-        if (!sorted()) {
+        if (needSort) {
             entries.emplace_back(text, entry);
         } else {
             if (!m_dictIndex->addEntry(text, entry)) {
@@ -256,11 +260,7 @@ bool MobiDict::buildIndex()
         }
     }
 
-    if (!sorted()
-#if defined(ENABLE_OPENCC) || defined(ENABLE_UNAC)
-        || true
-#endif
-    ) {
+    if (needSort) {
         std::sort(entries.begin(), entries.end(), [](const auto &lhs, const auto &rhs) {
             return lhs.first < rhs.first;
         });

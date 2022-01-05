@@ -1,5 +1,8 @@
 #include "mobidict.h"
 #include "quickdict.h"
+#ifdef ENABLE_OPENCC
+#include <opencc/opencc.h>
+#endif
 #include <QFileInfo>
 
 MobiDict::MobiDict(QObject *parent)
@@ -82,7 +85,12 @@ bool MobiDict::doSetEnabled(bool enabled)
 
 void MobiDict::onQuery(const QString &text)
 {
+#ifdef ENABLE_OPENCC
+    auto node = m_dictIndex->findEntry(
+        QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(text.toStdString())));
+#else
     auto node = m_dictIndex->findEntry(text);
+#endif
     if (node) {
         qCDebug(qdDict) << "Dict:" << name() << "query:" << text << "count:" << node->_value.size();
         for (const MobiEntry &entry : node->_value) {
@@ -190,7 +198,11 @@ bool MobiDict::buildIndex()
         entries.reserve(count);
     for (size_t i = 0; i < count; ++i) {
         const MOBIIndexEntry *orth_entry = &m_rawMarkup->orth->entries[i];
+#ifdef ENABLE_OPENCC
+        QString text = QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(orth_entry->label));
+#else
         QString text = QString::fromUtf8(orth_entry->label);
+#endif
         MobiEntry entry;
         entry.first = mobi_get_orth_entry_start_offset(orth_entry);
         entry.second = mobi_get_orth_entry_text_length(orth_entry);
@@ -204,7 +216,11 @@ bool MobiDict::buildIndex()
         }
     }
 
-    if (!sorted()) {
+    if (!sorted()
+#ifdef ENABLE_OPENCC
+        || true
+#endif
+    ) {
         std::sort(entries.begin(), entries.end(), [](const auto &lhs, const auto &rhs) {
             return lhs.first < rhs.first;
         });

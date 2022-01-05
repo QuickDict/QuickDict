@@ -9,6 +9,7 @@ QuickDict is a cross-platform dictionary/translation application.
     * Leptonica 1.81.1
     * Libmobi 0.9
     * OpenCV 4.5.4
+    * OpenCC 1.1.2
     * QHotkey 1.5.0
     * Axios 0.24.0
 

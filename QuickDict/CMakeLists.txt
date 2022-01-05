@@ -81,6 +81,15 @@ if(ENABLE_KWIN_BLUR)
     list(APPEND LIBS KF5::WindowSystem)
 endif()
 
+set(OPENCC_MIN_VERSION 1.1.2)
+option(ENABLE_OPENCC "Enable OpenCC" ON)
+if(ENABLE_OPENCC)
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(OPENCC ${OPENCC_MIN_VERSION} REQUIRED opencc)
+    add_compile_definitions(ENABLE_OPENCC)
+    list(APPEND LIBS ${OPENCC_LIBRARIES})
+endif()
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QuickDict
         MANUAL_FINALIZATION

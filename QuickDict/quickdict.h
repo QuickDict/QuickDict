@@ -5,6 +5,9 @@
 #ifdef ENABLE_OPENCC
 #include <opencc/opencc.h>
 #endif
+#ifdef ENABLE_HUNSPELL
+#include <hunspell/hunspell.hxx>
+#endif
 #include <QJsonObject>
 #include <QLoggingCategory>
 #include <QObject>
@@ -77,6 +80,9 @@ public:
 #ifdef ENABLE_OPENCC
     opencc::SimpleConverter const *openccConverter() const { return &m_openccConverter; }
 #endif
+#ifdef ENABLE_HUNSPELL
+    Hunspell *hunspell() const { return m_hunspell; }
+#endif
 
 Q_SIGNALS:
     void query(const QString &text);
@@ -104,6 +110,9 @@ private:
 
 #ifdef ENABLE_OPENCC
     const opencc::SimpleConverter m_openccConverter{"t2s.json"};
+#endif
+#ifdef ENABLE_HUNSPELL
+    Hunspell *m_hunspell = nullptr;
 #endif
 
     qreal m_dpScale = 1.0;

@@ -39,6 +39,22 @@ void MobiDict::setSource(const QString &source)
     emit sourceChanged(m_dictFileName);
 }
 
+void MobiDict::setSerialNumber(const QString &serialNumber)
+{
+    if (serialNumber == m_serialNumber)
+        return;
+    m_serialNumber = serialNumber;
+    emit serialNumberChanged(m_serialNumber);
+}
+
+void MobiDict::setSorted(bool sorted)
+{
+    if (m_sorted == sorted)
+        return;
+    m_sorted = sorted;
+    emit sortedChanged(m_sorted);
+}
+
 void MobiDict::setLoaded(bool loaded)
 {
     if (m_loaded == loaded)
@@ -104,6 +120,14 @@ bool MobiDict::loadDict()
         return false;
     }
 
+    if (!serialNumber().isEmpty()) {
+        mobi_ret = mobi_drm_setkey_serial(mobi_data, serialNumber().toStdString().c_str());
+        if (mobi_ret != MOBI_SUCCESS) {
+            qCWarning(qdDict) << "Dict:" << name() << "error:" << libmobi_msg(mobi_ret);
+            return false;
+        }
+    }
+
     m_rawMarkup = mobi_init_rawml(mobi_data);
     if (nullptr == m_rawMarkup) {
         mobi_free(mobi_data);
@@ -161,13 +185,32 @@ bool MobiDict::buildIndex()
 
     const size_t count = m_rawMarkup->orth->total_entries_count;
 
+    std::vector<std::pair<QString, MobiEntry>> entries;
+    if (!sorted())
+        entries.reserve(count);
     for (size_t i = 0; i < count; ++i) {
         const MOBIIndexEntry *orth_entry = &m_rawMarkup->orth->entries[i];
         QString text = QString::fromUtf8(orth_entry->label);
         MobiEntry entry;
         entry.first = mobi_get_orth_entry_start_offset(orth_entry);
         entry.second = mobi_get_orth_entry_text_length(orth_entry);
-        m_dictIndex->addEntry(text, entry);
+        if (!sorted()) {
+            entries.emplace_back(text, entry);
+        } else {
+            if (!m_dictIndex->addEntry(text, entry)) {
+                qCWarning(qdDict) << "Dict:" << name() << "error: Failed to build indexes";
+                return false;
+            }
+        }
+    }
+
+    if (!sorted()) {
+        std::sort(entries.begin(), entries.end(), [](const auto &lhs, const auto &rhs) {
+            return lhs.first < rhs.first;
+        });
+        for (const auto &entry : entries)
+            m_dictIndex->addEntry(entry.first, entry.second);
+        entries.clear();
     }
 
     FILE *index_fp = fopen(m_indexFileName.toStdString().c_str(), "wb+");

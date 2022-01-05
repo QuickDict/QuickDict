@@ -84,6 +84,9 @@ public:
     DictIndex() { uncheckedNodes.push_back(&rootNode); };
     DictIndexNode *addEntry(const Key &key, const Value &value)
     {
+        if (key < prevKey)
+            return nullptr;
+
         DictIndexNode *previousNode = &rootNode;
         int n = key.size();
         int index = 0;
@@ -102,6 +105,7 @@ public:
             // uncheckedNodes.push_back(child);
         }
         previousNode->_value.push_back(value);
+        prevKey = key;
         return ret;
     }
     DictIndexNode *findEntry(const Key &key) const
@@ -235,6 +239,7 @@ private:
     std::vector<DictIndexNode *> uncheckedNodes;
     std::unordered_map<DictIndexNode, DictIndexNode *> checkedNodes;
     DictIndexNode rootNode;
+    Key prevKey;
 };
 
 template<typename T>

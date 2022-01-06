@@ -12,8 +12,6 @@
 #include <utility>
 #include <vector>
 
-using Size = unsigned int;
-
 template<typename Key, typename Value>
 struct DictIndexNode
 {
@@ -54,18 +52,18 @@ template<typename Key, typename Value>
 struct std::hash<DictIndexNode<Key, Value>>
 {
     using KeyIter = typename std::iterator_traits<typename Key::iterator>::value_type;
-    using DictIndexNode = DictIndexNode<Key, Value>;
-    std::size_t operator()(const DictIndexNode &n) const noexcept
+    using IndexNode = DictIndexNode<Key, Value>;
+    std::size_t operator()(const IndexNode &n) const noexcept
     {
-        return std::hash<KeyIter>{}(n._key) ^ std::hash<std::vector<DictIndexNode *>>{}(n._children);
+        return std::hash<KeyIter>{}(n._key) ^ std::hash<std::vector<IndexNode *>>{}(n._children);
     }
 };
 
 template<typename Key, typename Value>
 struct std::hash<std::vector<DictIndexNode<Key, Value> *>>
 {
-    using DictIndexNodePtr = DictIndexNode<Key, Value> *;
-    std::size_t operator()(const std::vector<DictIndexNodePtr> &vec) const noexcept
+    using IndexNodePtr = DictIndexNode<Key, Value> *;
+    std::size_t operator()(const std::vector<IndexNodePtr> &vec) const noexcept
     {
         size_t hash_value = 0;
         for (const auto &ptr : vec)
@@ -78,16 +76,17 @@ template<typename Key, typename Value>
 class DictIndex
 {
     using KeyIter = typename std::iterator_traits<typename Key::iterator>::value_type;
-    using DictIndexNode = DictIndexNode<Key, std::vector<Value>>;
+    using IndexNode = DictIndexNode<Key, std::vector<Value>>;
+    using Size = unsigned int;
 
 public:
     DictIndex() { uncheckedNodes.push_back(&rootNode); };
-    DictIndexNode *addEntry(const Key &key, const Value &value)
+    IndexNode *addEntry(const Key &key, const Value &value)
     {
         if (key < prevKey)
             return nullptr;
 
-        DictIndexNode *previousNode = &rootNode;
+        IndexNode *previousNode = &rootNode;
         int n = key.size();
         int index = 0;
         for (; index < n; ++index) {
@@ -97,9 +96,9 @@ public:
             previousNode = previousNode->_children.back();
         }
         // minimize(index);
-        DictIndexNode *ret = previousNode;
+        IndexNode *ret = previousNode;
         for (; index < n; ++index) {
-            DictIndexNode *child = new DictIndexNode(key[index]);
+            IndexNode *child = new IndexNode(key[index]);
             previousNode->addChild(child);
             previousNode = child;
             // uncheckedNodes.push_back(child);
@@ -108,30 +107,30 @@ public:
         prevKey = key;
         return ret;
     }
-    DictIndexNode *findEntry(const Key &key) const
+    IndexNode *findEntry(const Key &key) const
     {
-        DictIndexNode const *previousNode = &rootNode;
+        IndexNode const *previousNode = &rootNode;
         int n = key.length();
         int index = 0;
         for (; index < n; ++index) {
-            DictIndexNode *child = previousNode->findChild(key[index]);
+            IndexNode *child = previousNode->findChild(key[index]);
             if (!child)
                 break;
             previousNode = child;
         }
         if (index < n || previousNode == &rootNode)
             return nullptr;
-        return const_cast<DictIndexNode *>(previousNode);
+        return const_cast<IndexNode *>(previousNode);
     }
-    std::vector<std::pair<Key, DictIndexNode *>> allEntries() const
+    std::vector<std::pair<Key, IndexNode *>> allEntries() const
     {
-        std::vector<std::pair<Key, DictIndexNode *>> entries;
-        DictIndexNode *levelMarker = nullptr;
+        std::vector<std::pair<Key, IndexNode *>> entries;
+        IndexNode *levelMarker = nullptr;
         std::vector<KeyIter> keySequence;
-        std::stack<const DictIndexNode *> s;
+        std::stack<const IndexNode *> s;
         s.push(&rootNode);
         while (!s.empty()) {
-            DictIndexNode *node = const_cast<DictIndexNode *>(s.top());
+            IndexNode *node = const_cast<IndexNode *>(s.top());
             s.pop();
             if (node == levelMarker) {
                 keySequence.pop_back();
@@ -150,7 +149,7 @@ public:
         }
         return entries;
     }
-    void clear(DictIndexNode *node = nullptr)
+    void clear(IndexNode *node = nullptr)
     {
         if (!node)
             node = &rootNode;
@@ -167,7 +166,7 @@ public:
                 checkedNodes[**it] = *it;
             else
                 (*node).second->_value.insert((*node).second->_value.end(), (*it)->_value.begin(), (*it)->_value.end());
-            DictIndexNode *parent = *(it - 1);
+            IndexNode *parent = *(it - 1);
             auto pos = std::lower_bound(parent->_children.begin(),
                                         parent->_children.end(),
                                         *it,
@@ -179,7 +178,7 @@ public:
         }
     };
     void finish() { minimize(0); }
-    size_t serialize(FILE *fp, DictIndexNode *node = nullptr)
+    size_t serialize(FILE *fp, IndexNode *node = nullptr)
     {
         if (!node)
             node = &rootNode;
@@ -208,7 +207,7 @@ public:
         Size end = ftell(fp);
         return end - begin;
     }
-    size_t deserialize(FILE *fp, DictIndexNode *node = nullptr)
+    size_t deserialize(FILE *fp, IndexNode *node = nullptr)
     {
         if (!node)
             node = &rootNode;
@@ -224,7 +223,7 @@ public:
         fread(children_offset_arr, sizeof(Size), num, fp);
         for (int i = 0; i < num; ++i) {
             fseek(fp, children_offset_arr[i], SEEK_SET);
-            DictIndexNode *child = new DictIndexNode;
+            IndexNode *child = new IndexNode;
             deserialize(fp, child);
             node->_children[i] = child;
         }
@@ -236,9 +235,9 @@ public:
     }
 
 private:
-    std::vector<DictIndexNode *> uncheckedNodes;
-    std::unordered_map<DictIndexNode, DictIndexNode *> checkedNodes;
-    DictIndexNode rootNode;
+    std::vector<IndexNode *> uncheckedNodes;
+    std::unordered_map<IndexNode, IndexNode *> checkedNodes;
+    IndexNode rootNode;
     Key prevKey;
 };
 

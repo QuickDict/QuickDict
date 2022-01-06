@@ -11,8 +11,11 @@
 #include <QJsonObject>
 #include <QLoggingCategory>
 #include <QObject>
+#include <QRect>
 
+#ifdef ENABLE_TESSERACT
 class OcrEngine;
+#endif
 class ConfigCenter;
 class MonitorService;
 class DictService;
@@ -20,7 +23,9 @@ class DictService;
 class QuickDict : public QObject
 {
     Q_OBJECT
+#ifdef ENABLE_TESSERACT
     Q_PROPERTY(QObject *ocrEngine READ ocrEngine CONSTANT);
+#endif
     Q_PROPERTY(QObject *configCenter READ configCenter CONSTANT);
     Q_PROPERTY(QList<QObject *> monitors READ monitors NOTIFY monitorsChanged);
     Q_PROPERTY(QList<QObject *> dicts READ dicts NOTIFY dictsChanged);
@@ -40,8 +45,10 @@ public:
     static void createInstance();
     static QuickDict *instance() { return _instance; }
 
+#ifdef ENABLE_TESSERACT
     inline OcrEngine *ocrEngine() const { return m_ocrEngine; }
     inline void setOcrEngine(OcrEngine *ocrEngine) { m_ocrEngine = ocrEngine; }
+#endif
     inline ConfigCenter *configCenter() const { return m_configCenter; }
     void setConfigCenter(ConfigCenter *configCenter);
     QString sourceLanguage() const;
@@ -100,7 +107,9 @@ private:
     void handleDict(DictService *dict, bool enabled);
 
     static QuickDict *_instance;
+#ifdef ENABLE_TESSERACT
     OcrEngine *m_ocrEngine = nullptr;
+#endif
     ConfigCenter *m_configCenter = nullptr;
     MonitorService *m_monitorService = nullptr;
     DictService *m_dictService = nullptr;

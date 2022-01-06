@@ -1,10 +1,14 @@
 #include "clipboardmonitor.h"
 #include "configcenter.h"
 #include "dictservice.h"
+#ifdef ENABLE_QHOTKEY
 #include "hotkey.h"
+#endif
 #include "mobidict.h"
+#ifdef ENABLE_TESSERACT
 #include "mouseovermonitor.h"
 #include "ocrengine.h"
+#endif
 #include "quickdict.h"
 
 #if ENABLE_KWIN_BLUR
@@ -13,8 +17,6 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDir>
-#include <QHotkey>
-#include <QLoggingCategory>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QStandardPaths>
@@ -39,11 +41,15 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
 int main(int argc, char *argv[])
 {
+#ifdef ENABLE_TESSERACT
     qRegisterMetaType<OcrResult>("OcrResult");
+#endif
     qmlRegisterType<MonitorService>("com.quickdict.components", 1, 0, "Monitor");
     qmlRegisterType<DictService>("com.quickdict.components", 1, 0, "Dict");
     qmlRegisterType<MobiDict>("com.quickdict.components", 1, 0, "MobiDict");
+#ifdef ENABLE_QHOTKEY
     qmlRegisterType<Hotkey>("com.quickdict.components", 1, 0, "Hotkey");
+#endif
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -108,14 +114,18 @@ int main(int argc, char *argv[])
     ConfigCenter configCenter(dir.absoluteFilePath("settings.ini"));
     quickDict->setConfigCenter(&configCenter);
 
+#ifdef ENABLE_TESSERACT
     OcrEngine ocrEngine;
     quickDict->setOcrEngine(&ocrEngine);
+#endif
 
     ClipboardMonitor clipboardMonitor(quickDict);
     quickDict->registerMonitor(&clipboardMonitor);
 
+#ifdef ENABLE_TESSERACT
     MouseOverMonitor mouseOverMonitor(quickDict);
     quickDict->registerMonitor(&mouseOverMonitor);
+#endif
 
     QQmlApplicationEngine engine(quickDict);
     const QUrl url(QStringLiteral("qrc:/home.qml"));
@@ -145,7 +155,9 @@ int main(int argc, char *argv[])
 
     int ret = app.exec();
 
+#ifdef ENABLE_TESSERACT
     ocrEngine.stop();
+#endif
     logFile.close();
 
     return ret;

@@ -24,7 +24,9 @@ QuickDict::QuickDict(QObject *parent)
 
 QuickDict::~QuickDict()
 {
+#ifdef ENABLE_HUNSPELL
     delete m_hunspell;
+#endif
 }
 
 void QuickDict::createInstance()

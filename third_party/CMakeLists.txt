@@ -1,3 +1,5 @@
 add_subdirectory(QHotkey)
 add_subdirectory(libmobi)
+if(ENABLE_UNAC)
 add_subdirectory(unac)
+endif()

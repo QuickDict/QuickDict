@@ -106,7 +106,7 @@ void MobiDict::onQuery(const QString &text)
         textList << trimmed;
     }
 #else
-    textList << trimmed;
+    textList << trimmed.toLower();
 #endif
 
     for (QString _text : qAsConst(textList)) {
@@ -251,6 +251,7 @@ bool MobiDict::buildIndex()
             free(unaccented);
         }
 #endif
+        text = text.toLower();
         MobiEntry entry;
         entry.first = mobi_get_orth_entry_start_offset(orth_entry);
         entry.second = mobi_get_orth_entry_text_length(orth_entry);

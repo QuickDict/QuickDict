@@ -20,8 +20,7 @@ QImage cvmat2qimage(const cv::Mat &src, bool enableDeepCopy)
         dst = QImage(src.data, src.cols, src.rows, static_cast<int>(src.step), QImage::Format_ARGB32);
         break;
     default:
-        bool Nonsupport_Mat_Format = false;
-        assert(Nonsupport_Mat_Format == true);
+        assert(false);
     }
     if (enableDeepCopy) {
         return dst.copy();
@@ -73,8 +72,7 @@ cv::Mat qimage2cvmat(const QImage &src, bool enableDeepCopy)
                       static_cast<size_t>(src.bytesPerLine()));
         break;
     default:
-        bool Nonsupport_QImage_Format = false;
-        assert(Nonsupport_QImage_Format == true);
+        assert(false);
     }
     if (enableDeepCopy) {
         return dst.clone();

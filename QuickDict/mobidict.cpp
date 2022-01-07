@@ -75,7 +75,11 @@ void MobiDict::setLoaded(bool loaded)
 bool MobiDict::doSetEnabled(bool enabled)
 {
     if (enabled && !m_dictFileName.isEmpty()) {
-        if (loadDict() && loadOrBuildIndex()) {
+        if (loadDict()) {
+            if (!loadOrBuildIndex()) {
+                unloadDict();
+                return false;
+            }
             setLoaded(true);
             return true;
         } else {

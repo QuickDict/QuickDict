@@ -12,7 +12,6 @@ Page {
         id: lookupPageScrollView
         anchors.fill: parent
         contentWidth: parent.width
-        contentHeight: layout.implicitHeight + dp(16) // with margins
         clip: true
 
         ColumnLayout {
@@ -40,7 +39,7 @@ Page {
                             color: Qt.rgba(0, 0, 0, 0.6)
                         }
                         Rectangle {
-                            Layout.preferredHeight: 2
+                            implicitHeight: dp(2)
                             Layout.fillWidth: true
                             Layout.alignment: Qt.AlignCenter
                             color: Qt.rgba(0, 0, 0, 0.38)
@@ -53,6 +52,10 @@ Page {
                         onLoaded: item.modelData = modelData
                     }
                 }
+            }
+            // placeholder to lift text off the bottom
+            Item {
+                implicitHeight: dp(8)
             }
         }
     }

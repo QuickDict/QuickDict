@@ -166,6 +166,8 @@ Page {
     }
 
     function updateResults(results) {
+        if (!results.length)
+            lookupPageScrollView.ScrollBar.vertical.position = 0
         lookupRepeater.model = results
     }
     function scrollUp(step = 0.1) {

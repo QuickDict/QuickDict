@@ -11,6 +11,11 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <QtCore/qglobal.h>
+
+#ifdef Q_OS_LINUX
+#include <malloc.h>
+#endif
 
 template<typename Key, typename Value>
 struct DictIndexNode
@@ -155,8 +160,13 @@ public:
             node = &rootNode;
         for (const auto &child : node->_children)
             clear(child);
-        if (node != &rootNode)
+        if (node != &rootNode) {
             delete node;
+        } else {
+#ifdef Q_OS_LINUX
+            malloc_trim(0); // release memory back to OS
+#endif
+        }
     }
     void minimize(int upTo)
     {

@@ -33,6 +33,8 @@ set(SOURCES
     configcenter.h
     quickdict.cpp
     quickdict.h
+    utils.cpp
+    utils.h
     qml.qrc
     res.qrc
     ${TS_FILES}

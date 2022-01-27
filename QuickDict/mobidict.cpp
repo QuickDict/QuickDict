@@ -1,5 +1,7 @@
 #include "mobidict.h"
 #include "quickdict.h"
+#include "utils.h"
+
 #ifdef ENABLE_OPENCC
 #include <opencc/opencc.h>
 #endif
@@ -88,7 +90,7 @@ bool MobiDict::loadDict()
         return false;
     }
 
-    m_dictFile = fopen(m_dictFileName.toStdString().c_str(), "rb");
+    m_dictFile = fopen_unicode(m_dictFileName.toStdString().c_str(), "rb");
     if (nullptr == m_dictFile) {
         mobi_free(mobiData);
         qCWarning(qdDict) << "Dict:" << name() << "error: Failed to open file" << m_dictFileName;
@@ -196,7 +198,7 @@ bool MobiDict::buildIndex()
         entries.clear();
     }
 
-    m_indexFile = fopen(m_indexFileName.toStdString().c_str(), "wb+");
+    m_indexFile = fopen_unicode(m_indexFileName.toStdString().c_str(), "wb+");
     if (nullptr == m_indexFile) {
         qCWarning(qdDict) << "Dict:" << name() << "error: Failed to open file" << m_indexFileName;
         return false;
@@ -212,7 +214,7 @@ bool MobiDict::loadIndex()
 {
     qCDebug(qdDict) << "Dict:" << name() << "status: Loading indexes...";
 
-    m_indexFile = fopen(m_indexFileName.toStdString().c_str(), "rb");
+    m_indexFile = fopen_unicode(m_indexFileName.toStdString().c_str(), "rb");
     if (nullptr == m_indexFile) {
         qCWarning(qdDict) << "Dict:" << name() << "error: Failed to open file" << m_indexFileName;
         return false;

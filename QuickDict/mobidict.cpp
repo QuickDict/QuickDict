@@ -51,96 +51,95 @@ void MobiDict::onQuery(const QString &text)
     textList << trimmed.toLower();
 #endif
 
-    for (QString _text : qAsConst(textList)) {
+    for (QString text_ : qAsConst(textList)) {
 #ifdef ENABLE_OPENCC
-        _text = QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(_text.toStdString()));
+        text_ = QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(text_.toStdString()));
 #endif
 #ifdef ENABLE_UNAC
-        std::string utf8Text = _text.toStdString();
+        std::string utf8Text = text_.toStdString();
         char *unaccented = nullptr;
         size_t len;
         if (unac_string("UTF8", utf8Text.c_str(), utf8Text.size(), &unaccented, &len) != -1) {
-            _text = QString::fromUtf8(unaccented, len);
+            text_ = QString::fromUtf8(unaccented, len);
             free(unaccented);
         }
 #endif
-        auto node = m_dictIndex->findEntry(_text);
-        if (node) {
-            qCDebug(qdDict) << "Dict:" << name() << "query:" << _text << "count:" << node->_value.size();
-            for (const MobiEntry &entry : node->_value) {
-                QString definition = QString::fromUtf8(reinterpret_cast<const char *>(m_rawMarkup->flow->data
-                                                                                      + entry.first),
-                                                       entry.second);
+        auto node = m_dictIndex->findEntry(text_);
+        if (!node) {
+            qCDebug(qdDict) << "Dict:" << name() << "query: No entry for" << text_;
+            return;
+        }
+        qCDebug(qdDict) << "Dict:" << name() << "query:" << text_ << "count:" << node->_value.size();
+        for (const MobiEntry &entry : node->_value) {
+            QString definition = QString::fromUtf8(reinterpret_cast<const char *>(m_mobiRawml->flow->data + entry.first),
+                                                   entry.second);
 
-                QJsonObject result{{"engine", name()}, {"text", _text}, {"result", definition}, {"type", "lookup"}};
-                emit queryResult(result);
-            }
-        } else {
-            qCDebug(qdDict) << "Dict:" << name() << "query: No entry for" << _text;
+            QJsonObject result{{"engine", name()}, {"text", text_}, {"result", definition}, {"type", "lookup"}};
+            emit queryResult(result);
         }
     }
 }
 
 bool MobiDict::loadDict()
 {
-    MOBIData *mobi_data = mobi_init();
-    if (nullptr == mobi_data) {
+    MOBIData *mobiData = mobi_init();
+    if (nullptr == mobiData) {
         qCWarning(qdDict) << "Dict:" << name() << "error: Failed to call mobi_init";
         return false;
     }
 
     m_dictFile = fopen(m_dictFileName.toStdString().c_str(), "rb");
     if (nullptr == m_dictFile) {
-        mobi_free(mobi_data);
+        mobi_free(mobiData);
         qCWarning(qdDict) << "Dict:" << name() << "error: Failed to open file" << m_dictFileName;
         return false;
     }
 
-    MOBI_RET mobi_ret = mobi_load_file(mobi_data, m_dictFile);
+    MOBI_RET mobi_ret = mobi_load_file(mobiData, m_dictFile);
     fclose(m_dictFile);
     if (mobi_ret != MOBI_SUCCESS) {
-        mobi_free(mobi_data);
+        mobi_free(mobiData);
         qCWarning(qdDict) << "Dict:" << name() << "error:" << libmobi_msg(mobi_ret);
         return false;
     }
 
     if (!serialNumber().isEmpty()) {
-        mobi_ret = mobi_drm_setkey_serial(mobi_data, serialNumber().toStdString().c_str());
+        mobi_ret = mobi_drm_setkey_serial(mobiData, serialNumber().toStdString().c_str());
         if (mobi_ret != MOBI_SUCCESS) {
             qCWarning(qdDict) << "Dict:" << name() << "error:" << libmobi_msg(mobi_ret);
             return false;
         }
     }
 
-    m_rawMarkup = mobi_init_rawml(mobi_data);
-    if (nullptr == m_rawMarkup) {
-        mobi_free(mobi_data);
+    m_mobiRawml = mobi_init_rawml(mobiData);
+    if (nullptr == m_mobiRawml) {
+        mobi_free(mobiData);
         qCWarning(qdDict) << "Dict:" << name() << "error: Failed to call mobi_init_rawml";
         return false;
     }
 
-    mobi_ret = mobi_parse_rawml_opt(m_rawMarkup,
-                                    mobi_data,
+    mobi_ret = mobi_parse_rawml_opt(m_mobiRawml,
+                                    mobiData,
                                     false, /* parse toc */
                                     true,  /* parse dic */
                                     false /* reconstruct */);
     if (mobi_ret != MOBI_SUCCESS) {
-        mobi_free(mobi_data);
-        mobi_free_rawml(m_rawMarkup);
+        mobi_free(mobiData);
+        mobi_free_rawml(m_mobiRawml);
         qCWarning(qdDict) << "Dict:" << name() << "error:" << libmobi_msg(mobi_ret);
         return false;
     }
 
-    qCDebug(qdDict) << "Dict:" << name() << "entries:" << m_rawMarkup->orth->total_entries_count;
+    qCDebug(qdDict) << "Dict:" << name() << "entries:" << m_mobiRawml->orth->total_entries_count;
 
-    mobi_free(mobi_data);
+    mobi_free(mobiData);
 
     return true;
 }
 
 bool MobiDict::unloadDict()
 {
-    mobi_free_rawml(m_rawMarkup);
+    mobi_free_rawml(m_mobiRawml);
     return true;
 }
 
@@ -148,7 +147,7 @@ bool MobiDict::buildIndex()
 {
     qCDebug(qdDict) << "Dict:" << name() << "status: Building indexes...";
 
-    const size_t count = m_rawMarkup->orth->total_entries_count;
+    const size_t count = m_mobiRawml->orth->total_entries_count;
 
     std::vector<std::pair<MobiKey, MobiEntry>> entries;
     bool needSort = !sorted();
@@ -158,7 +157,7 @@ bool MobiDict::buildIndex()
     if (needSort)
         entries.reserve(count);
     for (size_t i = 0; i < count; ++i) {
-        const MOBIIndexEntry *orth_entry = &m_rawMarkup->orth->entries[i];
+        const MOBIIndexEntry *orth_entry = &m_mobiRawml->orth->entries[i];
         QString text;
 #ifdef ENABLE_OPENCC
         text = QString::fromStdString(QuickDict::instance()->openccConverter()->Convert(orth_entry->label));

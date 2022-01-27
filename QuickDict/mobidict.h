@@ -36,7 +36,7 @@ protected:
 
     FILE *m_dictFile = nullptr;
     FILE *m_indexFile = nullptr;
-    MOBIRawml *m_rawMarkup = nullptr;
+    MOBIRawml *m_mobiRawml = nullptr;
     MobiIndex *m_dictIndex = nullptr;
     QString m_serialNumber;
 };

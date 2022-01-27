@@ -14,11 +14,17 @@ Item {
     property var mainPage: {"currentIndex": 0} // this default value is to prevent warning of undefined property
     property var lookupPage
 
+    MdxDict {
+        id: exampleMdxDict
+        name: "Example Mdx Dict"
+        source: "/home/user/Dictionaries/Example_Mdx_Dict.mdx"
+        delegate: dictDelegate
+    }
     MobiDict {
         id: exampleMobiDict
         name: "Example Mobi Dict"
         source: "/home/user/Dictionaries/Example_Mobi_Dict.mobi"
-        delegate: mobiDelegate
+        delegate: dictDelegate
     }
     UrbanDict.UrbanDict {
         id: urbanDict
@@ -129,7 +135,7 @@ Item {
     }
 
     Component {
-        id: mobiDelegate
+        id: dictDelegate
         TextEdit {
             id: text
             property var modelData

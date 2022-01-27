@@ -9,10 +9,9 @@
 #ifdef ENABLE_UNAC
 #include <unac/unac.h>
 #endif
-#include <QFileInfo>
 
 MobiDict::MobiDict(QObject *parent)
-    : DictService(parent)
+    : LocalDict(parent)
 {
     m_dictIndex = new MobiIndex;
 
@@ -28,69 +27,12 @@ MobiDict::~MobiDict()
     delete m_dictIndex;
 }
 
-void MobiDict::setSource(const QString &source)
-{
-    if (source == m_dictFileName)
-        return;
-
-    m_dictFileName = source;
-    m_indexFileName = m_dictFileName + ".index"; // TODO: save index data to cache dir
-
-    if (loaded()) {
-        unloadDict();
-        unloadIndex();
-        setLoaded(false);
-    }
-    if (enabled() && !m_dictFileName.isEmpty()) {
-        if (loadDict() && loadOrBuildIndex())
-            setLoaded(true);
-    }
-    emit sourceChanged(m_dictFileName);
-}
-
 void MobiDict::setSerialNumber(const QString &serialNumber)
 {
     if (serialNumber == m_serialNumber)
         return;
     m_serialNumber = serialNumber;
     emit serialNumberChanged(m_serialNumber);
-}
-
-void MobiDict::setSorted(bool sorted)
-{
-    if (m_sorted == sorted)
-        return;
-    m_sorted = sorted;
-    emit sortedChanged(m_sorted);
-}
-
-void MobiDict::setLoaded(bool loaded)
-{
-    if (m_loaded == loaded)
-        return;
-    m_loaded = loaded;
-    emit loadedChanged(m_loaded);
-}
-
-bool MobiDict::doSetEnabled(bool enabled)
-{
-    if (enabled && !m_dictFileName.isEmpty()) {
-        if (loadDict()) {
-            if (!loadOrBuildIndex()) {
-                unloadDict();
-                return false;
-            }
-            setLoaded(true);
-            return true;
-        } else {
-            return false;
-        }
-    } else if (!enabled && loaded()) {
-        unloadDict();
-        unloadIndex();
-        setLoaded(false);
-    }
-    return true;
 }
 
 void MobiDict::onQuery(const QString &text)
@@ -199,25 +141,6 @@ bool MobiDict::loadDict()
 bool MobiDict::unloadDict()
 {
     mobi_free_rawml(m_rawMarkup);
-    return true;
-}
-
-bool MobiDict::loadOrBuildIndex()
-{
-    if (needBuildIndex())
-        return buildIndex();
-    else
-        return loadIndex();
-}
-
-bool MobiDict::needBuildIndex()
-{
-    QFileInfo dictFileInfo(m_dictFileName);
-    QFileInfo indexFileInfo(m_indexFileName);
-    if (!dictFileInfo.exists()
-        || (dictFileInfo.exists() && indexFileInfo.exists()
-            && dictFileInfo.lastModified() <= indexFileInfo.lastModified()))
-        return false;
     return true;
 }
 

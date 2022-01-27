@@ -23,6 +23,8 @@ set(SOURCES
     dictservice.cpp
     dictservice.h
     dictindex.h
+    localdict.cpp
+    localdict.h
     mobidict.cpp
     mobidict.h
     clipboardmonitor.cpp

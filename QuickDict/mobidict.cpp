@@ -147,15 +147,15 @@ bool MobiDict::loadDict()
         return false;
     }
 
-    FILE *dict_fp = fopen(m_dictFileName.toStdString().c_str(), "rb");
-    if (nullptr == dict_fp) {
+    m_dictFile = fopen(m_dictFileName.toStdString().c_str(), "rb");
+    if (nullptr == m_dictFile) {
         mobi_free(mobi_data);
         qCWarning(qdDict) << "Dict:" << name() << "error: Failed to open file" << m_dictFileName;
         return false;
     }
 
-    MOBI_RET mobi_ret = mobi_load_file(mobi_data, dict_fp);
-    fclose(dict_fp);
+    MOBI_RET mobi_ret = mobi_load_file(mobi_data, m_dictFile);
+    fclose(m_dictFile);
     if (mobi_ret != MOBI_SUCCESS) {
         mobi_free(mobi_data);
         qCWarning(qdDict) << "Dict:" << name() << "error:" << libmobi_msg(mobi_ret);
@@ -227,7 +227,7 @@ bool MobiDict::buildIndex()
 
     const size_t count = m_rawMarkup->orth->total_entries_count;
 
-    std::vector<std::pair<QString, MobiEntry>> entries;
+    std::vector<std::pair<MobiKey, MobiEntry>> entries;
     bool needSort = !sorted();
 #if defined(ENABLE_OPENCC) || defined(ENABLE_UNAC)
     needSort = true;
@@ -274,14 +274,14 @@ bool MobiDict::buildIndex()
         entries.clear();
     }
 
-    FILE *index_fp = fopen(m_indexFileName.toStdString().c_str(), "wb+");
-    if (index_fp) {
-        qCDebug(qdDict) << "Dict:" << name() << "status: Saving indexes...";
-        m_dictIndex->serialize(index_fp);
-        fclose(index_fp);
-    } else {
+    m_indexFile = fopen(m_indexFileName.toStdString().c_str(), "wb+");
+    if (nullptr == m_indexFile) {
         qCWarning(qdDict) << "Dict:" << name() << "error: Failed to open file" << m_indexFileName;
+        return false;
     }
+    qCDebug(qdDict) << "Dict:" << name() << "status: Saving indexes...";
+    m_dictIndex->serialize(m_indexFile);
+    fclose(m_indexFile);
 
     return true;
 }
@@ -290,13 +290,13 @@ bool MobiDict::loadIndex()
 {
     qCDebug(qdDict) << "Dict:" << name() << "status: Loading indexes...";
 
-    FILE *index_fp = fopen(m_indexFileName.toStdString().c_str(), "rb");
-    if (nullptr == index_fp) {
+    m_indexFile = fopen(m_indexFileName.toStdString().c_str(), "rb");
+    if (nullptr == m_indexFile) {
         qCWarning(qdDict) << "Dict:" << name() << "error: Failed to open file" << m_indexFileName;
         return false;
     }
-    m_dictIndex->deserialize(index_fp);
-    fclose(index_fp);
+    m_dictIndex->deserialize(m_indexFile);
+    fclose(m_indexFile);
 
     return true;
 }

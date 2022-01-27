@@ -5,8 +5,9 @@
 #include "dictservice.h"
 #include <libmobi/src/mobi.h>
 
+using MobiKey = QString;
 using MobiEntry = std::pair<uint, uint>;
-using MobiIndex = DictIndex<QString, MobiEntry>;
+using MobiIndex = DictIndex<MobiKey, MobiEntry>;
 
 class MobiDict : public DictService
 {
@@ -53,8 +54,8 @@ private:
 
     QString m_dictFileName;
     QString m_indexFileName;
-    // FILE *m_dictFile = nullptr;
-    // FILE *m_indexFile = nullptr;
+    FILE *m_dictFile = nullptr;
+    FILE *m_indexFile = nullptr;
     MOBIRawml *m_rawMarkup = nullptr;
     MobiIndex *m_dictIndex = nullptr;
     QString m_serialNumber;

@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <stack>
 #include <stdio.h>
+#include <string.h>
+#include <tuple>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -27,9 +29,10 @@ struct DictIndexNode
         , _value(value)
     {}
 
-    void addChild(DictIndexNode *child)
+    inline void addChild(DictIndexNode *child)
     {
-        _children.push_back(child); // `_children` is in order because `addEntry` is called with ordered data.
+        // `_children` is in order because `addEntry` is called with ordered data.
+        _children.push_back(child);
     }
     DictIndexNode *findChild(const KeyIter &key) const
     {
@@ -48,7 +51,7 @@ struct DictIndexNode
 };
 
 template<typename Key, typename Value>
-bool operator==(const DictIndexNode<Key, Value> &lhs, const DictIndexNode<Key, Value> &rhs)
+inline bool operator==(const DictIndexNode<Key, Value> &lhs, const DictIndexNode<Key, Value> &rhs)
 {
     return lhs._key == rhs._key && lhs._children == rhs._children;
 }
@@ -65,33 +68,20 @@ struct std::hash<DictIndexNode<Key, Value>>
 };
 
 template<typename Key, typename Value>
-struct std::hash<std::vector<DictIndexNode<Key, Value> *>>
-{
-    using IndexNodePtr = DictIndexNode<Key, Value> *;
-    std::size_t operator()(const std::vector<IndexNodePtr> &vec) const noexcept
-    {
-        size_t hash_value = 0;
-        for (const auto &ptr : vec)
-            hash_value ^= std::hash<void *>{}(static_cast<void *>(ptr));
-        return hash_value;
-    }
-};
-
-template<typename Key, typename Value>
 class DictIndex
 {
     using KeyIter = typename std::iterator_traits<typename Key::iterator>::value_type;
     using IndexNode = DictIndexNode<Key, std::vector<Value>>;
-    using Size = unsigned int;
+    using Size = uint32_t;
 
 public:
-    DictIndex() { uncheckedNodes.push_back(&rootNode); };
+    DictIndex() { m_uncheckedNodes.push_back(&m_rootNode); };
     IndexNode *addEntry(const Key &key, const Value &value)
     {
-        if (key < prevKey)
+        if (key < m_prevKey)
             return nullptr;
 
-        IndexNode *previousNode = &rootNode;
+        IndexNode *previousNode = &m_rootNode;
         int n = key.size();
         int index = 0;
         for (; index < n; ++index) {
@@ -105,16 +95,18 @@ public:
         for (; index < n; ++index) {
             IndexNode *child = new IndexNode(key[index]);
             previousNode->addChild(child);
+            ++m_nodeCount;
             previousNode = child;
-            // uncheckedNodes.push_back(child);
+            // m_uncheckedNodes.push_back(child);
         }
         previousNode->_value.push_back(value);
-        prevKey = key;
+        ++m_entryCount;
+        m_prevKey = key;
         return ret;
     }
     IndexNode *findEntry(const Key &key) const
     {
-        IndexNode const *previousNode = &rootNode;
+        IndexNode const *previousNode = &m_rootNode;
         int n = key.length();
         int index = 0;
         for (; index < n; ++index) {
@@ -123,7 +115,7 @@ public:
                 break;
             previousNode = child;
         }
-        if (index < n || previousNode == &rootNode)
+        if (index < n || previousNode == &m_rootNode)
             return nullptr;
         return const_cast<IndexNode *>(previousNode);
     }
@@ -133,7 +125,7 @@ public:
         IndexNode *levelMarker = nullptr;
         std::vector<KeyIter> keySequence;
         std::stack<const IndexNode *> s;
-        s.push(&rootNode);
+        s.push(&m_rootNode);
         while (!s.empty()) {
             IndexNode *node = const_cast<IndexNode *>(s.top());
             s.pop();
@@ -154,26 +146,36 @@ public:
         }
         return entries;
     }
-    void clear(IndexNode *node = nullptr)
+    void clear()
     {
-        if (!node)
-            node = &rootNode;
-        for (const auto &child : node->_children)
-            clear(child);
-        if (node != &rootNode) {
+        IndexNode *node;
+        std::stack<IndexNode *> s;
+        for (const auto &child : m_rootNode._children)
+            s.push(child);
+        while (!s.empty()) {
+            node = s.top();
+            s.pop();
+            for (const auto &child : node->_children)
+                s.push(child);
             delete node;
-        } else {
-#ifdef Q_OS_LINUX
-            malloc_trim(0); // release memory back to OS
-#endif
         }
+
+        m_rootNode._children = {};
+        m_uncheckedNodes = {};
+        m_checkedNodes.clear();
+        m_prevKey = Key();
+        m_nodeCount = 0;
+        m_entryCount = 0;
+#ifdef Q_OS_LINUX
+        malloc_trim(0); // release memory back to OS
+#endif
     }
     void minimize(int upTo)
     {
-        for (auto it = uncheckedNodes.end() - 1; it > uncheckedNodes.begin() + upTo; --it) {
-            auto node = checkedNodes.find(**it);
-            if (node == checkedNodes.end())
-                checkedNodes[**it] = *it;
+        for (auto it = m_uncheckedNodes.end() - 1; it > m_uncheckedNodes.begin() + upTo; --it) {
+            auto node = m_checkedNodes.find(**it);
+            if (node == m_checkedNodes.end())
+                m_checkedNodes[**it] = *it;
             else
                 (*node).second->_value.insert((*node).second->_value.end(), (*it)->_value.begin(), (*it)->_value.end());
             IndexNode *parent = *(it - 1);
@@ -181,125 +183,160 @@ public:
                                         parent->_children.end(),
                                         *it,
                                         [](const auto &lhs, const auto &rhs) { return lhs->_key < rhs->_key; });
-            *pos = checkedNodes[**it];
-            if (node != checkedNodes.end())
+            *pos = m_checkedNodes[**it];
+            if (node != m_checkedNodes.end())
                 delete *it;
-            uncheckedNodes.pop_back();
+            m_uncheckedNodes.pop_back();
         }
     };
     void finish() { minimize(0); }
-    size_t serialize(FILE *fp, IndexNode *node = nullptr)
+    size_t serialize(FILE *fp)
     {
-        if (!node)
-            node = &rootNode;
+        size_t bytes = byteCount();
+        unsigned char *buf = (unsigned char *) malloc(bytes);
+        unsigned char *start = buf;
 
-        Size begin = ftell(fp);
-
-        _serialize(fp, node->_key);
-        _serialize(fp, node->_value);
-        ushort num = node->_children.size();
-        fwrite(&num, sizeof(num), 1, fp);
-        Size children_offset = ftell(fp);
-        for (int i = 0; i < num; ++i)
-            fwrite(&begin, sizeof(begin), 1, fp); // placeholder
-        Size *children_offset_arr = (Size *) malloc(sizeof(Size) * num);
-        for (int i = 0; i < num; ++i) {
-            children_offset_arr[i] = ftell(fp);
-            serialize(fp, node->_children[i]);
+        IndexNode *node;
+        std::stack<IndexNode *> s;
+        s.push(&m_rootNode);
+        while (!s.empty()) {
+            node = s.top();
+            s.pop();
+            _serialize(start, *node);
+            for (auto it = node->_children.rbegin(); it != node->_children.rend(); ++it)
+                s.push(*it);
         }
-        fseek(fp, children_offset, SEEK_SET);
-        for (int i = 0; i < num; ++i) {
-            fwrite(&children_offset_arr[i], sizeof(Size), 1, fp);
-        }
-        free(children_offset_arr);
-
-        fseek(fp, 0, SEEK_END);
-        Size end = ftell(fp);
-        return end - begin;
+        fwrite(&bytes, sizeof(bytes), 1, fp);
+        fwrite(buf, bytes, 1, fp);
+        free(buf);
+        return bytes;
     }
-    size_t deserialize(FILE *fp, IndexNode *node = nullptr)
+    size_t deserialize(FILE *fp)
     {
-        if (!node)
-            node = &rootNode;
+        size_t bytes;
+        fread(&bytes, sizeof(bytes), 1, fp);
+        unsigned char *buf = (unsigned char *) malloc(bytes);
+        fread(buf, bytes, 1, fp);
+        unsigned char *start = buf;
 
-        Size begin = ftell(fp);
-
-        _deserialize(fp, node->_key);
-        _deserialize(fp, node->_value);
-        ushort num = node->_children.size();
-        fread(&num, sizeof(num), 1, fp);
-        node->_children.resize(num);
-        Size *children_offset_arr = (Size *) malloc(sizeof(Size) * num);
-        fread(children_offset_arr, sizeof(Size), num, fp);
-        for (int i = 0; i < num; ++i) {
-            fseek(fp, children_offset_arr[i], SEEK_SET);
-            IndexNode *child = new IndexNode;
-            deserialize(fp, child);
-            node->_children[i] = child;
+        IndexNode *node;
+        std::stack<IndexNode *> ancestors;
+        std::stack<IndexNode *> s;
+        s.push(&m_rootNode);
+        while (!s.empty()) {
+            node = s.top();
+            s.pop();
+            _deserialize(start, *node);
+            if (!ancestors.empty()) {
+                ancestors.top()->_children.push_back(node);
+                if (ancestors.top()->_children.size() == ancestors.top()->_children.capacity())
+                    ancestors.pop();
+            }
+            if (node->_children.capacity() > 0)
+                ancestors.push(node);
+            for (size_t i = 0; i < node->_children.capacity(); ++i)
+                s.push(new IndexNode);
         }
-        free(children_offset_arr);
-
-        fseek(fp, 0, SEEK_END);
-        Size end = ftell(fp);
-        return end - begin;
+        free(buf);
+        return 0;
+    }
+    inline size_t nodeCount() const { return m_nodeCount; }
+    inline size_t entryCount() const { return m_entryCount; }
+    size_t byteCount() const
+    {
+        size_t bytes = (nodeCount() + 1 /* m_rootNode */)
+                           * (sizeof(KeyIter) + sizeof(uint8_t /* num of values */)
+                              + sizeof(uint16_t /* num of children */))
+                       + entryCount() * sizeof(Value);
+        return bytes;
     }
 
 private:
-    std::vector<IndexNode *> uncheckedNodes;
-    std::unordered_map<IndexNode, IndexNode *> checkedNodes;
-    IndexNode rootNode;
-    Key prevKey;
+    std::vector<IndexNode *> m_uncheckedNodes;
+    std::unordered_map<IndexNode, IndexNode *> m_checkedNodes;
+    IndexNode m_rootNode;
+    Key m_prevKey;
+    size_t m_nodeCount = 0;
+    size_t m_entryCount = 0;
 };
 
 template<typename T>
-size_t _serialize(FILE *fp, const T &data)
+inline void _serialize(unsigned char *&data, const T &object)
 {
-    return fwrite(&data, sizeof(T), 1, fp);
+    memcpy(data, &object, sizeof(T));
+    data += sizeof(T);
 }
 
 template<typename T>
-size_t _deserialize(FILE *fp, T &data)
+inline void _deserialize(unsigned char *&data, T &object)
 {
-    return fread(&data, sizeof(T), 1, fp);
+    memcpy(&object, data, sizeof(T));
+    data += sizeof(T);
 }
 
 template<typename T>
-size_t _serialize(FILE *fp, const std::vector<T> &vec)
+inline void _serialize(unsigned char *&data, const std::vector<T> &vec)
 {
-    size_t bytes = 0;
-    ushort len = vec.size();
-    bytes += fwrite(&len, sizeof(len), 1, fp);
-    for (const auto &e : vec)
-        bytes += _serialize(fp, e);
-    return bytes;
+    uint8_t size = vec.size();
+    _serialize(data, size);
+    for (int i = 0; i < size; ++i)
+        _serialize(data, vec[i]);
 }
 
 template<typename T>
-size_t _deserialize(FILE *fp, std::vector<T> &vec)
+inline void _deserialize(unsigned char *&data, std::vector<T> &vec)
 {
-    size_t bytes = 0;
-    ushort len;
-    bytes += fread(&len, sizeof(len), 1, fp);
-    vec.clear();
-    vec.reserve(len);
-    for (int i = 0; i < len; ++i) {
-        T v;
-        bytes += _deserialize(fp, v);
-        vec.push_back(v);
-    }
-    return bytes;
+    uint8_t size;
+    _deserialize(data, size);
+    vec.resize(size);
+    for (int i = 0; i < size; ++i)
+        _deserialize(data, vec[i]);
+}
+
+template<typename T1, typename T2, typename T3>
+inline void _serialize(unsigned char *&data, const std::tuple<T1, T2, T3> &t)
+{
+    for (int i = 0; i < 3; ++i)
+        _serialize(data, std::get<i>(t));
+}
+
+template<typename T1, typename T2, typename T3>
+inline void _deserialize(unsigned char *&data, std::tuple<T1, T2, T3> &t)
+{
+    for (int i = 0; i < 3; ++i)
+        _deserialize(data, std::get<i>(t));
 }
 
 template<typename T1, typename T2>
-size_t _serialize(FILE *fp, const std::pair<T1, T2> &pair)
+inline void _serialize(unsigned char *&data, const std::pair<T1, T2> &pair)
 {
-    return fwrite(&pair.first, sizeof(T1), 1, fp) + fwrite(&pair.second, sizeof(T2), 1, fp);
+    _serialize(data, pair.first);
+    _serialize(data, pair.second);
 }
 
 template<typename T1, typename T2>
-size_t _deserialize(FILE *fp, std::pair<T1, T2> &pair)
+inline void _deserialize(unsigned char *&data, std::pair<T1, T2> &pair)
 {
-    return fread(&pair.first, sizeof(T1), 1, fp) + fread(&pair.second, sizeof(T2), 1, fp);
+    _deserialize(data, pair.first);
+    _deserialize(data, pair.second);
+}
+
+template<typename Key, typename Value>
+inline void _serialize(unsigned char *&data, const DictIndexNode<Key, Value> &node)
+{
+    _serialize(data, node._key);
+    _serialize(data, node._value);
+    _serialize(data, static_cast<uint16_t>(node._children.size()));
+}
+
+template<typename Key, typename Value>
+inline void _deserialize(unsigned char *&data, DictIndexNode<Key, Value> &node)
+{
+    _deserialize(data, node._key);
+    _deserialize(data, node._value);
+    uint16_t size;
+    _deserialize(data, size);
+    node._children.reserve(size);
 }
 
 #endif // DICTINDEX_H

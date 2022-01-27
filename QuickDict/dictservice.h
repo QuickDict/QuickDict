@@ -7,6 +7,9 @@
 #include <QQmlParserStatus>
 
 class QQmlComponent;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QQmlComponent>
+#endif
 
 class DictService : public Service, public QQmlParserStatus
 {

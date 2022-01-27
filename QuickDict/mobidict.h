@@ -14,7 +14,7 @@ class MobiDict : public DictService
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(QString serialNumber READ serialNumber WRITE setSerialNumber NOTIFY serialNumberChanged)
     Q_PROPERTY(bool sorted READ sorted WRITE setSorted NOTIFY sortedChanged)
-    Q_PROPERTY(QString loaded READ loaded NOTIFY loadedChanged)
+    Q_PROPERTY(bool loaded READ loaded NOTIFY loadedChanged)
 
 public:
     explicit MobiDict(QObject *parent = nullptr);

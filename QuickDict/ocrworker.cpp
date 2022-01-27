@@ -4,6 +4,7 @@
 #include <tesseract/baseapi.h>
 #include <QBuffer>
 #include <QImage>
+#include <QRegularExpression>
 
 Q_LOGGING_CATEGORY(qdOcrWorker, "qd.ocr.worker")
 
@@ -50,7 +51,8 @@ void OcrWorker::doExtractText(const QImage &image, const QPoint &p, int id)
 
         char *result = m_tessApi->GetUTF8Text();
         text = QString::fromUtf8(result);
-        text.remove(QRegExp("[ \t\n]"));
+        static QRegularExpression whitesapces("[ \t\n]");
+        text.remove(whitesapces);
         int index = std::round((p.x() - rect.left()) * (text.size() - 1) * 1.0 / (rect.right() - rect.left()));
         qCDebug(qdOcrWorker) << "text: " << text << " index: " << index << "char: " << QString(text[index]);
         delete[] result;

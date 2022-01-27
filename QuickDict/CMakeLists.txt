@@ -27,6 +27,8 @@ set(SOURCES
     localdict.h
     mobidict.cpp
     mobidict.h
+    mdxdict.cpp
+    mdxdict.h
     clipboardmonitor.cpp
     clipboardmonitor.h
     configcenter.cpp
@@ -47,7 +49,7 @@ include_directories(${PROJECT_SOURCE_DIR}/third_party)
 set(QT_MIN_VERSION 5.15.2)
 find_package(QT NAMES Qt5 REQUIRED Widgets Quick LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} ${QT_MIN_VERSION} REQUIRED Widgets Quick LinguistTools)
-set(LIBS Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Quick mobi)
+set(LIBS Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Quick mobi mdx)
 
 set(TESSERACT_MIN_VERSION 4.1.1)
 set(LEPTONICA_MIN_VERSION 1.81.1)

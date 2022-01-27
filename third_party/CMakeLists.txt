@@ -1,4 +1,5 @@
 add_subdirectory(libmobi)
+add_subdirectory(libmdx)
 if(ENABLE_UNAC)
     add_subdirectory(unac)
 endif()

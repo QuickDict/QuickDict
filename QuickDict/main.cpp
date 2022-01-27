@@ -4,6 +4,7 @@
 #ifdef ENABLE_QHOTKEY
 #include "hotkey.h"
 #endif
+#include "mdxdict.h"
 #include "mobidict.h"
 #ifdef ENABLE_TESSERACT
 #include "mouseovermonitor.h"
@@ -47,6 +48,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<MonitorService>("com.quickdict.components", 1, 0, "Monitor");
     qmlRegisterType<DictService>("com.quickdict.components", 1, 0, "Dict");
     qmlRegisterType<MobiDict>("com.quickdict.components", 1, 0, "MobiDict");
+    qmlRegisterType<MdxDict>("com.quickdict.components", 1, 0, "MdxDict");
 #ifdef ENABLE_QHOTKEY
     qmlRegisterType<Hotkey>("com.quickdict.components", 1, 0, "Hotkey");
 #endif

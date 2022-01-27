@@ -160,8 +160,10 @@ public:
             delete node;
         }
 
-        m_rootNode._children = {};
-        m_uncheckedNodes = {};
+        m_rootNode._children.clear();
+        m_rootNode._children.shrink_to_fit();
+        m_uncheckedNodes.clear();
+        m_uncheckedNodes.shrink_to_fit();
         m_checkedNodes.clear();
         m_prevKey = Key();
         m_nodeCount = 0;

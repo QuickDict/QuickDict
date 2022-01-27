@@ -43,7 +43,7 @@ set(TS_FILES QuickDict_zh_CN.ts)
 include_directories(${PROJECT_SOURCE_DIR}/third_party)
 
 set(QT_MIN_VERSION 5.15.2)
-find_package(QT NAMES Qt6 Qt5 REQUIRED Widgets Quick LinguistTools)
+find_package(QT NAMES Qt5 REQUIRED Widgets Quick LinguistTools)
 find_package(Qt${QT_VERSION_MAJOR} ${QT_MIN_VERSION} REQUIRED Widgets Quick LinguistTools)
 set(LIBS Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Quick mobi)
 

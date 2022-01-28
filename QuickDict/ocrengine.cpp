@@ -39,7 +39,7 @@ void OcrEngine::start()
 
         QSettings *settings = QuickDict::instance()->configCenter()->settings();
         settings->beginGroup("Tesseract");
-        QString dataPath = settings->value("DataPath").toString();
+        QString dataPath = settings->value("DataPath", "C:/Program Files/Tesseract-OCR/tessdata/").toString();
         QString lang = settings->value("Language", "eng").toString();
         settings->endGroup();
         if (m_tessApi->Init(dataPath.isNull() ? nullptr : dataPath.toStdString().c_str(), lang.toStdString().c_str())) {

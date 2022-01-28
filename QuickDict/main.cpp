@@ -91,27 +91,17 @@ int main(int argc, char *argv[])
     if (!debugFlag)
         QLoggingCategory::setFilterRules("qd.*.debug=false");
 
-    QDir dir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation));
-    if (!dir.exists(app.applicationName()) && !dir.mkdir(app.applicationName()))
-        qCWarning(qd) << "Cannot make dir:" << dir.absoluteFilePath(app.applicationName());
-    else {
-        dir.cd(app.applicationName());
-        logFile.setFileName(dir.absoluteFilePath("log"));
-        if (!logFile.open(QIODevice::Append | QIODevice::Text))
-            qCWarning(qd) << "Cannot open file:" << logFile.fileName();
-        else
-            defaultMessageHandler = qInstallMessageHandler(messageHandler);
-    }
+    logFile.setFileName(QDir(QuickDict::logDirPath()).filePath("log"));
+    if (!logFile.open(QIODevice::Append | QIODevice::Text))
+        qCWarning(qd) << "Cannot open file:" << logFile.fileName();
+    else
+        defaultMessageHandler = qInstallMessageHandler(messageHandler);
 
     QuickDict::createInstance();
     QuickDict *quickDict = QuickDict::instance();
     quickDict->setUiScale(1.5);
 
-    dir = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation));
-    if (!dir.exists(app.applicationName()) && !dir.mkdir(app.applicationName()))
-        qCWarning(qd) << "Cannot make dir:" << dir.absoluteFilePath(app.applicationName());
-    dir.cd(app.applicationName());
-    ConfigCenter configCenter(dir.absoluteFilePath("settings.ini"));
+    ConfigCenter configCenter(QDir(QuickDict::configDirPath()).filePath("settings.ini"));
     quickDict->setConfigCenter(&configCenter);
 
 #ifdef ENABLE_TESSERACT

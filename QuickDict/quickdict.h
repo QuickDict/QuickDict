@@ -38,6 +38,10 @@ class QuickDict : public QObject
     Q_PROPERTY(qreal spScale READ spScale WRITE setSpScale NOTIFY spScaleChanged);
     Q_PROPERTY(qreal uiScale READ uiScale WRITE setUiScale NOTIFY uiScaleChanged);
 
+    Q_PROPERTY(QString configDirPath READ configDirPath CONSTANT);
+    Q_PROPERTY(QString dataDirPath READ dataDirPath CONSTANT);
+    Q_PROPERTY(QString logDirPath READ logDirPath CONSTANT);
+
 public:
     explicit QuickDict(QObject *parent = nullptr);
     ~QuickDict();
@@ -74,6 +78,10 @@ public:
     void setUiScale(qreal uiScale);
     Q_SIGNAL void uiScaleChanged();
 
+    static QString configDirPath();
+    static QString dataDirPath();
+    static QString logDirPath();
+
     Q_INVOKABLE void registerMonitor(MonitorService *monitor);
     QList<QObject *> monitors() const;
     Q_INVOKABLE MonitorService *monitor(const QString &name) const;
@@ -85,7 +93,7 @@ public:
     Q_INVOKABLE QRect textBoundingRect(const QFont &font, const QString &text) const;
 
 #ifdef ENABLE_OPENCC
-    opencc::SimpleConverter const *openccConverter() const { return &m_openccConverter; }
+    opencc::SimpleConverter const *openccConverter() const { return m_openccConverter; }
 #endif
 #ifdef ENABLE_HUNSPELL
     Hunspell *hunspell() const { return m_hunspell; }
@@ -118,7 +126,7 @@ private:
     QList<DictService *> m_dicts;
 
 #ifdef ENABLE_OPENCC
-    const opencc::SimpleConverter m_openccConverter{"t2s.json"};
+    opencc::SimpleConverter *m_openccConverter;
 #endif
 #ifdef ENABLE_HUNSPELL
     Hunspell *m_hunspell = nullptr;

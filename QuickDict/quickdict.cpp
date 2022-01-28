@@ -2,11 +2,18 @@
 #include "configcenter.h"
 #include "dictservice.h"
 #include "monitorservice.h"
+#include <QCoreApplication>
+#include <QDir>
+#include <QFile>
 #include <QFontMetrics>
 #include <QGuiApplication>
 #include <QJSValue>
 #include <QScreen>
+#include <QStandardPaths>
 #include <QTimer>
+#ifdef ENABLE_OPENCC
+#include <opencc/Exception.hpp>
+#endif
 
 Q_LOGGING_CATEGORY(qd, "qd.default")
 
@@ -14,12 +21,30 @@ QuickDict *QuickDict::_instance = nullptr;
 
 QuickDict::QuickDict(QObject *parent)
     : QObject(parent)
-#ifdef ENABLE_HUNSPELL
-    // TODO: make it configurable
-    , m_hunspell(new Hunspell("/usr/share/hunspell/en_US.aff", "/usr/share/hunspell/en_US.dic"))
-#endif
 {
     m_pixelScale = qApp->primaryScreen()->physicalDotsPerInch() / 160.0;
+#ifdef ENABLE_OPENCC
+    QDir openccDir(dataDirPath());
+    openccDir.cd("opencc");
+    try {
+        m_openccConverter = new opencc::SimpleConverter{
+            QFile::encodeName(openccDir.filePath("t2s.json")).toStdString().c_str()};
+    } catch (const opencc::Exception &e) {
+        qCCritical(qd) << "OpenCC: failed to initialize"
+                       << "detail:" << QString::fromStdString(e.what());
+    } catch (const std::exception &e) {
+        qCCritical(qd) << "OpenCC: failed to initialize"
+                       << "detail:" << QString::fromStdString(e.what());
+    } catch (...) {
+        qCCritical(qd) << "OpenCC: failed to initialize";
+    }
+#endif
+#ifdef ENABLE_HUNSPELL
+    QDir hunspellDir(dataDirPath());
+    hunspellDir.cd("hunspell");
+    m_hunspell = new Hunspell(hunspellDir.filePath("en_US.aff").toStdString().c_str(),
+                              hunspellDir.filePath("en_US.dic").toStdString().c_str());
+#endif
 }
 
 QuickDict::~QuickDict()
@@ -111,6 +136,33 @@ void QuickDict::setUiScale(qreal uiScale)
     emit uiScaleChanged();
 }
 
+QString QuickDict::configDirPath()
+{
+    QDir dir = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation));
+    if (!dir.exists(qApp->applicationName()) && !dir.mkdir(qApp->applicationName()))
+        qCWarning(qd) << "Cannot make dir:" << dir.absoluteFilePath(qApp->applicationName());
+    return dir.filePath(qApp->applicationName());
+}
+
+QString QuickDict::dataDirPath()
+{
+#ifdef STANDALONE_BUILD
+    QDir dir(QCoreApplication::applicationDirPath());
+    if (!dir.exists("data") && !dir.mkdir("data"))
+        qCWarning(qd) << "Cannot make dir:" << dir.absoluteFilePath("data");
+    return dir.filePath("data");
+#else
+    return "/usr/share";
+#endif
+}
+
+QString QuickDict::logDirPath()
+{
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation));
+    if (!dir.exists(qApp->applicationName()) && !dir.mkdir(qApp->applicationName()))
+        qCWarning(qd) << "Cannot make dir:" << dir.absoluteFilePath(qApp->applicationName());
+    return dir.filePath(qApp->applicationName());
+}
 void QuickDict::registerMonitor(MonitorService *monitor)
 {
     qCInfo(qdMonitor) << "Register monitor:" << monitor->name();

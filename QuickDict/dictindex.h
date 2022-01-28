@@ -7,14 +7,15 @@
 
 #include <algorithm>
 #include <stack>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <tuple>
 #include <unordered_map>
 #include <utility>
 #include <vector>
-#include <QtCore/qglobal.h>
 
+#include <QtCore/qglobal.h>
 #ifdef Q_OS_LINUX
 #include <malloc.h>
 #endif
@@ -164,7 +165,7 @@ public:
         m_rootNode._children.shrink_to_fit();
         m_uncheckedNodes.clear();
         m_uncheckedNodes.shrink_to_fit();
-        m_checkedNodes.clear();
+        // m_checkedNodes.clear();
         m_prevKey = Key();
         m_nodeCount = 0;
         m_entryCount = 0;
@@ -172,24 +173,23 @@ public:
         malloc_trim(0); // release memory back to OS
 #endif
     }
-    void minimize(int upTo)
-    {
-        for (auto it = m_uncheckedNodes.end() - 1; it > m_uncheckedNodes.begin() + upTo; --it) {
-            auto node = m_checkedNodes.find(**it);
-            if (node == m_checkedNodes.end())
-                m_checkedNodes[**it] = *it;
-            else
-                (*node).second->_value.insert((*node).second->_value.end(), (*it)->_value.begin(), (*it)->_value.end());
-            IndexNode *parent = *(it - 1);
-            auto pos = std::lower_bound(parent->_children.begin(),
-                                        parent->_children.end(),
-                                        *it,
-                                        [](const auto &lhs, const auto &rhs) { return lhs->_key < rhs->_key; });
-            *pos = m_checkedNodes[**it];
-            if (node != m_checkedNodes.end())
-                delete *it;
-            m_uncheckedNodes.pop_back();
-        }
+    void minimize(int upTo){
+        // for (auto it = m_uncheckedNodes.end() - 1; it > m_uncheckedNodes.begin() + upTo; --it) {
+        //     auto node = m_checkedNodes.find(**it);
+        //     if (node == m_checkedNodes.end())
+        //         m_checkedNodes[**it] = *it;
+        //     else
+        //         (*node).second->_value.insert((*node).second->_value.end(), (*it)->_value.begin(), (*it)->_value.end());
+        //     IndexNode *parent = *(it - 1);
+        //     auto pos = std::lower_bound(parent->_children.begin(),
+        //                                 parent->_children.end(),
+        //                                 *it,
+        //                                 [](const auto &lhs, const auto &rhs) { return lhs->_key < rhs->_key; });
+        //     *pos = m_checkedNodes[**it];
+        //     if (node != m_checkedNodes.end())
+        //         delete *it;
+        //     m_uncheckedNodes.pop_back();
+        // }
     };
     void finish() { minimize(0); }
     size_t serialize(FILE *fp)
@@ -255,7 +255,7 @@ public:
 
 private:
     std::vector<IndexNode *> m_uncheckedNodes;
-    std::unordered_map<IndexNode, IndexNode *> m_checkedNodes;
+    // std::unordered_map<IndexNode, IndexNode *> m_checkedNodes;
     IndexNode m_rootNode;
     Key m_prevKey;
     size_t m_nodeCount = 0;
@@ -298,15 +298,17 @@ inline void _deserialize(unsigned char *&data, std::vector<T> &vec)
 template<typename T1, typename T2, typename T3>
 inline void _serialize(unsigned char *&data, const std::tuple<T1, T2, T3> &t)
 {
-    for (int i = 0; i < 3; ++i)
-        _serialize(data, std::get<i>(t));
+    _serialize(data, std::get<0>(t));
+    _serialize(data, std::get<1>(t));
+    _serialize(data, std::get<2>(t));
 }
 
 template<typename T1, typename T2, typename T3>
 inline void _deserialize(unsigned char *&data, std::tuple<T1, T2, T3> &t)
 {
-    for (int i = 0; i < 3; ++i)
-        _deserialize(data, std::get<i>(t));
+    _deserialize(data, std::get<0>(t));
+    _deserialize(data, std::get<1>(t));
+    _deserialize(data, std::get<2>(t));
 }
 
 template<typename T1, typename T2>

@@ -40,7 +40,7 @@ protected:
 
     QString m_dictFileName;
     QString m_indexFileName;
-    bool m_sorted = true; // defaults to sorted
+    bool m_sorted = false; // defaults to unsorted
     bool m_loaded = false;
 };
 

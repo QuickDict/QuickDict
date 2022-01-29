@@ -10,3 +10,6 @@
 [submodule "third_party/unac"]
 	path = third_party/unac
 	url = https://github.com/QuickDict/unac
+[submodule "third_party/libmdx"]
+	path = third_party/libmdx
+	url = https://github.com/QuickDict/libmdx.git

@@ -36,7 +36,6 @@ private:
     tesseract::TessBaseAPI *m_tessApi = nullptr;
     OcrWorker *m_ocrWorker = nullptr;
     QThread m_workerThread;
-    QMutex m_mutex;
 };
 
 Q_DECLARE_LOGGING_CATEGORY(ocrEngine)

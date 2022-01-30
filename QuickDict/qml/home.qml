@@ -8,15 +8,16 @@ ApplicationWindow {
     id: window
     objectName: "window"
     title: stackView.depth > 1 ? stackView.currentItem.title + qsTr(" - QuickDict") : qsTr("QuickDict")
-    width: dp(280)
-    height: dp(400)
+    width: dp(320)
+    height: dp(380)
     minimumWidth: dp(250)
     minimumHeight: dp(200)
     color: "#f6f3ed"
 
     header: ToolBar {
-        font.pixelSize: sp(20)
+        font.pixelSize: sp(24)
         contentHeight: toolButton.implicitHeight
+        spacing: dp(8)
 
         ToolButton {
             id: toolButton
@@ -32,11 +33,13 @@ ApplicationWindow {
         TextField {
             id: textField
             placeholderText: qsTr("look up...")
+            bottomPadding: dp(8)
             visible: stackView.depth <= 1
             anchors {
                 left: toolButton.right
                 right: parent.right
-                margins: dp(20)
+                verticalCenter: parent.verticalCenter
+                margins: dp(8)
             }
 
             Monitor {
@@ -65,7 +68,7 @@ ApplicationWindow {
         id: drawer
         width: Math.min(dp(256), 0.6 * window.width)
         height: window.height
-        font.pixelSize: sp(14)
+        font.pixelSize: sp(20)
 
         Column {
             anchors.fill: parent

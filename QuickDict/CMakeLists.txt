@@ -135,6 +135,11 @@ if(STANDALONE_BUILD)
     add_compile_definitions(STANDALONE_BUILD)
 endif()
 
+if(WIN32)
+    # Create Win32 application
+    set(CMAKE_WIN32_EXECUTABLE ON)
+endif()
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QuickDict
         MANUAL_FINALIZATION
